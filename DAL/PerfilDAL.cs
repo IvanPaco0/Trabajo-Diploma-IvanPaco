@@ -6,7 +6,7 @@ using System.Data;
 
 namespace DAL
 {
-    public class PerfilDAL : AbstractDAL<ComponentePermiso>
+    public class PerfilDAL : _012IP_AbstractDAL<ComponentePermiso>
     {
         public List<PermisoSimple> ObtenerPermisos()
         {

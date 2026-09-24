@@ -9,7 +9,7 @@ namespace DAL
     
     }
 
-    public class RespaldoDAL : AbstractDAL<Respaldo>
+    public class RespaldoDAL : _012IP_AbstractDAL<Respaldo>
     {
         private const string NombreBaseDatos = "Alejandria_DB";
 

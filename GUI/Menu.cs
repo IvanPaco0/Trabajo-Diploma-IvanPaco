@@ -1,4 +1,5 @@
-﻿using BLL;
+﻿using _012IP_GUI;
+using BLL;
 using Servicios;
 using System;
 using System.Collections.Generic;
@@ -245,6 +246,24 @@ namespace GUI
             frmReparacionDV.Show();
         }
 
+        private void btnRenovarMembresia_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.UsuarioActual().TienePermiso("Renovar Membresia"))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("RenMemSinPermiso"),
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            this.Hide();
+            _012IP_frmRenovarMembresia frm = new _012IP_frmRenovarMembresia();
+            frm.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            mostrarSubmenu(panelMembresiaSubmenu);
+        }
+
         public void Actualizar(LanguageManager lenguaje)
         {
             btnAdmin.Text = LanguageManager.Instance.GetTraduction("btnAdmin");
@@ -260,6 +279,7 @@ namespace GUI
             btnCambiarClave.Text = LanguageManager.Instance.GetTraduction("btnCambiarClave");
             btnLogout.Text = LanguageManager.Instance.GetTraduction("btnLogout");
             btnCambiarIdioma.Text = LanguageManager.Instance.GetTraduction("btnCambiarIdioma");
+            btnRenovarMembresia.Text = LanguageManager.Instance.GetTraduction("RenMemTitulo");
         }
     }
 }

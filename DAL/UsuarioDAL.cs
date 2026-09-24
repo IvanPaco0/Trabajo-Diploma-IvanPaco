@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace DAL
 {
-    public class UsuarioDAL : AbstractDAL<Usuario>
+    public class UsuarioDAL : _012IP_AbstractDAL<Usuario>
     {
         public UsuarioDAL() : base() { }
 

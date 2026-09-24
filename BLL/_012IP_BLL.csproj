@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BE\BE.csproj" />
-    <ProjectReference Include="..\DAL\DAL.csproj" />
-    <ProjectReference Include="..\Servicios\Servicios.csproj" />
+    <ProjectReference Include="..\BE\_012IP_BE.csproj" />
+    <ProjectReference Include="..\DAL\_012IP_DAL.csproj" />
+    <ProjectReference Include="..\Servicios\_012IP_Security and Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

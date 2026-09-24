@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DAL
 {
-    public class BitacoraDAL : AbstractDAL<Bitacora>
+    public class BitacoraDAL : _012IP_AbstractDAL<Bitacora>
     {
         public BitacoraDAL() { }
 

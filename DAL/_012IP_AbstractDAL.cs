@@ -4,12 +4,12 @@ using System;
 
 namespace DAL
 {
-    public abstract class AbstractDAL<T> where T : class
+    public abstract class _012IP_AbstractDAL<T> where T : class
     {
         protected SqlConnection _sqlserver;
         protected SqlCommand _sqlcommand;
 
-        protected AbstractDAL()
+        protected _012IP_AbstractDAL()
         {
             string cadenaConexion = ConexionConfig.ObtenerCadenaConexion();
 

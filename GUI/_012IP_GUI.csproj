@@ -229,6 +229,12 @@
     <Compile Include="Usuarios.Designer.cs">
       <DependentUpon>Usuarios.cs</DependentUpon>
     </Compile>
+    <Compile Include="_012IP_frmRenovarMembresia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_012IP_frmRenovarMembresia.Designer.cs">
+      <DependentUpon>_012IP_frmRenovarMembresia.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="CambiarIdioma.resx">
       <DependentUpon>CambiarIdioma.cs</DependentUpon>
     </EmbeddedResource>
@@ -294,17 +300,17 @@
     <None Include="Resources\Alejandria2.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BE\BE.csproj">
+    <ProjectReference Include="..\BE\_012IP_BE.csproj">
       <Project>{e31fb921-b111-4774-88e1-da47a20afddd}</Project>
-      <Name>BE</Name>
+      <Name>_012IP_BE</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BLL\BLL.csproj">
+    <ProjectReference Include="..\BLL\_012IP_BLL.csproj">
       <Project>{4d6b9335-2b53-4404-9c9f-ed2fdc1f5986}</Project>
-      <Name>BLL</Name>
+      <Name>_012IP_BLL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Servicios\Servicios.csproj">
+    <ProjectReference Include="..\Servicios\_012IP_Security and Services.csproj">
       <Project>{dd2e21f0-0e76-40dd-8d8b-91252b7c0cc8}</Project>
-      <Name>Servicios</Name>
+      <Name>_012IP_Security and Services</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

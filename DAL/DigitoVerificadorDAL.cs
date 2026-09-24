@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DAL
 {
-    public class DigitoVerificadorDAL : AbstractDAL<ControlDVV>
+    public class DigitoVerificadorDAL : _012IP_AbstractDAL<ControlDVV>
     {
         public List<string> ObtenerTodosLosTotalesTablas(string tablaActual, string nuevoTotalActual)
         {

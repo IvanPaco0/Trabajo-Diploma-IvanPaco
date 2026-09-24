@@ -61,6 +61,16 @@
             this.btnAdmin = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelContenedor = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.panelMembresiaSubmenu = new System.Windows.Forms.Panel();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.panel13 = new System.Windows.Forms.Panel();
+            this.panel14 = new System.Windows.Forms.Panel();
+            this.panel15 = new System.Windows.Forms.Panel();
+            this.panel16 = new System.Windows.Forms.Panel();
+            this.panel17 = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
+            this.btnRenovarMembresia = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnMaximizar)).BeginInit();
@@ -69,6 +79,7 @@
             this.panelUsuarioSubmenu.SuspendLayout();
             this.panelAdminSubmenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panelMembresiaSubmenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // BarraTitulo
@@ -80,7 +91,7 @@
             this.BarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.BarraTitulo.Location = new System.Drawing.Point(0, 0);
             this.BarraTitulo.Name = "BarraTitulo";
-            this.BarraTitulo.Size = new System.Drawing.Size(1037, 43);
+            this.BarraTitulo.Size = new System.Drawing.Size(1249, 43);
             this.BarraTitulo.TabIndex = 0;
             this.BarraTitulo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BarraTitulo_MouseDown);
             this.BarraTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BarraTitulo_MouseMove);
@@ -91,7 +102,7 @@
             this.btnCerrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCerrar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCerrar.Image = ((System.Drawing.Image)(resources.GetObject("btnCerrar.Image")));
-            this.btnCerrar.Location = new System.Drawing.Point(1009, 4);
+            this.btnCerrar.Location = new System.Drawing.Point(1221, 4);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Size = new System.Drawing.Size(25, 35);
             this.btnCerrar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -104,7 +115,7 @@
             this.btnMaximizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMaximizar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnMaximizar.Image = ((System.Drawing.Image)(resources.GetObject("btnMaximizar.Image")));
-            this.btnMaximizar.Location = new System.Drawing.Point(978, 4);
+            this.btnMaximizar.Location = new System.Drawing.Point(1190, 4);
             this.btnMaximizar.Name = "btnMaximizar";
             this.btnMaximizar.Size = new System.Drawing.Size(25, 35);
             this.btnMaximizar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -117,7 +128,7 @@
             this.btnMinimizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMinimizar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnMinimizar.Image = ((System.Drawing.Image)(resources.GetObject("btnMinimizar.Image")));
-            this.btnMinimizar.Location = new System.Drawing.Point(947, 4);
+            this.btnMinimizar.Location = new System.Drawing.Point(1159, 4);
             this.btnMinimizar.Name = "btnMinimizar";
             this.btnMinimizar.Size = new System.Drawing.Size(25, 35);
             this.btnMinimizar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -128,6 +139,8 @@
             // MenuVertical
             // 
             this.MenuVertical.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.MenuVertical.Controls.Add(this.panelMembresiaSubmenu);
+            this.MenuVertical.Controls.Add(this.button1);
             this.MenuVertical.Controls.Add(this.panelUsuarioSubmenu);
             this.MenuVertical.Controls.Add(this.btnUsuario);
             this.MenuVertical.Controls.Add(this.btnMaestro);
@@ -137,7 +150,7 @@
             this.MenuVertical.Dock = System.Windows.Forms.DockStyle.Left;
             this.MenuVertical.Location = new System.Drawing.Point(0, 43);
             this.MenuVertical.Name = "MenuVertical";
-            this.MenuVertical.Size = new System.Drawing.Size(200, 615);
+            this.MenuVertical.Size = new System.Drawing.Size(200, 698);
             this.MenuVertical.TabIndex = 1;
             // 
             // panelUsuarioSubmenu
@@ -485,16 +498,129 @@
             this.panelContenedor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelContenedor.Location = new System.Drawing.Point(200, 43);
             this.panelContenedor.Name = "panelContenedor";
-            this.panelContenedor.Size = new System.Drawing.Size(837, 615);
+            this.panelContenedor.Size = new System.Drawing.Size(1049, 698);
             this.panelContenedor.TabIndex = 2;
             this.panelContenedor.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContenedor_Paint);
+            // 
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Maroon;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(0, 554);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(200, 35);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Membresias";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // panelMembresiaSubmenu
+            // 
+            this.panelMembresiaSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.panelMembresiaSubmenu.Controls.Add(this.panel12);
+            this.panelMembresiaSubmenu.Controls.Add(this.panel13);
+            this.panelMembresiaSubmenu.Controls.Add(this.panel14);
+            this.panelMembresiaSubmenu.Controls.Add(this.panel15);
+            this.panelMembresiaSubmenu.Controls.Add(this.panel16);
+            this.panelMembresiaSubmenu.Controls.Add(this.panel17);
+            this.panelMembresiaSubmenu.Controls.Add(this.button2);
+            this.panelMembresiaSubmenu.Controls.Add(this.btnRenovarMembresia);
+            this.panelMembresiaSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelMembresiaSubmenu.Location = new System.Drawing.Point(0, 589);
+            this.panelMembresiaSubmenu.Name = "panelMembresiaSubmenu";
+            this.panelMembresiaSubmenu.Size = new System.Drawing.Size(200, 218);
+            this.panelMembresiaSubmenu.TabIndex = 7;
+            this.panelMembresiaSubmenu.Visible = false;
+            // 
+            // panel12
+            // 
+            this.panel12.BackColor = System.Drawing.Color.Maroon;
+            this.panel12.Location = new System.Drawing.Point(12, 70);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(5, 35);
+            this.panel12.TabIndex = 7;
+            // 
+            // panel13
+            // 
+            this.panel13.BackColor = System.Drawing.Color.Maroon;
+            this.panel13.Location = new System.Drawing.Point(12, 105);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(5, 35);
+            this.panel13.TabIndex = 7;
+            // 
+            // panel14
+            // 
+            this.panel14.BackColor = System.Drawing.Color.Maroon;
+            this.panel14.Location = new System.Drawing.Point(12, 140);
+            this.panel14.Name = "panel14";
+            this.panel14.Size = new System.Drawing.Size(5, 35);
+            this.panel14.TabIndex = 7;
+            // 
+            // panel15
+            // 
+            this.panel15.BackColor = System.Drawing.Color.Maroon;
+            this.panel15.Location = new System.Drawing.Point(12, 175);
+            this.panel15.Name = "panel15";
+            this.panel15.Size = new System.Drawing.Size(5, 35);
+            this.panel15.TabIndex = 7;
+            // 
+            // panel16
+            // 
+            this.panel16.BackColor = System.Drawing.Color.Maroon;
+            this.panel16.Location = new System.Drawing.Point(12, 35);
+            this.panel16.Name = "panel16";
+            this.panel16.Size = new System.Drawing.Size(5, 35);
+            this.panel16.TabIndex = 7;
+            // 
+            // panel17
+            // 
+            this.panel17.BackColor = System.Drawing.Color.Maroon;
+            this.panel17.Location = new System.Drawing.Point(12, 0);
+            this.panel17.Name = "panel17";
+            this.panel17.Size = new System.Drawing.Size(5, 35);
+            this.panel17.TabIndex = 7;
+            // 
+            // button2
+            // 
+            this.button2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.ForeColor = System.Drawing.Color.White;
+            this.button2.Location = new System.Drawing.Point(0, 35);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(200, 35);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "Dig. Ver.";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // btnRenovarMembresia
+            // 
+            this.btnRenovarMembresia.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnRenovarMembresia.FlatAppearance.BorderSize = 0;
+            this.btnRenovarMembresia.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnRenovarMembresia.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRenovarMembresia.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRenovarMembresia.ForeColor = System.Drawing.Color.White;
+            this.btnRenovarMembresia.Location = new System.Drawing.Point(0, 0);
+            this.btnRenovarMembresia.Name = "btnRenovarMembresia";
+            this.btnRenovarMembresia.Size = new System.Drawing.Size(200, 35);
+            this.btnRenovarMembresia.TabIndex = 4;
+            this.btnRenovarMembresia.Text = "Renovar membresias";
+            this.btnRenovarMembresia.UseVisualStyleBackColor = true;
+            this.btnRenovarMembresia.Click += new System.EventHandler(this.btnRenovarMembresia_Click);
             // 
             // Menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Maroon;
-            this.ClientSize = new System.Drawing.Size(1037, 658);
+            this.ClientSize = new System.Drawing.Size(1249, 741);
             this.Controls.Add(this.panelContenedor);
             this.Controls.Add(this.MenuVertical);
             this.Controls.Add(this.BarraTitulo);
@@ -510,6 +636,7 @@
             this.panelUsuarioSubmenu.ResumeLayout(false);
             this.panelAdminSubmenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panelMembresiaSubmenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -548,6 +675,16 @@
         private System.Windows.Forms.PictureBox btnMaximizar;
         private System.Windows.Forms.Button btnCambiarIdioma;
         private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Panel panelMembresiaSubmenu;
+        private System.Windows.Forms.Panel panel12;
+        private System.Windows.Forms.Panel panel13;
+        private System.Windows.Forms.Panel panel14;
+        private System.Windows.Forms.Panel panel15;
+        private System.Windows.Forms.Panel panel16;
+        private System.Windows.Forms.Panel panel17;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnRenovarMembresia;
+        private System.Windows.Forms.Button button1;
     }
 }
 

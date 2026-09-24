@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DAL
 {
-    public class IdiomaDAL : AbstractDAL<IdiomaDAL>
+    public class IdiomaDAL : _012IP_AbstractDAL<IdiomaDAL>
     {
         public string ObtenerIdioma(string userName)
         {
