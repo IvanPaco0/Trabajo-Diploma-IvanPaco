@@ -264,6 +264,12 @@ namespace GUI
             mostrarSubmenu(panelMembresiaSubmenu);
         }
 
+        private void btnRegistrarSocio_Click(object sender, EventArgs e)
+        {
+            var frmRegistrarSocio = new _012IP_frmRegistrarSocio();
+            frmRegistrarSocio.ShowDialog(this);
+        }
+
         public void Actualizar(LanguageManager lenguaje)
         {
             btnAdmin.Text = LanguageManager.Instance.GetTraduction("btnAdmin");

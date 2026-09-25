@@ -381,6 +381,17 @@
   "CuotaBLLText1": "La suscripción indicada no es válida.",
   "CuotaBLLText2": "No se pudieron obtener las cuotas de la suscripción.",
   "MembBLLText1": "No hay tipos de membresía disponibles.",
-  "MembBLLText2": "No se pudieron listar las membresías."
+  "MembBLLText2": "No se pudieron listar las membresías.",
+
+
+  //Registrar socio
+  "SocioBLLText6": "Verifique los datos ingresados: DNI (6 a 10 dígitos), nombre y apellido (solo letras), y el formato de email y teléfono si los completó.",
+  "SocioBLLText7": "Ya existe un socio registrado con ese DNI.",
+  "SocioBLLText8": "No se pudo registrar el socio. Intente nuevamente.",
+  "RegSocioTitulo": "Registrar socio",
+  "RegSocioGrpDatos": "Datos del socio",
+  "RegSocioBtnRegistrar": "Registrar socio",
+  "RegSocioIngreseDatos": "Complete los datos del nuevo socio y presione \"Registrar socio\".",
+  "RegSocioExitoso": "Registro exitoso: {0} {1} (DNI {2}) fue dado de alta correctamente."
 
 }

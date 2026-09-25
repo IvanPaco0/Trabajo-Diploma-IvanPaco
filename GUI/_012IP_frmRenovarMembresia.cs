@@ -113,10 +113,8 @@ namespace _012IP_GUI
 
         private void _012IP_btnRegistrarSocio_Click(object sender, EventArgs e)
         {
-            // TODO CU-02: abrir el formulario "Registrar socio" (ShowDialog) y, al volver,
-            // repetir la búsqueda con _012IP_btnBuscar_Click(null, null).
-            MessageBox.Show("[PENDIENTE] Acá se invoca el CU-02 Registrar socio.", "CU-02",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var frmRegistrarSocio = new _012IP_frmRegistrarSocio();
+            frmRegistrarSocio.ShowDialog(this);
         }
 
         // ------------------------------------------------------------------ paso 4: estado de cuenta

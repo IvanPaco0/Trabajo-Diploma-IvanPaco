@@ -32,7 +32,6 @@ namespace GUI
             }
 
             Application.Run(new Login());
-            //Application.Run(new _012IP_frmRenovarMembresia());
         }
     }
 }

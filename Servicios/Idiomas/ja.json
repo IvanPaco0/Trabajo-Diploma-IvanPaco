@@ -378,5 +378,15 @@
   "CuotaBLLText1": "指定されたサブスクリプションは無効です。",
   "CuotaBLLText2": "サブスクリプションの分割払いを取得できませんでした。",
   "MembBLLText1": "利用可能な会員種別がありません。",
-  "MembBLLText2": "会員種別を一覧表示できませんでした。"
+  "MembBLLText2": "会員種別を一覧表示できませんでした。",
+
+  //Registrar socio
+  "SocioBLLText6": "入力内容を確認してください：DNI（6〜10桁）、名前と姓（文字のみ）、メールと電話番号の形式。",
+  "SocioBLLText7": "そのDNIの会員は既に登録されています。",
+  "SocioBLLText8": "会員を登録できませんでした。もう一度お試しください。",
+  "RegSocioTitulo": "会員登録",
+  "RegSocioGrpDatos": "会員データ",
+  "RegSocioBtnRegistrar": "会員登録",
+  "RegSocioIngreseDatos": "新しい会員のデータを入力し、「会員登録」を押してください。",
+  "RegSocioExitoso": "登録完了：{0} {1}（DNI {2}）が正常に登録されました。"
 }

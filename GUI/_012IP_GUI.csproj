@@ -229,6 +229,12 @@
     <Compile Include="Usuarios.Designer.cs">
       <DependentUpon>Usuarios.cs</DependentUpon>
     </Compile>
+    <Compile Include="_012IP_frmRegistrarSocio.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_012IP_frmRegistrarSocio.Designer.cs">
+      <DependentUpon>_012IP_frmRegistrarSocio.cs</DependentUpon>
+    </Compile>
     <Compile Include="_012IP_frmRenovarMembresia.cs">
       <SubType>Form</SubType>
     </Compile>
