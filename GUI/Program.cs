@@ -1,4 +1,6 @@
-﻿using Servicios;
+﻿using _012IP_BE;
+using _012IP_GUI;
+using Servicios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +32,7 @@ namespace GUI
             }
 
             Application.Run(new Login());
+            //Application.Run(new _012IP_frmRenovarMembresia());
         }
     }
 }

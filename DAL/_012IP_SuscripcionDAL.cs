@@ -1,6 +1,7 @@
 ﻿using _012IP_BE;
 using DAL;
 using Microsoft.Data.SqlClient;
+using Servicios;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -66,12 +67,18 @@ namespace _012IP_DAL
         {
             try
             {
+                // DVH de la fila (dígito verificador horizontal): antes no se calculaba y la
+                // columna es NOT NULL -> el INSERT (socio sin suscripción previa) tiraba error.
+                string dvh = DigitoVerificador.CalcularDVH(
+                    dni + idMembresia + fechaInicio.ToString("yyyy-MM-dd") + fechaVencimiento.ToString("yyyy-MM-dd") + "Activa");
+
                 _sqlcommand.CommandText = @"
                     UPDATE su
                     SET su.IdMembresia = @idMembresia,
                         su.FechaInicio = @fechaInicio,
                         su.FechaVencimiento = @fechaVencimiento,
-                        su.Estado = 'Activa'
+                        su.Estado = 'Activa',
+                        su.DVH = @dvh
                     FROM Suscripcion su
                     JOIN Socio s ON s.IdSocio = su.IdSocio
                     WHERE s.DNI = @dni;";
@@ -80,15 +87,17 @@ namespace _012IP_DAL
                 _sqlcommand.Parameters.AddWithValue("@idMembresia", idMembresia);
                 _sqlcommand.Parameters.AddWithValue("@fechaInicio", fechaInicio.Date);
                 _sqlcommand.Parameters.AddWithValue("@fechaVencimiento", fechaVencimiento.Date);
+                _sqlcommand.Parameters.AddWithValue("@dvh", dvh);
 
                 _sqlserver.Open();
                 int filas = _sqlcommand.ExecuteNonQuery();
 
                 if (filas == 0)
                 {
+                    // El socio (recién dado de alta por CU-02) todavía no tenía suscripción: la creamos.
                     _sqlcommand.CommandText = @"
-                        INSERT INTO Suscripcion (IdSocio, IdMembresia, FechaInicio, FechaVencimiento, Estado)
-                        SELECT IdSocio, @idMembresia, @fechaInicio, @fechaVencimiento, 'Activa'
+                        INSERT INTO Suscripcion (IdSocio, IdMembresia, FechaInicio, FechaVencimiento, Estado, DVH)
+                        SELECT IdSocio, @idMembresia, @fechaInicio, @fechaVencimiento, 'Activa', @dvh
                         FROM Socio WHERE DNI = @dni;";
                     _sqlcommand.ExecuteNonQuery();
                 }

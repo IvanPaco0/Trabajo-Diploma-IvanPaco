@@ -15,5 +15,6 @@ namespace _012IP_BE
         public bool Activo { get; set; } = true;
         public _012IP_SuscripcionBE? Suscripcion { get; set; }
         public _012IP_SocioBE() { }
+        public string DVH { get; set; }
     }
 }
