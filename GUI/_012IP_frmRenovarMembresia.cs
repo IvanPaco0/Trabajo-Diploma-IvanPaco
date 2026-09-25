@@ -18,6 +18,7 @@ namespace _012IP_GUI
         private _012IP_SocioBLL socioBLL;
         private _012IP_MembresiaBLL membresiaBLL;
         private _012IP_SuscripcionBLL suscripcionBLL;
+        private _012IP_PagoBLL pagoBLL;
 
         private List<_012IP_SocioBE> sociosEncontrados = new List<_012IP_SocioBE>();
         private List<_012IP_MembresiaBE> membresias;
@@ -47,6 +48,7 @@ namespace _012IP_GUI
                 socioBLL = new _012IP_SocioBLL();
                 membresiaBLL = new _012IP_MembresiaBLL();
                 suscripcionBLL = new _012IP_SuscripcionBLL();
+                pagoBLL = new _012IP_PagoBLL();
             }
             catch (Exception ex)
             {
@@ -182,12 +184,14 @@ namespace _012IP_GUI
                     _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirma != DialogResult.Yes) return;
 
-             
-                if (!_012IP_InvocarRegistrarPago(socioSeleccionado, total))
+                _012IP_PagoBE pago = _012IP_InvocarRegistrarPago(socioSeleccionado, total, null, null, null);
+                if (pago == null)
                 {
                     lblMsj.Text = _012IP_Texto("RenMemPagoNoConfirmado");
                     return;
                 }
+
+                pagoBLL._012IP_MarcarCuotasComoPagadas(cuotasVencidas.Select(c => c.IdCuota).ToList(), pago.FechaPago);
 
                 deudaRegularizada = true;
                 pnlDeuda.Visible = false;
@@ -236,17 +240,17 @@ namespace _012IP_GUI
                     _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirma != DialogResult.Yes) return;
 
-              
-                if (!_012IP_InvocarRegistrarPago(socioSeleccionado, membresia.CostoMensual))
+
+                _012IP_PagoBE pago = _012IP_InvocarRegistrarPago(socioSeleccionado, membresia.CostoMensual, null, membresia.IdMembresia, periodoInicio);
+                if (pago == null)
                 {
                     lblMsj.Text = _012IP_Texto("RenMemPagoNoConfirmado");
                     return;
                 }
 
-               
                 suscripcionBLL._012IP_RenovarSuscripcion(socioSeleccionado.DNI, membresia.IdMembresia, periodoInicio, periodoVencimiento);
+               
 
-                
                 _012IP_SuscripcionBE actualizada = suscripcionBLL._012IP_ConsultarSuscripcion(socioSeleccionado.DNI);
                 socioSeleccionado.Suscripcion = actualizada;
 
@@ -265,17 +269,19 @@ namespace _012IP_GUI
             }
         }
 
-       
-        private bool _012IP_InvocarRegistrarPago(_012IP_SocioBE socio, decimal monto)
+
+        private _012IP_PagoBE _012IP_InvocarRegistrarPago(_012IP_SocioBE socio, decimal monto, int? idCuota, int? idMembresia, DateTime? periodo)
         {
-            MessageBox.Show(
-                "[SIMULADO] Pago de " + _012IP_Moneda(monto) + " registrado para " + socio.Nombre + " " + socio.Apellido +
-                ".\nReemplazar por el CU-03 Registrar pago.",
-                "CU-03", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return true;
+            using (var frmPago = new _012IP_frmRegistrarPago(
+                socio.IdSocio, socio.Nombre + " " + socio.Apellido, socio.DNI,
+                monto, idCuota, idMembresia, periodo))
+            {
+                DialogResult resultado = frmPago.ShowDialog(this);
+                return resultado == DialogResult.OK ? frmPago.PagoRegistrado : null;
+            }
         }
 
-       
+
 
         private void _012IP_CargarMembresias()
         {
