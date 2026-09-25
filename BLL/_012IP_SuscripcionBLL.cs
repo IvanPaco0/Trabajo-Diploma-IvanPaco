@@ -21,10 +21,7 @@ namespace _012IP_BLL
             bitacoraBLL = new BitacoraBLL();
         }
 
-        /// <summary>
-        /// obtenerSuscripcion(DNI): devuelve la suscripción del socio con sus cuotas cargadas
-        /// (lo usa SocioBLL para validar el estado de cuenta). Null si el socio no tiene suscripción.
-        /// </summary>
+      
         public _012IP_SuscripcionBE _012IP_ObtenerSuscripcion(string dni)
         {
             if (string.IsNullOrWhiteSpace(dni))
@@ -43,7 +40,7 @@ namespace _012IP_BLL
             }
         }
 
-        /// <summary>ConsultarSuscripcion(DNI): paso 11, verifica la suscripción ya actualizada (sin cuotas).</summary>
+        
         public _012IP_SuscripcionBE _012IP_ConsultarSuscripcion(string dni)
         {
             if (string.IsNullOrWhiteSpace(dni))
@@ -59,10 +56,7 @@ namespace _012IP_BLL
             }
         }
 
-        /// <summary>
-        /// Calcula el nuevo período (1 mes). Si la suscripción sigue vigente, arranca cuando vence la
-        /// actual (no se pierden días); si ya venció o no existe, arranca hoy.
-        /// </summary>
+       
         public void _012IP_CalcularPeriodoRenovacion(_012IP_SuscripcionBE actual, out DateTime fechaInicio, out DateTime fechaVencimiento)
         {
             DateTime hoy = DateTime.Today;
@@ -75,7 +69,7 @@ namespace _012IP_BLL
             fechaVencimiento = fechaInicio.AddMonths(1);
         }
 
-        /// <summary>RenovarSuscripcion(DNI, IdMembresia, FechaInicio, FechaVencimiento): paso 10.</summary>
+       
         public void _012IP_RenovarSuscripcion(string dni, int idMembresia, DateTime fechaInicio, DateTime fechaVencimiento)
         {
             if (string.IsNullOrWhiteSpace(dni))

@@ -11,7 +11,6 @@ namespace _012IP_DAL
     {
         public _012IP_CuotaDAL() : base() { }
 
-        /// <summary>Consultar cuotas(IdSuscripcion): devuelve todas las cuotas de la suscripción.</summary>
         public List<_012IP_CuotaBE> _012IP_ObtenerCuotas(int idSuscripcion)
         {
             var cuotas = new List<_012IP_CuotaBE>();

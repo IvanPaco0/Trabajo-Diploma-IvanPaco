@@ -16,7 +16,6 @@ namespace _012IP_BLL
             membresiaDAL = new _012IP_MembresiaDAL();
         }
 
-        /// <summary>Listar membresías: devuelve los tipos disponibles con su costo mensual.</summary>
         public List<_012IP_MembresiaBE> _012IP_ListarMembresias()
         {
             List<_012IP_MembresiaBE> membresias;

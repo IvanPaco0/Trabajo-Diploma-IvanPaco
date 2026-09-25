@@ -11,13 +11,7 @@ namespace _012IP_DAL
     {
         public _012IP_PagoDAL() : base() { }
 
-        /// <summary>
-        /// RegistrarPago(Pago, DVH, IdCuota): CU-03 paso 7. Inserta el pago con su DVH ya
-        /// calculado por el BLL (nunca se persiste el pago sin su DVH). Al insertar completa
-        /// pago.IdPago con el identity generado por la base.
-        /// Columnas reales de la tabla Pago: IdPago, IdSocio, IdCuota, IdMembresia, Monto,
-        /// MedioDePago, FechaPago, DVH.
-        /// </summary>
+      
         public bool _012IP_RegistrarPago(_012IP_PagoBE pago, string dvh)
         {
             try
@@ -52,12 +46,7 @@ namespace _012IP_DAL
             }
         }
 
-        /// <summary>
-        /// ActualizarEstadoPago(): CU-03 paso 9. Marca la cuota como Pagada con la fecha del
-        /// pago. Solo se llama cuando el pago corresponde a una cuota ya existente
-        /// (regularización de deuda); en una renovación nueva idCuota llega null y este
-        /// paso se omite (lo controla el BLL).
-        /// </summary>
+        
         public bool _012IP_ActualizarEstadoPago(int idCuota, DateTime fechaPago)
         {
             try

@@ -13,7 +13,7 @@ namespace _012IP_BE
 
         public _012IP_MembresiaBE() { }
 
-        // Útil para mostrar en un ComboBox: "Premium - $30000"
+        
         public override string ToString() => $"{Nombre} - ${CostoMensual:N0}";
     }
 }

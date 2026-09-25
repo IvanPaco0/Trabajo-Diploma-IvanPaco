@@ -16,7 +16,6 @@ namespace _012IP_BLL
             cuotaDAL = new _012IP_CuotaDAL();
         }
 
-        /// <summary>ObtenerCuotas(IdSuscripcion): devuelve todas las cuotas de la suscripción.</summary>
         public List<_012IP_CuotaBE> _012IP_ObtenerCuotas(int idSuscripcion)
         {
             if (idSuscripcion <= 0)

@@ -22,12 +22,6 @@ namespace _012IP_BLL
             bitacoraBLL = new BitacoraBLL();
         }
 
-        // ===================================================== CU-01 (ya programado)
-
-        /// <summary>
-        /// Buscar socio(DNI, Nombre, Apellido): CU-01 pasos 1-3. Lista vacía = "Socio no encontrado"
-        /// (la GUI ofrece entonces el CU-02 Registrar socio).
-        /// </summary>
         public List<_012IP_SocioBE> _012IP_BuscarSocio(string dni, string nombre, string apellido)
         {
             dni = (dni ?? "").Trim();
@@ -50,10 +44,6 @@ namespace _012IP_BLL
             }
         }
 
-        /// <summary>
-        /// validarEstadoCuenta(DNI): CU-01 paso 4. Devuelve las cuotas vencidas e impagas.
-        /// Lista vacía = el socio está al día.
-        /// </summary>
         public List<_012IP_CuotaBE> _012IP_ValidarEstadoCuenta(string dni)
         {
             if (string.IsNullOrWhiteSpace(dni))
@@ -74,9 +64,7 @@ namespace _012IP_BLL
             }
         }
 
-        // ===================================================== CU-02 (nuevo)
-
-        /// <summary>ValidarFormato(DNI, Nombre, Apellido, Email, Telefono): CU-02 paso 4.</summary>
+        
         public bool _012IP_ValidarFormato(string dni, string nombre, string apellido, string email, string telefono)
         {
             if (string.IsNullOrWhiteSpace(dni) || dni.Length < 6 || dni.Length > 10 || !dni.All(char.IsDigit))
@@ -97,7 +85,6 @@ namespace _012IP_BLL
             return true;
         }
 
-        /// <summary>ValidarDNIUnico(DNI): CU-02 paso 5. True si el DNI está libre para registrar.</summary>
         public bool _012IP_ValidarDNIUnico(string dni)
         {
             try
@@ -110,12 +97,6 @@ namespace _012IP_BLL
             }
         }
 
-        /// <summary>
-        /// RegistrarNuevoSocio(DNI, Nombre, Apellido, Email, Telefono): CU-02 pasos 6-9.
-        /// Arma el socio, calcula el DVH (antes de persistir), lo registra y recién ahí
-        /// escribe el evento en Bitácora. Si algo falló, no llega a tocar la Bitácora
-        /// (flujo alternativo 6.1: excepción -> la GUI informa el error).
-        /// </summary>
         public _012IP_SocioBE _012IP_RegistrarNuevoSocio(string dni, string nombre, string apellido, string email, string telefono)
         {
             dni = (dni ?? "").Trim();
@@ -140,14 +121,14 @@ namespace _012IP_BLL
                 Activo = true
             };
 
-            // 1° se calcula el DVH...
+         
             string cadenaDVH = socio.DNI + socio.Nombre + socio.Apellido + socio.Email + socio.Telefono + socio.Activo;
             string dvh = DigitoVerificador.CalcularDVH(cadenaDVH);
 
             bool registrado;
             try
             {
-                // 2° recién acá se persiste, socio y dvh juntos en el mismo INSERT (6.1 si falla)
+               
                 registrado = socioDAL._012IP_RegistrarNuevoSocio(socio, dvh);
             }
             catch (Exception ex)
@@ -160,7 +141,7 @@ namespace _012IP_BLL
 
             socio.DVH = dvh;
 
-            // El BLL llama a Bitácora directamente, nunca la GUI (cohesión/acoplamiento)
+            
             Bitacora bitacora = new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,

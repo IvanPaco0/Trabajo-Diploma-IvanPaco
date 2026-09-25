@@ -21,12 +21,6 @@ namespace _012IP_BLL
             bitacoraBLL = new BitacoraBLL();
         }
 
-        /// <summary>
-        /// ValidarDatosPago(IdSocio, IdCuota, Monto): CU-03 paso 3 (loop "datos válidos").
-        /// Es una validación de formato/rango, no toca la base (igual que ValidarFormato en
-        /// SocioBLL): idSocio válido, monto positivo y, si viene, idCuota positivo, y el
-        /// medio de pago debe ser uno de los admitidos.
-        /// </summary>
         public bool _012IP_ValidarDatosPago(int idSocio, int? idCuota, decimal monto, string medioDePago)
         {
             if (idSocio <= 0)
@@ -44,13 +38,6 @@ namespace _012IP_BLL
             return true;
         }
 
-        /// <summary>
-        /// RegistrarPago(IdSocio, IdCuota, IdMembresia, Monto, MedioDePago): CU-03 pasos 5-12.
-        /// Arma el pago, calcula el DVH (antes de persistir), lo registra, marca la cuota
-        /// como pagada (si corresponde) y recién ahí escribe el evento en Bitácora.
-        /// Si algo falla no llega a tocar la Bitácora (flujo alternativo: excepción -> la
-        /// GUI informa el error y el recepcionista puede reintentar).
-        /// </summary>
         public _012IP_PagoBE _012IP_RegistrarPago(int idSocio, int? idCuota, int? idMembresia, decimal monto, string medioDePago)
         {
             medioDePago = (medioDePago ?? "").Trim();
@@ -68,7 +55,6 @@ namespace _012IP_BLL
                 FechaPago = DateTime.Now
             };
 
-            // 1° se calcula el DVH (CalcularDVH(Pago), paso 6 del diagrama)...
             string cadenaDVH = pago.IdSocio + (pago.IdCuota?.ToString() ?? "") + (pago.IdMembresia?.ToString() ?? "") +
                                 pago.Monto + pago.MedioDePago + pago.FechaPago.ToString("yyyy-MM-dd HH:mm:ss");
             string dvh = DigitoVerificador.CalcularDVH(cadenaDVH);
@@ -76,7 +62,6 @@ namespace _012IP_BLL
             bool registrado;
             try
             {
-                // 2° recién acá se persiste, pago y dvh juntos en el mismo INSERT (paso 7-8)
                 registrado = pagoDAL._012IP_RegistrarPago(pago, dvh);
             }
             catch (Exception ex)
@@ -89,8 +74,6 @@ namespace _012IP_BLL
 
             pago.DVH = dvh;
 
-            // Paso 9: si el pago cancela una cuota existente (regularización de deuda),
-            // se marca como Pagada. En una renovación nueva no hay cuota todavía y se omite.
             if (pago.IdCuota.HasValue)
             {
                 try
@@ -103,8 +86,6 @@ namespace _012IP_BLL
                 }
             }
 
-            // El BLL llama a Bitácora directamente, nunca la GUI (cohesión/acoplamiento).
-            // Pasos 11-12 del diagrama (RegistrarEvento).
             Bitacora bitacora = new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
@@ -117,12 +98,6 @@ namespace _012IP_BLL
             return pago;
         }
 
-        /// <summary>
-        /// Uso desde "Regularizar deuda" (CU-01): cuando el pago cubre VARIAS cuotas
-        /// vencidas a la vez, se registra un único Pago por el total (IdCuota null, porque
-        /// no corresponde a una sola fila de Cuota) y acá se marcan todas esas cuotas como
-        /// Pagada, con la misma fecha del pago recién confirmado.
-        /// </summary>
         public void _012IP_MarcarCuotasComoPagadas(List<int> idsCuota, DateTime fechaPago)
         {
             if (idsCuota == null) return;

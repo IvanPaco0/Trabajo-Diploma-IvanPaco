@@ -12,7 +12,7 @@ namespace _012IP_DAL
     {
         public _012IP_SuscripcionDAL() : base() { }
 
-        /// <summary>Devuelve la suscripción más reciente del socio, o null si nunca tuvo una.</summary>
+       
         public _012IP_SuscripcionBE _012IP_ObtenerSuscripcion(string dni)
         {
             try
@@ -59,16 +59,12 @@ namespace _012IP_DAL
             }
         }
 
-        /// <summary>
-        /// Actualiza la suscripción del socio (paso 10). Si el socio todavía no tenía
-        /// ninguna (recién registrado por CU-02), la crea.
-        /// </summary>
+       
         public void _012IP_ActualizarSuscripcion(string dni, int idMembresia, DateTime fechaInicio, DateTime fechaVencimiento)
         {
             try
             {
-                // DVH de la fila (dígito verificador horizontal): antes no se calculaba y la
-                // columna es NOT NULL -> el INSERT (socio sin suscripción previa) tiraba error.
+                
                 string dvh = DigitoVerificador.CalcularDVH(
                     dni + idMembresia + fechaInicio.ToString("yyyy-MM-dd") + fechaVencimiento.ToString("yyyy-MM-dd") + "Activa");
 
@@ -94,7 +90,7 @@ namespace _012IP_DAL
 
                 if (filas == 0)
                 {
-                    // El socio (recién dado de alta por CU-02) todavía no tenía suscripción: la creamos.
+                    
                     _sqlcommand.CommandText = @"
                         INSERT INTO Suscripcion (IdSocio, IdMembresia, FechaInicio, FechaVencimiento, Estado, DVH)
                         SELECT IdSocio, @idMembresia, @fechaInicio, @fechaVencimiento, 'Activa', @dvh

@@ -14,8 +14,7 @@ namespace _012IP_GUI
     {
         private static readonly CultureInfo culturaAR = new CultureInfo("es-AR");
 
-        // Las BLL se crean en el Load (no en el constructor) para que el diseñador de Visual Studio
-        // no intente abrir la conexión a la base al mostrar el formulario.
+        
         private _012IP_SocioBLL socioBLL;
         private _012IP_MembresiaBLL membresiaBLL;
         private _012IP_SuscripcionBLL suscripcionBLL;
@@ -39,7 +38,7 @@ namespace _012IP_GUI
             InitializeComponent();
         }
 
-        // ------------------------------------------------------------------ carga / cierre
+      
 
         private void _012IP_frmRenovarMembresia_Load(object sender, EventArgs e)
         {
@@ -67,7 +66,7 @@ namespace _012IP_GUI
             LanguageManager.Instance.EliminarObservador(this);
         }
 
-        // ------------------------------------------------------------------ paso 1-3: buscar socio
+       
 
         private void _012IP_btnBuscar_Click(object sender, EventArgs e)
         {
@@ -79,7 +78,7 @@ namespace _012IP_GUI
 
                 if (socios.Count == 0)
                 {
-                    // Flujo alternativo: socio no encontrado -> se ofrece CU-02 Registrar socio
+                    
                     _012IP_MostrarSocios(socios, null);
                     btnRegistrarSocio.Visible = true;
                     lblMsj.Text = _012IP_Texto("RenMemNoEncontrado");
@@ -117,7 +116,7 @@ namespace _012IP_GUI
             frmRegistrarSocio.ShowDialog(this);
         }
 
-        // ------------------------------------------------------------------ paso 4: estado de cuenta
+        
 
         private void _012IP_SeleccionarSocio(string dni)
         {
@@ -130,7 +129,7 @@ namespace _012IP_GUI
                 cuotasVencidas = socioBLL._012IP_ValidarEstadoCuenta(dni);
                 _012IP_MostrarEstadoCuenta();
 
-                // Paso 6: tipos de membresía disponibles con su costo mensual
+                
                 if (membresias == null)
                     _012IP_CargarMembresias();
 
@@ -183,7 +182,7 @@ namespace _012IP_GUI
                     _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirma != DialogResult.Yes) return;
 
-                // Diagrama: RegistrarPago() -> CU-03 -> PagoConfirmado()
+             
                 if (!_012IP_InvocarRegistrarPago(socioSeleccionado, total))
                 {
                     lblMsj.Text = _012IP_Texto("RenMemPagoNoConfirmado");
@@ -201,7 +200,7 @@ namespace _012IP_GUI
             }
         }
 
-        // ------------------------------------------------------------------ pasos 5-13: renovar
+     
 
         private void _012IP_cbMembresias_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -230,7 +229,6 @@ namespace _012IP_GUI
 
                 _012IP_CalcularPeriodo();
 
-                // Paso 8: ConfirmaRenovacion()
                 DialogResult confirma = MessageBox.Show(
                     string.Format(_012IP_Texto("RenMemConfirmaRenovar"),
                         membresia.Nombre, _012IP_Moneda(membresia.CostoMensual),
@@ -238,21 +236,21 @@ namespace _012IP_GUI
                     _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirma != DialogResult.Yes) return;
 
-                // Paso 9: CU-03 Registrar pago (tipo de membresía y costo mensual)
+              
                 if (!_012IP_InvocarRegistrarPago(socioSeleccionado, membresia.CostoMensual))
                 {
                     lblMsj.Text = _012IP_Texto("RenMemPagoNoConfirmado");
                     return;
                 }
 
-                // Paso 10: actualizar la suscripción del socio
+               
                 suscripcionBLL._012IP_RenovarSuscripcion(socioSeleccionado.DNI, membresia.IdMembresia, periodoInicio, periodoVencimiento);
 
-                // Paso 11: consultar la suscripción ya actualizada
+                
                 _012IP_SuscripcionBE actualizada = suscripcionBLL._012IP_ConsultarSuscripcion(socioSeleccionado.DNI);
                 socioSeleccionado.Suscripcion = actualizada;
 
-                // Paso 12-13: mostrar el estado actualizado e informar el nuevo período
+                
                 string dni = socioSeleccionado.DNI;
                 _012IP_MostrarSocios(sociosEncontrados, dni);
                 _012IP_CalcularPeriodo();
@@ -267,13 +265,7 @@ namespace _012IP_GUI
             }
         }
 
-        // ------------------------------------------------------------------ CU-03 (pendiente)
-
-        /// <summary>
-        /// Punto de integración con el CU-03 Registrar pago.
-        /// Devuelve true si el pago quedó confirmado.
-        /// TODO CU-03: reemplazar el cuerpo por la invocación real del caso de uso.
-        /// </summary>
+       
         private bool _012IP_InvocarRegistrarPago(_012IP_SocioBE socio, decimal monto)
         {
             MessageBox.Show(
@@ -283,7 +275,7 @@ namespace _012IP_GUI
             return true;
         }
 
-        // ------------------------------------------------------------------ auxiliares
+       
 
         private void _012IP_CargarMembresias()
         {
@@ -445,7 +437,7 @@ namespace _012IP_GUI
             MessageBox.Show(ex.Message, _012IP_Texto("RenMemError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        // ------------------------------------------------------------------ idioma (patrón Observer)
+       
 
         public void Actualizar(LanguageManager lenguaje)
         {
@@ -467,7 +459,7 @@ namespace _012IP_GUI
             _012IP_AplicarEncabezados();
         }
 
-        // ------------------------------------------------------------------ barra de título / salir
+       
 
         private void _012IP_btnSalir_Click(object sender, EventArgs e)
         {

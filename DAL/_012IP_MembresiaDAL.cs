@@ -11,7 +11,6 @@ namespace _012IP_DAL
     {
         public _012IP_MembresiaDAL() : base() { }
 
-        /// <summary>Lista los tipos de membresía activos con su costo mensual (paso 6).</summary>
         public List<_012IP_MembresiaBE> _012IP_ListarMembresias()
         {
             var lista = new List<_012IP_MembresiaBE>();

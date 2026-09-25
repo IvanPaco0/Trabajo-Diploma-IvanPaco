@@ -10,10 +10,6 @@ namespace _012IP_DAL
     {
         public _012IP_SocioDAL() : base() { }
 
-        /// <summary>
-        /// Busca socios por DNI, Nombre y/o Apellido (los campos vacíos se ignoran).
-        /// Trae también su última suscripción y el tipo de membresía (CU-01, paso 3).
-        /// </summary>
         public List<_012IP_SocioBE> _012IP_BuscarSocio(string dni, string nombre, string apellido)
         {
             var socios = new List<_012IP_SocioBE>();
@@ -86,7 +82,6 @@ namespace _012IP_DAL
             }
         }
 
-        /// <summary>ValidarDNIUnico -> ExisteSocioConDNI(DNI): true si ya hay un socio con ese DNI (paso 5).</summary>
         public bool _012IP_ExisteSocioConDNI(string dni)
         {
             try
@@ -106,11 +101,6 @@ namespace _012IP_DAL
             }
         }
 
-        /// <summary>
-        /// RegistrarNuevoSocio(socio, dvh): paso 6-7. Inserta al socio con el DVH ya calculado
-        /// por el BLL, en la misma operación (nunca se persiste el socio sin su DVH).
-        /// Al insertar completa socio.IdSocio con el identity generado por la base.
-        /// </summary>
         public bool _012IP_RegistrarNuevoSocio(_012IP_SocioBE socio, string dvh)
         {
             try

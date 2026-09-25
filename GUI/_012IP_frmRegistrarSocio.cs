@@ -7,18 +7,12 @@ using System.Windows.Forms;
 
 namespace _012IP_GUI
 {
-    /// <summary>
-    /// GUI-RegistrarSocio (CU-02). Se abre como diálogo modal desde donde haga falta
-    /// dar de alta un socio (p. ej. CU-01 Renovar membresía, cuando "Socio no encontrado").
-    /// Toda la validación (ValidarFormato, ValidarDNIUnico, RegistrarNuevoSocio + Bitácora)
-    /// ya vive en _012IP_SocioBLL; esta GUI solo llama al método y muestra el resultado,
-    /// tal como está modelado en el diagrama de secuencia N02.1.2.2.
-    /// </summary>
+   
     public partial class _012IP_frmRegistrarSocio : Form, IObserver
     {
         private _012IP_SocioBLL socioBLL;
 
-        /// <summary>Socio efectivamente registrado (ok() del diagrama). Null si se canceló.</summary>
+        
         public _012IP_SocioBE SocioRegistrado { get; private set; }
 
         private readonly string dniInicial;
@@ -33,7 +27,7 @@ namespace _012IP_GUI
             InitializeComponent();
         }
 
-        /// <summary>Permite precargar lo que el recepcionista ya había tipeado al buscar el socio.</summary>
+       
         public _012IP_frmRegistrarSocio(string dni, string nombre, string apellido) : this()
         {
             dniInicial = dni;
@@ -41,7 +35,7 @@ namespace _012IP_GUI
             apellidoInicial = apellido;
         }
 
-        // ------------------------------------------------------------------ carga / cierre
+      
 
         private void _012IP_frmRegistrarSocio_Load(object sender, EventArgs e)
         {
@@ -71,24 +65,18 @@ namespace _012IP_GUI
             LanguageManager.Instance.EliminarObservador(this);
         }
 
-        // ------------------------------------------------------------------ CU-02: registrar
+      
 
         private void _012IP_btnRegistrar_Click(object sender, EventArgs e)
         {
             try
             {
-                // ValidarFormato + ValidarDNIUnico + RegistrarNuevoSocio (calcula DVH y registra
-                // el evento en Bitácora) ocurren dentro del BLL. Si algo falla, tira una excepción
-                // con el mensaje correspondiente al bloque "alt" del diagrama:
-                //  - FormatoInvalido()          -> SocioBLLText6
-                //  - "Ya existe un socio..."    -> SocioBLLText7
-                //  - InformeError()             -> SocioBLLText8
+               
                 _012IP_SocioBE socio = socioBLL._012IP_RegistrarNuevoSocio(
                     txtDNI.Text, txtNombre.Text, txtApellido.Text, txtEmail.Text, txtTelefono.Text);
 
                 SocioRegistrado = socio;
 
-                // Registro exitoso(idSocio, DNI, Nombre, Apellido, Email, Telefono, EstadoCuenta)
                 MessageBox.Show(
                     string.Format(_012IP_Texto("RegSocioExitoso"), socio.Nombre, socio.Apellido, socio.DNI),
                     _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -98,8 +86,7 @@ namespace _012IP_GUI
             }
             catch (Exception ex)
             {
-                // Se queda en el formulario ("loop datos válidos"): el recepcionista corrige
-                // los datos y puede volver a presionar "Registrar socio".
+               
                 lblMsj.ForeColor = Color.FromArgb(255, 156, 156);
                 lblMsj.Text = ex.Message;
             }
@@ -111,7 +98,7 @@ namespace _012IP_GUI
             Close();
         }
 
-        // ------------------------------------------------------------------ auxiliares
+      
 
         private string _012IP_Texto(string clave)
         {
@@ -123,7 +110,7 @@ namespace _012IP_GUI
             MessageBox.Show(ex.Message, _012IP_Texto("RenMemError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        // ------------------------------------------------------------------ idioma (patrón Observer)
+      
 
         public void Actualizar(LanguageManager lenguaje)
         {
@@ -138,7 +125,7 @@ namespace _012IP_GUI
             btnCancelar.Text = _012IP_Texto("btnCancelar");
         }
 
-        // ------------------------------------------------------------------ barra de título
+        
 
         private void _012IP_btnCerrar_Click(object sender, EventArgs e)
         {
