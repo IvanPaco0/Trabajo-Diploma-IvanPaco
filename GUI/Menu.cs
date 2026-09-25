@@ -270,11 +270,11 @@ namespace GUI
             frmRegistrarSocio.ShowDialog(this);
         }
 
-        private void btnRegistrarPago_Click(object sender, EventArgs e)
-        {
-            var frmRegistrarPago = new _012IP_frmRegistrarPago();
-            frmRegistrarPago.ShowDialog(this);
-        }
+        //private void btnRegistrarPago_Click(object sender, EventArgs e)
+        //{
+        //    var frmRegistrarPago = new _012IP_frmRegistrarPago();
+        //    frmRegistrarPago.ShowDialog(this);
+        //}
 
         public void Actualizar(LanguageManager lenguaje)
         {
