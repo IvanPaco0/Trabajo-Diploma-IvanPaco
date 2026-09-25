@@ -39,7 +39,6 @@
             this.panel13 = new System.Windows.Forms.Panel();
             this.panel14 = new System.Windows.Forms.Panel();
             this.panel15 = new System.Windows.Forms.Panel();
-            this.panel16 = new System.Windows.Forms.Panel();
             this.panel17 = new System.Windows.Forms.Panel();
             this.btnRegistrarSocio = new System.Windows.Forms.Button();
             this.btnRenovarMembresia = new System.Windows.Forms.Button();
@@ -71,12 +70,17 @@
             this.btnAdmin = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelContenedor = new System.Windows.Forms.Panel();
+            this.btnRegistrarPago = new System.Windows.Forms.Button();
+            this.panel16 = new System.Windows.Forms.Panel();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.panel18 = new System.Windows.Forms.Panel();
             this.BarraTitulo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnMaximizar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnMinimizar)).BeginInit();
             this.MenuVertical.SuspendLayout();
             this.panelMembresiaSubmenu.SuspendLayout();
+            this.panel12.SuspendLayout();
             this.panelUsuarioSubmenu.SuspendLayout();
             this.panelAdminSubmenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -91,7 +95,7 @@
             this.BarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.BarraTitulo.Location = new System.Drawing.Point(0, 0);
             this.BarraTitulo.Name = "BarraTitulo";
-            this.BarraTitulo.Size = new System.Drawing.Size(1249, 43);
+            this.BarraTitulo.Size = new System.Drawing.Size(1319, 43);
             this.BarraTitulo.TabIndex = 0;
             this.BarraTitulo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BarraTitulo_MouseDown);
             this.BarraTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BarraTitulo_MouseMove);
@@ -102,7 +106,7 @@
             this.btnCerrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCerrar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCerrar.Image = ((System.Drawing.Image)(resources.GetObject("btnCerrar.Image")));
-            this.btnCerrar.Location = new System.Drawing.Point(1221, 4);
+            this.btnCerrar.Location = new System.Drawing.Point(1291, 4);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Size = new System.Drawing.Size(25, 35);
             this.btnCerrar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -115,7 +119,7 @@
             this.btnMaximizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMaximizar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnMaximizar.Image = ((System.Drawing.Image)(resources.GetObject("btnMaximizar.Image")));
-            this.btnMaximizar.Location = new System.Drawing.Point(1190, 4);
+            this.btnMaximizar.Location = new System.Drawing.Point(1260, 4);
             this.btnMaximizar.Name = "btnMaximizar";
             this.btnMaximizar.Size = new System.Drawing.Size(25, 35);
             this.btnMaximizar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -128,7 +132,7 @@
             this.btnMinimizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMinimizar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnMinimizar.Image = ((System.Drawing.Image)(resources.GetObject("btnMinimizar.Image")));
-            this.btnMinimizar.Location = new System.Drawing.Point(1159, 4);
+            this.btnMinimizar.Location = new System.Drawing.Point(1229, 4);
             this.btnMinimizar.Name = "btnMinimizar";
             this.btnMinimizar.Size = new System.Drawing.Size(25, 35);
             this.btnMinimizar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -150,15 +154,16 @@
             this.MenuVertical.Dock = System.Windows.Forms.DockStyle.Left;
             this.MenuVertical.Location = new System.Drawing.Point(0, 43);
             this.MenuVertical.Name = "MenuVertical";
-            this.MenuVertical.Size = new System.Drawing.Size(200, 698);
+            this.MenuVertical.Size = new System.Drawing.Size(200, 741);
             this.MenuVertical.TabIndex = 1;
             // 
             // panelMembresiaSubmenu
             // 
             this.panelMembresiaSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.panelMembresiaSubmenu.Controls.Add(this.panel18);
+            this.panelMembresiaSubmenu.Controls.Add(this.btnRegistrarPago);
             this.panelMembresiaSubmenu.Controls.Add(this.panel12);
             this.panelMembresiaSubmenu.Controls.Add(this.panel13);
-            this.panelMembresiaSubmenu.Controls.Add(this.panel14);
             this.panelMembresiaSubmenu.Controls.Add(this.panel15);
             this.panelMembresiaSubmenu.Controls.Add(this.panel16);
             this.panelMembresiaSubmenu.Controls.Add(this.panel17);
@@ -167,13 +172,15 @@
             this.panelMembresiaSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelMembresiaSubmenu.Location = new System.Drawing.Point(0, 589);
             this.panelMembresiaSubmenu.Name = "panelMembresiaSubmenu";
-            this.panelMembresiaSubmenu.Size = new System.Drawing.Size(200, 218);
+            this.panelMembresiaSubmenu.Size = new System.Drawing.Size(200, 128);
             this.panelMembresiaSubmenu.TabIndex = 7;
             this.panelMembresiaSubmenu.Visible = false;
             // 
             // panel12
             // 
             this.panel12.BackColor = System.Drawing.Color.Maroon;
+            this.panel12.Controls.Add(this.panel11);
+            this.panel12.Controls.Add(this.panel14);
             this.panel12.Location = new System.Drawing.Point(12, 70);
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(5, 35);
@@ -182,18 +189,18 @@
             // panel13
             // 
             this.panel13.BackColor = System.Drawing.Color.Maroon;
-            this.panel13.Location = new System.Drawing.Point(12, 105);
+            this.panel13.Location = new System.Drawing.Point(12, 70);
             this.panel13.Name = "panel13";
             this.panel13.Size = new System.Drawing.Size(5, 35);
-            this.panel13.TabIndex = 7;
+            this.panel13.TabIndex = 8;
             // 
             // panel14
             // 
             this.panel14.BackColor = System.Drawing.Color.Maroon;
-            this.panel14.Location = new System.Drawing.Point(12, 140);
+            this.panel14.Location = new System.Drawing.Point(0, 0);
             this.panel14.Name = "panel14";
             this.panel14.Size = new System.Drawing.Size(5, 35);
-            this.panel14.TabIndex = 7;
+            this.panel14.TabIndex = 9;
             // 
             // panel15
             // 
@@ -202,14 +209,6 @@
             this.panel15.Name = "panel15";
             this.panel15.Size = new System.Drawing.Size(5, 35);
             this.panel15.TabIndex = 7;
-            // 
-            // panel16
-            // 
-            this.panel16.BackColor = System.Drawing.Color.Maroon;
-            this.panel16.Location = new System.Drawing.Point(12, 35);
-            this.panel16.Name = "panel16";
-            this.panel16.Size = new System.Drawing.Size(5, 35);
-            this.panel16.TabIndex = 7;
             // 
             // panel17
             // 
@@ -612,16 +611,56 @@
             this.panelContenedor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelContenedor.Location = new System.Drawing.Point(200, 43);
             this.panelContenedor.Name = "panelContenedor";
-            this.panelContenedor.Size = new System.Drawing.Size(1049, 698);
+            this.panelContenedor.Size = new System.Drawing.Size(1119, 741);
             this.panelContenedor.TabIndex = 2;
             this.panelContenedor.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContenedor_Paint);
+            // 
+            // btnRegistrarPago
+            // 
+            this.btnRegistrarPago.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnRegistrarPago.FlatAppearance.BorderSize = 0;
+            this.btnRegistrarPago.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnRegistrarPago.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRegistrarPago.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRegistrarPago.ForeColor = System.Drawing.Color.White;
+            this.btnRegistrarPago.Location = new System.Drawing.Point(0, 70);
+            this.btnRegistrarPago.Name = "btnRegistrarPago";
+            this.btnRegistrarPago.Size = new System.Drawing.Size(200, 35);
+            this.btnRegistrarPago.TabIndex = 6;
+            this.btnRegistrarPago.Text = "Registrar pago";
+            this.btnRegistrarPago.UseVisualStyleBackColor = true;
+            this.btnRegistrarPago.Click += new System.EventHandler(this.btnRegistrarPago_Click);
+            // 
+            // panel16
+            // 
+            this.panel16.BackColor = System.Drawing.Color.Maroon;
+            this.panel16.Location = new System.Drawing.Point(12, 35);
+            this.panel16.Name = "panel16";
+            this.panel16.Size = new System.Drawing.Size(5, 35);
+            this.panel16.TabIndex = 7;
+            // 
+            // panel11
+            // 
+            this.panel11.BackColor = System.Drawing.Color.Maroon;
+            this.panel11.Location = new System.Drawing.Point(0, 3);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(5, 35);
+            this.panel11.TabIndex = 8;
+            // 
+            // panel18
+            // 
+            this.panel18.BackColor = System.Drawing.Color.Maroon;
+            this.panel18.Location = new System.Drawing.Point(12, 70);
+            this.panel18.Name = "panel18";
+            this.panel18.Size = new System.Drawing.Size(5, 35);
+            this.panel18.TabIndex = 9;
             // 
             // Menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Maroon;
-            this.ClientSize = new System.Drawing.Size(1249, 741);
+            this.ClientSize = new System.Drawing.Size(1319, 784);
             this.Controls.Add(this.panelContenedor);
             this.Controls.Add(this.MenuVertical);
             this.Controls.Add(this.BarraTitulo);
@@ -635,6 +674,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.btnMinimizar)).EndInit();
             this.MenuVertical.ResumeLayout(false);
             this.panelMembresiaSubmenu.ResumeLayout(false);
+            this.panel12.ResumeLayout(false);
             this.panelUsuarioSubmenu.ResumeLayout(false);
             this.panelAdminSubmenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -681,11 +721,14 @@
         private System.Windows.Forms.Panel panel13;
         private System.Windows.Forms.Panel panel14;
         private System.Windows.Forms.Panel panel15;
-        private System.Windows.Forms.Panel panel16;
         private System.Windows.Forms.Panel panel17;
         private System.Windows.Forms.Button btnRegistrarSocio;
         private System.Windows.Forms.Button btnRenovarMembresia;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnRegistrarPago;
+        private System.Windows.Forms.Panel panel11;
+        private System.Windows.Forms.Panel panel16;
+        private System.Windows.Forms.Panel panel18;
     }
 }
 
