@@ -26,6 +26,7 @@ namespace GUI
         {
             panelAdminSubmenu.Visible = false;
             panelUsuarioSubmenu.Visible = false;
+            panelInventarioSubmenu.Visible = false;
 
         }
         private void esconderSubmenu()
@@ -34,6 +35,8 @@ namespace GUI
                 panelAdminSubmenu.Visible = false;
             if (panelUsuarioSubmenu.Visible == true)
                 panelUsuarioSubmenu.Visible = false;
+            if (panelInventarioSubmenu.Visible == true)
+                panelInventarioSubmenu.Visible = false;
         }
         private void mostrarSubmenu(Panel submenu)
         {
@@ -147,13 +150,13 @@ namespace GUI
 
         private void btnReLogin_Click(object sender, EventArgs e)
         {
-            if(SessionManager.Instance != null )
+            if (SessionManager.Instance != null)
             {
                 MessageBox.Show(LanguageManager.Instance.GetTraduction("YaHaySesionActiva"), LanguageManager.Instance.GetTraduction("Informacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-       
+
         private void btnLogout_Click(object sender, EventArgs e)
         {
             string Decision = MessageBox.Show(LanguageManager.Instance.GetTraduction("menumsj1"), LanguageManager.Instance.GetTraduction("menumsj2"), MessageBoxButtons.YesNo).ToString();
@@ -170,9 +173,9 @@ namespace GUI
                 Login login = new Login();
                 login.Show();
             }
-            
+
         }
-        
+
 
         private void btnCambiarClave_Click(object sender, EventArgs e)
         {
@@ -183,12 +186,12 @@ namespace GUI
 
         private void btnPerfiles_Click(object sender, EventArgs e)
         {
-           
+
             if (!SessionManager.Instance.UsuarioActual().TienePermiso("Ver Perfiles"))
             {
                 MessageBox.Show("No tiene permisos para acceder a Gestión de Perfiles.",
                     "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return; 
+                return;
             }
             frmGestionPerfiles gestionPerfiles = new frmGestionPerfiles();
             this.Hide();
@@ -270,11 +273,36 @@ namespace GUI
             frmRegistrarSocio.ShowDialog(this);
         }
 
-        //private void btnRegistrarPago_Click(object sender, EventArgs e)
-        //{
-        //    var frmRegistrarPago = new _012IP_frmRegistrarPago();
-        //    frmRegistrarPago.ShowDialog(this);
-        //}
+        private void btnInventario_Click(object sender, EventArgs e)
+        {
+            mostrarSubmenu(panelInventarioSubmenu);
+        }
+
+        private void btnGestionInventario_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.UsuarioActual().TienePermiso("Gestionar Inventario"))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("InvSinPermiso"),
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            this.Hide();
+            _012IP_frmGestionInventario frm = new _012IP_frmGestionInventario();
+            frm.Show();
+        }
+
+        private void btnAuditoriaInventario_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.UsuarioActual().TienePermiso("Auditar Inventario"))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("AudSinPermiso"),
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            this.Hide();
+            _012IP_frmAuditoriaInventario frm = new _012IP_frmAuditoriaInventario();
+            frm.Show();
+        }
 
         public void Actualizar(LanguageManager lenguaje)
         {
@@ -292,6 +320,9 @@ namespace GUI
             btnLogout.Text = LanguageManager.Instance.GetTraduction("btnLogout");
             btnCambiarIdioma.Text = LanguageManager.Instance.GetTraduction("btnCambiarIdioma");
             btnRenovarMembresia.Text = LanguageManager.Instance.GetTraduction("RenMemTitulo");
+            btnInventario.Text = LanguageManager.Instance.GetTraduction("InvMenuGrupo");
+            btnGestionInventario.Text = LanguageManager.Instance.GetTraduction("InvMenuGestion");
+            btnAuditoriaInventario.Text = LanguageManager.Instance.GetTraduction("InvMenuAuditoria");
         }
     }
 }

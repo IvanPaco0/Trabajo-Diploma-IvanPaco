@@ -74,11 +74,16 @@
             this.panel16 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
             this.panel18 = new System.Windows.Forms.Panel();
+            this.btnInventario = new System.Windows.Forms.Button();
+            this.panelInventarioSubmenu = new System.Windows.Forms.Panel();
+            this.btnGestionInventario = new System.Windows.Forms.Button();
+            this.btnAuditoriaInventario = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnMaximizar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnMinimizar)).BeginInit();
             this.MenuVertical.SuspendLayout();
+            this.panelInventarioSubmenu.SuspendLayout();
             this.panelMembresiaSubmenu.SuspendLayout();
             this.panel12.SuspendLayout();
             this.panelUsuarioSubmenu.SuspendLayout();
@@ -143,6 +148,8 @@
             // MenuVertical
             // 
             this.MenuVertical.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.MenuVertical.Controls.Add(this.panelInventarioSubmenu);
+            this.MenuVertical.Controls.Add(this.btnInventario);
             this.MenuVertical.Controls.Add(this.panelMembresiaSubmenu);
             this.MenuVertical.Controls.Add(this.button1);
             this.MenuVertical.Controls.Add(this.panelUsuarioSubmenu);
@@ -156,6 +163,66 @@
             this.MenuVertical.Name = "MenuVertical";
             this.MenuVertical.Size = new System.Drawing.Size(200, 741);
             this.MenuVertical.TabIndex = 1;
+            // 
+            // btnInventario
+            // 
+            this.btnInventario.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnInventario.FlatAppearance.BorderSize = 0;
+            this.btnInventario.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Maroon;
+            this.btnInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInventario.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInventario.ForeColor = System.Drawing.Color.White;
+            this.btnInventario.Location = new System.Drawing.Point(0, 717);
+            this.btnInventario.Name = "btnInventario";
+            this.btnInventario.Size = new System.Drawing.Size(200, 35);
+            this.btnInventario.TabIndex = 8;
+            this.btnInventario.Text = "Inventario";
+            this.btnInventario.UseVisualStyleBackColor = true;
+            this.btnInventario.Click += new System.EventHandler(this.btnInventario_Click);
+            // 
+            // panelInventarioSubmenu
+            // 
+            this.panelInventarioSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.panelInventarioSubmenu.Controls.Add(this.btnAuditoriaInventario);
+            this.panelInventarioSubmenu.Controls.Add(this.btnGestionInventario);
+            this.panelInventarioSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelInventarioSubmenu.Location = new System.Drawing.Point(0, 752);
+            this.panelInventarioSubmenu.Name = "panelInventarioSubmenu";
+            this.panelInventarioSubmenu.Size = new System.Drawing.Size(200, 70);
+            this.panelInventarioSubmenu.TabIndex = 9;
+            this.panelInventarioSubmenu.Visible = false;
+            // 
+            // btnGestionInventario
+            // 
+            this.btnGestionInventario.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnGestionInventario.FlatAppearance.BorderSize = 0;
+            this.btnGestionInventario.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnGestionInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGestionInventario.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGestionInventario.ForeColor = System.Drawing.Color.White;
+            this.btnGestionInventario.Location = new System.Drawing.Point(0, 0);
+            this.btnGestionInventario.Name = "btnGestionInventario";
+            this.btnGestionInventario.Size = new System.Drawing.Size(200, 35);
+            this.btnGestionInventario.TabIndex = 0;
+            this.btnGestionInventario.Text = "Gestión de ejemplares";
+            this.btnGestionInventario.UseVisualStyleBackColor = true;
+            this.btnGestionInventario.Click += new System.EventHandler(this.btnGestionInventario_Click);
+            // 
+            // btnAuditoriaInventario
+            // 
+            this.btnAuditoriaInventario.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnAuditoriaInventario.FlatAppearance.BorderSize = 0;
+            this.btnAuditoriaInventario.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnAuditoriaInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAuditoriaInventario.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAuditoriaInventario.ForeColor = System.Drawing.Color.White;
+            this.btnAuditoriaInventario.Location = new System.Drawing.Point(0, 35);
+            this.btnAuditoriaInventario.Name = "btnAuditoriaInventario";
+            this.btnAuditoriaInventario.Size = new System.Drawing.Size(200, 35);
+            this.btnAuditoriaInventario.TabIndex = 1;
+            this.btnAuditoriaInventario.Text = "Auditoría de inventario";
+            this.btnAuditoriaInventario.UseVisualStyleBackColor = true;
+            this.btnAuditoriaInventario.Click += new System.EventHandler(this.btnAuditoriaInventario_Click);
             // 
             // panelMembresiaSubmenu
             // 
@@ -629,7 +696,6 @@
             this.btnRegistrarPago.TabIndex = 6;
             this.btnRegistrarPago.Text = "Registrar pago";
             this.btnRegistrarPago.UseVisualStyleBackColor = true;
-            this.btnRegistrarPago.Click += new System.EventHandler(this.btnRegistrarPago_Click);
             // 
             // panel16
             // 
@@ -673,6 +739,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.btnMaximizar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnMinimizar)).EndInit();
             this.MenuVertical.ResumeLayout(false);
+            this.panelInventarioSubmenu.ResumeLayout(false);
             this.panelMembresiaSubmenu.ResumeLayout(false);
             this.panel12.ResumeLayout(false);
             this.panelUsuarioSubmenu.ResumeLayout(false);
@@ -729,6 +796,9 @@
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.Panel panel16;
         private System.Windows.Forms.Panel panel18;
+        private System.Windows.Forms.Button btnInventario;
+        private System.Windows.Forms.Panel panelInventarioSubmenu;
+        private System.Windows.Forms.Button btnGestionInventario;
+        private System.Windows.Forms.Button btnAuditoriaInventario;
     }
 }
-

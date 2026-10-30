@@ -10,11 +10,11 @@ using iText = iTextSharp.text;
 
 namespace GUI
 {
-    public partial class FormBitacora : Form,IObserver
+    public partial class FormBitacora : Form, IObserver
     {
         int posX, posY;
         bool arrastrando = false;
-        BitacoraBLL bll; 
+        BitacoraBLL bll;
         public FormBitacora()
         {
             InitializeComponent();
@@ -98,6 +98,7 @@ namespace GUI
                 cmbModulo.Items.Add("Compras");
                 cmbModulo.Items.Add("Maestro");
                 cmbModulo.Items.Add("Perfiles");
+                cmbModulo.Items.Add("Inventario");
                 cmbModulo.SelectedIndex = 0;
 
                 cmbEvento.Items.Clear();
@@ -133,8 +134,8 @@ namespace GUI
                 MostrarUsuario(b.Login);
         }
 
-       
-         private void ConfigurarDtgv()
+
+        private void ConfigurarDtgv()
         {
             dtgvBitacora.ReadOnly = true;
             dtgvBitacora.AllowUserToAddRows = false;
@@ -158,14 +159,14 @@ namespace GUI
             if (dtgvBitacora.Columns["HoraSolo"] != null)
                 dtgvBitacora.Columns["HoraSolo"].HeaderText = "Hora";
 
-       
+
             dtgvBitacora.Columns["Login"].DisplayIndex = 0;
             dtgvBitacora.Columns["FechaSolo"].DisplayIndex = 1;
             dtgvBitacora.Columns["HoraSolo"].DisplayIndex = 2;
             dtgvBitacora.Columns["Modulo"].DisplayIndex = 3;
             dtgvBitacora.Columns["Evento"].DisplayIndex = 4;
             dtgvBitacora.Columns["Criticidad"].DisplayIndex = 5;
-        
+
         }
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
@@ -399,7 +400,7 @@ namespace GUI
 
         private void ValidarPermisos()
         {
-   
+
             Usuario usuarioActual = SessionManager.Instance.UsuarioActual();
 
             if (!usuarioActual.TienePermiso("Ver Bitacora"))

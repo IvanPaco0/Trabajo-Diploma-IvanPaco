@@ -1,4 +1,7 @@
-﻿using DAL;
+﻿using _012IP_BE;
+using _012IP_BLL;
+using _012IP_DAL;
+using DAL;
 using Servicios;
 using System;
 using System.Collections.Generic;
@@ -15,8 +18,10 @@ namespace BLL
         private readonly UsuarioDAL _usuarioDal = new UsuarioDAL();
         private readonly BitacoraDAL _bitacoraDal = new BitacoraDAL();
         private readonly IdiomaDAL _idiomaDal = new IdiomaDAL();
+        private readonly _012IP_EjemplarDAL _ejemplarDal = new _012IP_EjemplarDAL();
+        private readonly _012IP_AuditoriaDAL _auditoriaDal = new _012IP_AuditoriaDAL();
 
-        
+
         public void RecalcularDVH_Usuario()
         {
             var listaUsuarios = _usuarioDal.ListarTodosLosUsuariosDVH();
@@ -32,13 +37,13 @@ namespace BLL
                         usuario.Activo +
                         usuario.Rol;
 
-                
+
                 _usuarioDal.ActualizarDVH(usuario.DNI, DigitoVerificador.CalcularDVH(dvhCalculado));
             }
         }
 
 
-        
+
         public void RecalcularDVH_Bitacora()
         {
             var listaBitacora = _bitacoraDal.listarTodosLosEventos();
@@ -58,7 +63,7 @@ namespace BLL
             foreach (var idioma in listaIdiomas)
             {
                 string dvhCalculado = idioma.UserName + idioma.CodigoIdioma;
-                
+
                 _idiomaDal.ActualizarDVH(idioma.UserName, DigitoVerificador.CalcularDVH(dvhCalculado));
             }
         }
@@ -89,7 +94,23 @@ namespace BLL
                 _perfilDal.ActualizarDVH(familia.Nombre, DigitoVerificador.CalcularDVH(dvhCalculado));
             }
         }
-       
+        public void RecalcularDVH_Ejemplar()
+        {
+            var listaEjemplares = _ejemplarDal._012IP_ListarTodosDVH();
+            foreach (var ejemplar in listaEjemplares)
+            {
+                _ejemplarDal._012IP_ActualizarDVH(ejemplar.CodigoBarras, CalcularDVH_Ejemplar(ejemplar));
+            }
+        }
+        public void RecalcularDVH_AuditoriaInventario()
+        {
+            var listaAuditorias = _auditoriaDal._012IP_ListarTodasDVH();
+            foreach (var auditoria in listaAuditorias)
+            {
+                _auditoriaDal._012IP_ActualizarDVH(auditoria.IdAuditoria, CalcularDVH_AuditoriaInventario(auditoria));
+            }
+        }
+
         public void RecalcularDVV_Perfil()
         {
             var lista = _perfilDal.ObtenerPerfiles();
@@ -158,7 +179,58 @@ namespace BLL
             RecalcularDVVDeTablaGenerica("Familia", datos);
         }
 
-        
+        private Dictionary<string, List<string>> ObtenerColumnasEjemplar(List<_012IP_EjemplarBE> lista)
+        {
+            return new Dictionary<string, List<string>> {
+            { "CodigoBarras", lista.Select(x => x.CodigoBarras).ToList() },
+            { "NumeroInventario", lista.Select(x => x.NumeroInventario).ToList() },
+            { "Titulo", lista.Select(x => x.Titulo).ToList() },
+            { "Autor", lista.Select(x => x.Autor).ToList() },
+            { "Origen", lista.Select(x => x.Origen).ToList() },
+            { "Estado", lista.Select(x => x.Estado).ToList() },
+            { "Pasillo", lista.Select(x => x.Pasillo).ToList() },
+            { "Seccion", lista.Select(x => x.Seccion).ToList() },
+            { "Estanteria", lista.Select(x => x.Estanteria).ToList() }
+        };
+        }
+
+        private Dictionary<string, List<string>> ObtenerColumnasAuditoriaInventario(List<_012IP_AuditoriaBE> lista)
+        {
+            return new Dictionary<string, List<string>> {
+            { "Fecha", lista.Select(x => x.Fecha.ToString("yyyy-MM-dd HH:mm:ss")).ToList() },
+            { "Seccion", lista.Select(x => x.Seccion).ToList() },
+            { "Responsable", lista.Select(x => x.Responsable).ToList() },
+            { "Esperados", lista.Select(x => x.Esperados.ToString()).ToList() },
+            { "Encontrados", lista.Select(x => x.Encontrados.ToString()).ToList() },
+            { "Faltantes", lista.Select(x => x.Faltantes.ToString()).ToList() },
+            { "Sobrantes", lista.Select(x => x.Sobrantes.ToString()).ToList() }
+        };
+        }
+
+        public void RecalcularDVV_Ejemplar()
+        {
+            var lista = _ejemplarDal._012IP_ListarTodosDVH();
+            RecalcularDVVDeTablaGenerica("Ejemplar", ObtenerColumnasEjemplar(lista));
+        }
+
+        public void RecalcularDVV_AuditoriaInventario()
+        {
+            var lista = _auditoriaDal._012IP_ListarTodasDVH();
+            RecalcularDVVDeTablaGenerica("AuditoriaInventario", ObtenerColumnasAuditoriaInventario(lista));
+        }
+
+        private List<string> ObtenerColumnasInconsistentes(string nombreTabla, Dictionary<string, List<string>> columnasData)
+        {
+            List<string> columnasErroneas = new List<string>();
+            foreach (KeyValuePair<string, List<string>> columna in columnasData)
+            {
+                if (DigitoVerificador.CalcularDVV(columna.Value) != (_controlDVDal.ObtenerDVV(nombreTabla, columna.Key) ?? "0"))
+                    columnasErroneas.Add(columna.Key);
+            }
+            return columnasErroneas;
+        }
+
+
         private void RecalcularDVVDeTablaGenerica(string nombreTabla, Dictionary<string, List<string>> columnasData)
         {
             List<string> hashesDeLasColumnas = new List<string>();
@@ -189,10 +261,10 @@ namespace BLL
         {
             List<string> listaTotalesConsolidados = new List<string>();
 
-            
+
             string[] arrayTablasNegocio = {
             "Perfil", "Usuario", "Bitacora", "Idioma", "PermisoSimple",
-            "Familia"
+            "Familia", "Ejemplar", "AuditoriaInventario"
         };
 
             foreach (string tabla in arrayTablasNegocio)
@@ -211,8 +283,8 @@ namespace BLL
             return listaTotalesConsolidados;
         }
 
-       
-        
+
+
         public List<string> EjecutarAuditoriaDetalladaCompleta()
         {
             List<string> reporteInconsistencias = new List<string>();
@@ -267,6 +339,16 @@ namespace BLL
             if (DigitoVerificador.CalcularDVV(listaFamilia.Select(x => x.Nombre).ToList()) != (_controlDVDal.ObtenerDVV("Familia", "Nombre") ?? "0")) colsErrFamilia.Add("Nombre");
 
             AgregarErroresAlReporteOptimizada("Familia", "Nombre", x => x.Nombre, x => x.DVH, CalcularDVH_Familia, listaFamilia, colsErrFamilia, reporteInconsistencias);
+
+            var listaEjemplar = _ejemplarDal._012IP_ListarTodosDVH();
+            List<string> colsErrEjemplar = ObtenerColumnasInconsistentes("Ejemplar", ObtenerColumnasEjemplar(listaEjemplar));
+
+            AgregarErroresAlReporteOptimizada("Ejemplar", "CodigoBarras", x => x.CodigoBarras, x => x.DVH, CalcularDVH_Ejemplar, listaEjemplar, colsErrEjemplar, reporteInconsistencias);
+
+            var listaAuditoriaInv = _auditoriaDal._012IP_ListarTodasDVH();
+            List<string> colsErrAuditoriaInv = ObtenerColumnasInconsistentes("AuditoriaInventario", ObtenerColumnasAuditoriaInventario(listaAuditoriaInv));
+
+            AgregarErroresAlReporteOptimizada("AuditoriaInventario", "IdAuditoria", x => x.IdAuditoria.ToString(), x => x.DVH, CalcularDVH_AuditoriaInventario, listaAuditoriaInv, colsErrAuditoriaInv, reporteInconsistencias);
 
             return reporteInconsistencias;
         }
@@ -399,26 +481,32 @@ namespace BLL
         private string CalcularDVH_Idioma(Idioma i) => DigitoVerificador.CalcularDVH(i.UserName + i.CodigoIdioma);
         private string CalcularDVH_PermisoSimple(PermisoSimple p) => DigitoVerificador.CalcularDVH(p.Nombre);
         private string CalcularDVH_Familia(Familia f) => DigitoVerificador.CalcularDVH(f.Nombre);
+        private string CalcularDVH_Ejemplar(_012IP_EjemplarBE e) => _012IP_EjemplarBLL._012IP_CalcularDVH(e);
+        private string CalcularDVH_AuditoriaInventario(_012IP_AuditoriaBE a) => _012IP_AuditoriaBLL._012IP_CalcularDVH(a);
 
         public void RecalcularDVV_General()
         {
             try
             {
-                
+
                 RecalcularDVH_Usuario();
                 RecalcularDVH_Familia();
                 RecalcularDVH_PermisoSimple();
                 RecalcularDVH_Perfil();
-                
-                RecalcularDVH_Idioma();
 
-                
-                
+                RecalcularDVH_Idioma();
+                RecalcularDVH_Ejemplar();
+                RecalcularDVH_AuditoriaInventario();
+
+
+
                 RecalcularDVV_Familia();
                 RecalcularDVV_Idioma();
                 RecalcularDVV_Perfil();
                 RecalcularDVV_PermisoSimple();
                 RecalcularDVV_Usuario();
+                RecalcularDVV_Ejemplar();
+                RecalcularDVV_AuditoriaInventario();
 
                 RegistrarEvento("Recalculo de DVV y DVH realizado correctamente", 1);
                 RecalcularDVH_Bitacora();
@@ -429,7 +517,7 @@ namespace BLL
                 RegistrarEvento("Error al recalcular DVV y DVH", 3);
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV13") + ex.Message);
             }
-            
+
 
 
         }

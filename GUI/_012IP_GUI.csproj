@@ -229,6 +229,18 @@
     <Compile Include="Usuarios.Designer.cs">
       <DependentUpon>Usuarios.cs</DependentUpon>
     </Compile>
+    <Compile Include="_012IP_frmAuditoriaInventar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_012IP_frmAuditoriaInventar.Designer.cs">
+      <DependentUpon>_012IP_frmAuditoriaInventar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_012IP_frmGestionInventario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_012IP_frmGestionInventario.Designer.cs">
+      <DependentUpon>_012IP_frmGestionInventario.cs</DependentUpon>
+    </Compile>
     <Compile Include="_012IP_frmRegistrarPago.cs">
       <SubType>Form</SubType>
     </Compile>
