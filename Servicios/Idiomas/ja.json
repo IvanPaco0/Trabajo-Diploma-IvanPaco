@@ -629,5 +629,22 @@
   "ModSocioIngrese": "内容を修正して「変更を保存」を押してください。",
   "ModSocioExitoso": "{0} {1} (DNI {2}) の情報を保存しました。",
   "RenMemBtnModificarSocio": "情報を変更",
-  "SocioBLLText9": "会員情報を保存できませんでした。もう一度お試しください。"
+  "SocioBLLText9": "会員情報を保存できませんでした。もう一度お試しください。",
+  "GesSocTitulo": "会員管理",
+  "GesSocInactivos": "退会した会員も表示",
+  "GesSocNuevo": "新規会員",
+  "GesSocModificar": "変更",
+  "GesSocBaja": "退会にする",
+  "GesSocReactivar": "再有効化",
+  "GesSocColEstado": "状態",
+  "GesSocActivo": "有効",
+  "GesSocDeBaja": "退会",
+  "GesSocResumen": "有効 {0} 名 - 退会 {1} 名",
+  "GesSocSeleccione": "表から会員を選んでください。",
+  "GesSocModificado": "会員情報を保存しました。",
+  "GesSocConfirmBaja": "会員 {0} {1} (DNI {2}) を退会にしますか?\n論理削除のため、データは消えず再有効化できます。",
+  "GesSocConfirmReactivar": "会員 {0} {1} (DNI {2}) を再有効化しますか?",
+  "GesSocAvisoVigente": "注意: この会員の会員資格は {0} まで有効です。",
+  "GesSocBajaOk": "DNI {0} の会員を退会にしました。",
+  "GesSocReactivadoOk": "DNI {0} の会員を再有効化しました。"
 }

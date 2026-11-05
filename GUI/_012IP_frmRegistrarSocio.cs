@@ -120,7 +120,7 @@ namespace _012IP_GUI
             try
             {
                 _012IP_SocioBE socio = socioBLL._012IP_ModificarSocio(socioAEditar.IdSocio,
-                    txtDNI.Text, txtNombre.Text, txtApellido.Text, txtEmail.Text, txtTelefono.Text);
+                    txtDNI.Text, txtNombre.Text, txtApellido.Text, txtEmail.Text, txtTelefono.Text, socioAEditar.Activo);
 
                 SocioRegistrado = socio;
                 MessageBox.Show(

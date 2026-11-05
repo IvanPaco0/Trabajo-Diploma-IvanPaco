@@ -105,7 +105,7 @@ namespace _012IP_BLL
         public const int MaximoResultadosBusqueda = 50;
 
         // Busqueda dinamica de un solo cuadro: acepta DNI, nombre, apellido o combinaciones ("perez juan").
-        public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(string texto)
+        public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(string texto, bool incluirInactivos = false)
         {
             List<string> palabras = (texto ?? "")
                 .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
@@ -116,7 +116,7 @@ namespace _012IP_BLL
 
             try
             {
-                return socioDAL._012IP_BuscarSocioPorTexto(palabras, MaximoResultadosBusqueda);
+                return socioDAL._012IP_BuscarSocioPorTexto(palabras, incluirInactivos ? MaximoFilasReporte : MaximoResultadosBusqueda, incluirInactivos);
             }
             catch (Exception ex)
             {
@@ -264,7 +264,7 @@ namespace _012IP_BLL
             return DigitoVerificador.CalcularDVH(socio.DNI + socio.Nombre + socio.Apellido + socio.Email + socio.Telefono + socio.Activo);
         }
 
-        public _012IP_SocioBE _012IP_ModificarSocio(int idSocio, string dni, string nombre, string apellido, string email, string telefono)
+        public _012IP_SocioBE _012IP_ModificarSocio(int idSocio, string dni, string nombre, string apellido, string email, string telefono, bool activo = true)
         {
             var socio = new _012IP_SocioBE
             {
@@ -274,7 +274,7 @@ namespace _012IP_BLL
                 Apellido = (apellido ?? "").Trim(),
                 Email = (email ?? "").Trim(),
                 Telefono = (telefono ?? "").Trim(),
-                Activo = true
+                Activo = activo
             };
 
             if (!_012IP_ValidarFormato(socio.DNI, socio.Nombre, socio.Apellido, socio.Email, socio.Telefono))
@@ -290,6 +290,37 @@ namespace _012IP_BLL
                 Criticidad = 2
             });
             return socio;
+        }
+
+        // Baja lógica (Activo = 0) o reactivación del socio. No se borra nada: el trigger de Socio
+        // guarda la versión en la bitácora de cambios y el socio deja de aparecer en Renovar membresía.
+        public void _012IP_CambiarEstadoSocio(_012IP_SocioBE seleccionado, bool activo)
+        {
+            if (seleccionado == null)
+                throw new Exception(LanguageManager.Instance.GetTraduction("GesSocSeleccione"));
+            if (seleccionado.Activo == activo)
+                return;
+
+            var socio = new _012IP_SocioBE
+            {
+                IdSocio = seleccionado.IdSocio,
+                DNI = seleccionado.DNI,
+                Nombre = seleccionado.Nombre,
+                Apellido = seleccionado.Apellido,
+                Email = seleccionado.Email ?? "",
+                Telefono = seleccionado.Telefono ?? "",
+                Activo = activo
+            };
+            _012IP_GuardarCambios(socio, activo ? "Reactivación" : "Baja lógica");
+            seleccionado.Activo = activo;
+
+            bitacoraBLL.RegistrarEvento(new Bitacora
+            {
+                Login = SessionManager.Instance.UsuarioActual().Username,
+                Modulo = "Socios",
+                Evento = (activo ? "Reactivar socio" : "Baja lógica de socio") + $" - DNI {socio.DNI} - {socio.Nombre} {socio.Apellido}",
+                Criticidad = activo ? 2 : 3
+            });
         }
 
         // Valida DNI único (sin contar al mismo socio), calcula el DVH y actualiza la tabla Socio.

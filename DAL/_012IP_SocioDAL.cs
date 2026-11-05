@@ -49,7 +49,7 @@ namespace _012IP_DAL
         // Busqueda con un solo texto: cada palabra tiene que coincidir con el DNI (empieza con),
         // el nombre o el apellido. Asi "perez juan" o "3011" encuentran al socio.
         // Sin palabras devuelve los primeros socios activos (para mostrar la grilla al abrir).
-        public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(List<string> palabras, int maximo)
+        public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(List<string> palabras, int maximo, bool incluirInactivos = false)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace _012IP_DAL
                 }
 
                 _sqlcommand.CommandText = SelectSocios.Replace("SELECT s.IdSocio", "SELECT TOP (@maximo) s.IdSocio") + @"
-                    WHERE s.Activo = 1" + condiciones + @"
+                    WHERE " + (incluirInactivos ? "1 = 1" : "s.Activo = 1") + condiciones + @"
                     ORDER BY s.Apellido, s.Nombre;";
                 _sqlcommand.Parameters.AddWithValue("@maximo", maximo);
 

@@ -381,8 +381,10 @@ namespace GUI
 
         private void btnRegistrarSocio_Click(object sender, EventArgs e)
         {
-            var frmRegistrarSocio = new _012IP_frmRegistrarSocio();
-            frmRegistrarSocio.ShowDialog(this);
+            // Gestión de socios: alta, modificación y baja lógica
+            this.Hide();
+            var frmGestionSocios = new _012IP_frmGestionSocios();
+            frmGestionSocios.Show();
         }
 
         private void btnInventario_Click(object sender, EventArgs e)

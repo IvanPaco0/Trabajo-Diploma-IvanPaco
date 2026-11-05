@@ -627,5 +627,22 @@
   "ModSocioIngrese": "Correct the data and press Save changes.",
   "ModSocioExitoso": "The data of {0} {1} (ID {2}) were saved.",
   "RenMemBtnModificarSocio": "Edit data",
-  "SocioBLLText9": "The member data could not be saved. Try again."
+  "SocioBLLText9": "The member data could not be saved. Try again.",
+  "GesSocTitulo": "Member management",
+  "GesSocInactivos": "Show deactivated members",
+  "GesSocNuevo": "New member",
+  "GesSocModificar": "Edit",
+  "GesSocBaja": "Deactivate",
+  "GesSocReactivar": "Reactivate",
+  "GesSocColEstado": "Status",
+  "GesSocActivo": "Active",
+  "GesSocDeBaja": "Deactivated",
+  "GesSocResumen": "{0} active members - {1} deactivated",
+  "GesSocSeleccione": "Select a member in the grid.",
+  "GesSocModificado": "Member data saved.",
+  "GesSocConfirmBaja": "Deactivate member {0} {1} (ID {2})?\nThis is a logical deletion: the member is not erased and can be reactivated.",
+  "GesSocConfirmReactivar": "Reactivate member {0} {1} (ID {2})?",
+  "GesSocAvisoVigente": "Warning: the member's membership is valid until {0}.",
+  "GesSocBajaOk": "Member {0} was deactivated.",
+  "GesSocReactivadoOk": "Member {0} is active again."
 }
