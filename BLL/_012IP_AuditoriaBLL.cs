@@ -275,6 +275,38 @@ namespace _012IP_BLL
             return auditoria;
         }
 
+        // CUN-10: emite el informe de inventario y patrimonio de una auditoría cerrada.
+        // Calcula el stock actual y registra la emisión en la bitácora.
+        public _012IP_StockBE _012IP_EmitirInforme(_012IP_AuditoriaBE auditoria)
+        {
+            if (auditoria == null || auditoria.IdAuditoria == 0 && string.IsNullOrEmpty(auditoria.DVH))
+                throw new Exception(_012IP_Texto("InfInvSinCerrar"));
+
+            _012IP_StockBE stock = ejemplarBLL._012IP_ObtenerStock();
+
+            _012IP_RegistrarBitacora(
+                $"Emitir informe de inventario y patrimonio - Sección {auditoria.Seccion}", 1);
+            return stock;
+        }
+
+        public string _012IP_GenerarInforme(_012IP_AuditoriaBE auditoria, _012IP_ConciliacionBE conciliacion, _012IP_StockBE stock)
+        {
+            var sb = new StringBuilder(_012IP_GenerarInforme(auditoria, conciliacion));
+            if (stock != null)
+            {
+                sb.AppendLine();
+                sb.AppendLine(_012IP_Texto("InfInvStock"));
+                sb.AppendLine(new string('-', 60));
+                sb.AppendLine(_012IP_Texto("InfInvTotal") + ": " + stock.Total);
+                sb.AppendLine(_012IP_Texto("InfInvDisponibles") + ": " + stock.Disponibles);
+                sb.AppendLine(_012IP_Texto("InfInvDeteriorados") + ": " + stock.Deteriorados);
+                sb.AppendLine(_012IP_Texto("InfInvRestauracion") + ": " + stock.EnRestauracion);
+                sb.AppendLine(_012IP_Texto("InfInvBajas") + ": " + stock.Bajas);
+                sb.AppendLine(_012IP_Texto("InfInvPendientes") + ": " + stock.PendientesUbicar);
+            }
+            return sb.ToString();
+        }
+
         public string _012IP_GenerarInforme(_012IP_AuditoriaBE auditoria, _012IP_ConciliacionBE conciliacion)
         {
             var sb = new StringBuilder();

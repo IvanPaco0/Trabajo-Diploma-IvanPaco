@@ -368,15 +368,21 @@ namespace _012IP_GUI
             try
             {
                 _012IP_AuditoriaBE auditoria = auditoriaBLL._012IP_CerrarAuditoria(conciliacion);
-                string informe = auditoriaBLL._012IP_GenerarInforme(auditoria, conciliacion);
 
                 MessageBox.Show(_012IP_Texto("AudCerradaOk"), _012IP_Texto("MsjConfirmacion"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if (MessageBox.Show(_012IP_Texto("AudGuardarInforme"), _012IP_Texto("MsjConfirmacion"),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                // CUN-10: el informe de inventario y patrimonio se muestra en pantalla (con el stock).
+                try
                 {
-                    _012IP_GuardarInforme(auditoria, informe);
+                    _012IP_StockBE stock = auditoriaBLL._012IP_EmitirInforme(auditoria);
+                    string informe = auditoriaBLL._012IP_GenerarInforme(auditoria, conciliacion, stock);
+                    using (var frm = new _012IP_frmInformeInventario(auditoria, conciliacion, stock, informe))
+                        frm.ShowDialog(this);
+                }
+                catch (Exception exInforme)
+                {
+                    _012IP_Error(exInforme.Message);
                 }
 
                 _012IP_CargarSecciones();
@@ -386,22 +392,6 @@ namespace _012IP_GUI
             catch (Exception ex)
             {
                 _012IP_Error(ex.Message);
-            }
-        }
-
-        private void _012IP_GuardarInforme(_012IP_AuditoriaBE auditoria, string informe)
-        {
-            string seccionLimpia = new string(auditoria.Seccion.Select(c => Path.GetInvalidFileNameChars().Contains(c) ? '_' : c).ToArray());
-
-            using (var dialogo = new SaveFileDialog())
-            {
-                dialogo.Filter = _012IP_Texto("AudInformeFiltro");
-                dialogo.FileName = "Auditoria_" + seccionLimpia + "_" + auditoria.Fecha.ToString("yyyyMMdd_HHmm") + ".txt";
-
-                if (dialogo.ShowDialog(this) != DialogResult.OK) return;
-
-                File.WriteAllText(dialogo.FileName, informe, Encoding.UTF8);
-                _012IP_Ok(_012IP_Texto("AudInformeGuardado"));
             }
         }
 

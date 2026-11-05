@@ -646,5 +646,22 @@
   "GesSocConfirmReactivar": "会員 {0} {1} (DNI {2}) を再有効化しますか?",
   "GesSocAvisoVigente": "注意: この会員の会員資格は {0} まで有効です。",
   "GesSocBajaOk": "DNI {0} の会員を退会にしました。",
-  "GesSocReactivadoOk": "DNI {0} の会員を再有効化しました。"
+  "GesSocReactivadoOk": "DNI {0} の会員を再有効化しました。",
+  "InfInvTitulo": "在庫・資産レポート",
+  "InfInvResultado": "監査結果",
+  "InfInvStock": "在庫状況(資産)",
+  "InfInvTotal": "蔵書総数",
+  "InfInvDisponibles": "利用可能",
+  "InfInvDeteriorados": "破損",
+  "InfInvRestauracion": "修復中",
+  "InfInvBajas": "除籍",
+  "InfInvPendientes": "配置待ち",
+  "InfInvGuardar": ".txtで保存",
+  "InfInvCerrar": "閉じる",
+  "InfInvColResultado": "結果",
+  "InfInvColCodigo": "コード",
+  "InfInvColTitulo": "タイトル",
+  "InfInvColDetalle": "詳細",
+  "InfInvColResolucion": "対応",
+  "InfInvSinCerrar": "レポートを発行する前に監査を終了してください。"
 }

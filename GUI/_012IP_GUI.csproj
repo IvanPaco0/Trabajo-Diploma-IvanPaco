@@ -253,6 +253,9 @@
     <Compile Include="_012IP_frmBitacoraCambios.Designer.cs">
       <DependentUpon>_012IP_frmBitacoraCambios.cs</DependentUpon>
     </Compile>
+    <Compile Include="_012IP_frmInformeInventario.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="_012IP_frmGestionSocios.cs">
       <SubType>Form</SubType>
     </Compile>

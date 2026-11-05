@@ -650,5 +650,22 @@
   "GesSocConfirmReactivar": "¿Reactivar al socio {0} {1} (DNI {2})?",
   "GesSocAvisoVigente": "Atención: el socio tiene la membresía vigente hasta el {0}.",
   "GesSocBajaOk": "El socio DNI {0} quedó dado de baja.",
-  "GesSocReactivadoOk": "El socio DNI {0} quedó activo."
+  "GesSocReactivadoOk": "El socio DNI {0} quedó activo.",
+  "InfInvTitulo": "Informe de inventario y patrimonio",
+  "InfInvResultado": "Resultado de la auditoría",
+  "InfInvStock": "Estado del stock (patrimonio)",
+  "InfInvTotal": "Total de ejemplares",
+  "InfInvDisponibles": "Disponibles",
+  "InfInvDeteriorados": "Deteriorados",
+  "InfInvRestauracion": "En restauración",
+  "InfInvBajas": "Dados de baja",
+  "InfInvPendientes": "Pendientes de ubicar",
+  "InfInvGuardar": "Guardar como .txt",
+  "InfInvCerrar": "Cerrar",
+  "InfInvColResultado": "Resultado",
+  "InfInvColCodigo": "Código",
+  "InfInvColTitulo": "Título",
+  "InfInvColDetalle": "Detalle",
+  "InfInvColResolucion": "Resolución",
+  "InfInvSinCerrar": "Primero hay que cerrar la auditoría para emitir el informe."
 }
