@@ -34,10 +34,19 @@ namespace _012IP_GUI
             this.lblMedioPago = new System.Windows.Forms.Label();
             this.cbMedioPago = new System.Windows.Forms.ComboBox();
             this.lblMsj = new System.Windows.Forms.Label();
+            this.grpTarjeta = new System.Windows.Forms.GroupBox();
+            this.lblNumeroTarjeta = new System.Windows.Forms.Label();
+            this.txtNumeroTarjeta = new System.Windows.Forms.TextBox();
+            this.lblVencimientoTarjeta = new System.Windows.Forms.Label();
+            this.txtVencimientoTarjeta = new System.Windows.Forms.TextBox();
+            this.lblCVV = new System.Windows.Forms.Label();
+            this.txtCVV = new System.Windows.Forms.TextBox();
+            this.lblMarcaValue = new System.Windows.Forms.Label();
             this.btnConfirmar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
             this.grpDatos.SuspendLayout();
+            this.grpTarjeta.SuspendLayout();
             this.SuspendLayout();
             //
             // BarraTitulo
@@ -115,6 +124,7 @@ namespace _012IP_GUI
             this.grpDatos.Size = new System.Drawing.Size(456, 235);
             this.grpDatos.TabIndex = 1;
             this.grpDatos.TabStop = false;
+            this.grpDatos.ForeColor = System.Drawing.Color.White;
             this.grpDatos.Text = "Datos del pago";
             //
             // lblSocio
@@ -199,6 +209,86 @@ namespace _012IP_GUI
             this.cbMedioPago.Name = "cbMedioPago";
             this.cbMedioPago.Size = new System.Drawing.Size(420, 24);
             this.cbMedioPago.TabIndex = 7;
+            this.cbMedioPago.SelectedIndexChanged += new System.EventHandler(this._012IP_cbMedioPago_SelectedIndexChanged);
+            //
+            // grpTarjeta
+            //
+            this.grpTarjeta.Controls.Add(this.lblNumeroTarjeta);
+            this.grpTarjeta.Controls.Add(this.txtNumeroTarjeta);
+            this.grpTarjeta.Controls.Add(this.lblVencimientoTarjeta);
+            this.grpTarjeta.Controls.Add(this.txtVencimientoTarjeta);
+            this.grpTarjeta.Controls.Add(this.lblCVV);
+            this.grpTarjeta.Controls.Add(this.txtCVV);
+            this.grpTarjeta.Controls.Add(this.lblMarcaValue);
+            this.grpTarjeta.Location = new System.Drawing.Point(12, 296);
+            this.grpTarjeta.Name = "grpTarjeta";
+            this.grpTarjeta.Size = new System.Drawing.Size(456, 112);
+            this.grpTarjeta.TabIndex = 5;
+            this.grpTarjeta.TabStop = false;
+            this.grpTarjeta.ForeColor = System.Drawing.Color.White;
+            this.grpTarjeta.Text = "Datos de la tarjeta";
+            this.grpTarjeta.Visible = false;
+            //
+            // lblNumeroTarjeta
+            //
+            this.lblNumeroTarjeta.AutoSize = true;
+            this.lblNumeroTarjeta.Location = new System.Drawing.Point(15, 24);
+            this.lblNumeroTarjeta.Name = "lblNumeroTarjeta";
+            this.lblNumeroTarjeta.Size = new System.Drawing.Size(55, 16);
+            this.lblNumeroTarjeta.TabIndex = 0;
+            this.lblNumeroTarjeta.Text = "Número";
+            //
+            // txtNumeroTarjeta
+            //
+            this.txtNumeroTarjeta.Location = new System.Drawing.Point(15, 44);
+            this.txtNumeroTarjeta.MaxLength = 23;
+            this.txtNumeroTarjeta.Name = "txtNumeroTarjeta";
+            this.txtNumeroTarjeta.Size = new System.Drawing.Size(230, 22);
+            this.txtNumeroTarjeta.TabIndex = 1;
+            //
+            // lblVencimientoTarjeta
+            //
+            this.lblVencimientoTarjeta.AutoSize = true;
+            this.lblVencimientoTarjeta.Location = new System.Drawing.Point(260, 24);
+            this.lblVencimientoTarjeta.Name = "lblVencimientoTarjeta";
+            this.lblVencimientoTarjeta.Size = new System.Drawing.Size(97, 16);
+            this.lblVencimientoTarjeta.TabIndex = 2;
+            this.lblVencimientoTarjeta.Text = "Vence (MM/AA)";
+            //
+            // txtVencimientoTarjeta
+            //
+            this.txtVencimientoTarjeta.Location = new System.Drawing.Point(260, 44);
+            this.txtVencimientoTarjeta.MaxLength = 5;
+            this.txtVencimientoTarjeta.Name = "txtVencimientoTarjeta";
+            this.txtVencimientoTarjeta.Size = new System.Drawing.Size(90, 22);
+            this.txtVencimientoTarjeta.TabIndex = 3;
+            //
+            // lblCVV
+            //
+            this.lblCVV.AutoSize = true;
+            this.lblCVV.Location = new System.Drawing.Point(365, 24);
+            this.lblCVV.Name = "lblCVV";
+            this.lblCVV.Size = new System.Drawing.Size(34, 16);
+            this.lblCVV.TabIndex = 4;
+            this.lblCVV.Text = "CVV";
+            //
+            // txtCVV
+            //
+            this.txtCVV.Location = new System.Drawing.Point(365, 44);
+            this.txtCVV.MaxLength = 4;
+            this.txtCVV.Name = "txtCVV";
+            this.txtCVV.PasswordChar = '*';
+            this.txtCVV.Size = new System.Drawing.Size(70, 22);
+            this.txtCVV.TabIndex = 5;
+            //
+            // lblMarcaValue
+            //
+            this.lblMarcaValue.AutoSize = true;
+            this.lblMarcaValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMarcaValue.Location = new System.Drawing.Point(15, 80);
+            this.lblMarcaValue.Name = "lblMarcaValue";
+            this.lblMarcaValue.Size = new System.Drawing.Size(0, 16);
+            this.lblMarcaValue.TabIndex = 6;
             //
             // lblMsj
             //
@@ -246,6 +336,7 @@ namespace _012IP_GUI
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnConfirmar);
             this.Controls.Add(this.lblMsj);
+            this.Controls.Add(this.grpTarjeta);
             this.Controls.Add(this.grpDatos);
             this.Controls.Add(this.BarraTitulo);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -260,6 +351,8 @@ namespace _012IP_GUI
             this.BarraTitulo.PerformLayout();
             this.grpDatos.ResumeLayout(false);
             this.grpDatos.PerformLayout();
+            this.grpTarjeta.ResumeLayout(false);
+            this.grpTarjeta.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -282,5 +375,13 @@ namespace _012IP_GUI
         private System.Windows.Forms.Label lblMsj;
         private System.Windows.Forms.Button btnConfirmar;
         private System.Windows.Forms.Button btnCancelar;
+        private System.Windows.Forms.GroupBox grpTarjeta;
+        private System.Windows.Forms.Label lblNumeroTarjeta;
+        private System.Windows.Forms.TextBox txtNumeroTarjeta;
+        private System.Windows.Forms.Label lblVencimientoTarjeta;
+        private System.Windows.Forms.TextBox txtVencimientoTarjeta;
+        private System.Windows.Forms.Label lblCVV;
+        private System.Windows.Forms.TextBox txtCVV;
+        private System.Windows.Forms.Label lblMarcaValue;
     }
 }

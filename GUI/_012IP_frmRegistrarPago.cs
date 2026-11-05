@@ -22,6 +22,16 @@ namespace _012IP_GUI
        
         public _012IP_PagoBE PagoRegistrado { get; private set; }
 
+        // Cuando es true, la pantalla solo valida y devuelve el medio de pago elegido;
+        // el registro lo hace quien la invocó (por ejemplo, la renovación dentro de su transacción).
+        public bool SoloCapturarMedioDePago { get; set; }
+        public string MedioDePagoElegido { get; private set; }
+        // Resultado de la validación de tarjeta (CUN-04): solo marca y últimos 4 dígitos.
+        public string MarcaTarjeta { get; private set; }
+        public string UltimosDigitos { get; private set; }
+
+        private const int AltoTarjeta = 118;
+
         int posX, posY;
         bool arrastrando = false;
 
@@ -92,8 +102,35 @@ namespace _012IP_GUI
                     return;
                 }
 
-               
-                _012IP_PagoBE pago = pagoBLL._012IP_RegistrarPago(idSocio, idCuota, idMembresia, importe, medioDePago);
+                MarcaTarjeta = null;
+                UltimosDigitos = null;
+                if (_012IP_PagoBLL._012IP_EsTarjeta(medioDePago))
+                {
+                    // CUN-04: validar la tarjeta antes de aceptar el pago
+                    _012IP_TarjetaBE tarjeta = pagoBLL._012IP_ValidarTarjeta(txtNumeroTarjeta.Text, txtVencimientoTarjeta.Text, txtCVV.Text);
+                    txtCVV.Clear();
+                    if (!tarjeta.Valida)
+                    {
+                        lblMarcaValue.Text = string.Empty;
+                        lblMsj.ForeColor = Color.FromArgb(255, 156, 156);
+                        lblMsj.Text = _012IP_Texto(tarjeta.Motivo);
+                        return;
+                    }
+                    MarcaTarjeta = tarjeta.Marca;
+                    UltimosDigitos = tarjeta.UltimosDigitos;
+                    lblMarcaValue.Text = tarjeta.Marca + "  **** " + tarjeta.UltimosDigitos;
+                    txtNumeroTarjeta.Clear();
+                }
+
+                if (SoloCapturarMedioDePago)
+                {
+                    MedioDePagoElegido = medioDePago;
+                    DialogResult = DialogResult.OK;
+                    Close();
+                    return;
+                }
+
+                _012IP_PagoBE pago = pagoBLL._012IP_RegistrarPago(idSocio, idCuota, idMembresia, importe, medioDePago, MarcaTarjeta, UltimosDigitos);
 
                 PagoRegistrado = pago;
 
@@ -110,6 +147,22 @@ namespace _012IP_GUI
                 lblMsj.ForeColor = Color.FromArgb(255, 156, 156);
                 lblMsj.Text = ex.Message;
             }
+        }
+
+        // Muestra los datos de la tarjeta solo cuando el medio de pago es tarjeta y agranda el formulario.
+        private void _012IP_cbMedioPago_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string medio = cbMedioPago.SelectedItem as string ?? cbMedioPago.Text;
+            bool esTarjeta = _012IP_PagoBLL._012IP_EsTarjeta(medio);
+            if (grpTarjeta.Visible == esTarjeta) return;
+
+            int delta = esTarjeta ? AltoTarjeta : -AltoTarjeta;
+            grpTarjeta.Visible = esTarjeta;
+            lblMsj.Top += delta;
+            btnConfirmar.Top += delta;
+            btnCancelar.Top += delta;
+            ClientSize = new Size(ClientSize.Width, ClientSize.Height + delta);
+            lblMarcaValue.Text = string.Empty;
         }
 
         private void _012IP_btnCancelar_Click(object sender, EventArgs e)
@@ -143,6 +196,10 @@ namespace _012IP_GUI
             lblPeriodo.Text = _012IP_Texto("RenMemPeriodo");
             lblImporte.Text = _012IP_Texto("RenMemColImporte");
             lblMedioPago.Text = _012IP_Texto("RegPagoMedioPago");
+            grpTarjeta.Text = _012IP_Texto("TarjetaGrpDatos");
+            lblNumeroTarjeta.Text = _012IP_Texto("TarjetaNumero");
+            lblVencimientoTarjeta.Text = _012IP_Texto("TarjetaVencimiento");
+            lblCVV.Text = _012IP_Texto("TarjetaCVV");
             btnConfirmar.Text = _012IP_Texto("RegPagoBtnConfirmar");
             btnCancelar.Text = _012IP_Texto("btnCancelar");
         }

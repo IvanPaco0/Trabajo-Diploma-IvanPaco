@@ -55,7 +55,7 @@ namespace _012IP_GUI
             this.lblFiltro = new System.Windows.Forms.Label();
             this.cmbFiltro = new System.Windows.Forms.ComboBox();
             this.txtBuscar = new System.Windows.Forms.TextBox();
-            this.btnBuscar = new System.Windows.Forms.Button();
+            this.lblBuscar = new System.Windows.Forms.Label();
             this.lblSeleccionado = new System.Windows.Forms.Label();
             this.dgvEjemplares = new System.Windows.Forms.DataGridView();
             this.grpXml = new System.Windows.Forms.GroupBox();
@@ -153,6 +153,7 @@ namespace _012IP_GUI
             this.grpIngreso.Size = new System.Drawing.Size(420, 232);
             this.grpIngreso.TabStop = false;
             this.grpIngreso.TabIndex = 2;
+            this.grpIngreso.ForeColor = System.Drawing.Color.White;
             this.grpIngreso.Text = "Registrar ingreso de ejemplar";
             this.grpIngreso.Controls.Add(this.lblCodigo);
             this.grpIngreso.Controls.Add(this.txtCodigo);
@@ -284,6 +285,7 @@ namespace _012IP_GUI
             this.grpUbicacion.Size = new System.Drawing.Size(300, 232);
             this.grpUbicacion.TabStop = false;
             this.grpUbicacion.TabIndex = 3;
+            this.grpUbicacion.ForeColor = System.Drawing.Color.White;
             this.grpUbicacion.Text = "Ubicación topográfica";
             this.grpUbicacion.Controls.Add(this.lblPasillo);
             this.grpUbicacion.Controls.Add(this.txtPasillo);
@@ -372,6 +374,7 @@ namespace _012IP_GUI
             this.grpEstado.Size = new System.Drawing.Size(340, 232);
             this.grpEstado.TabStop = false;
             this.grpEstado.TabIndex = 4;
+            this.grpEstado.ForeColor = System.Drawing.Color.White;
             this.grpEstado.Text = "Estado físico";
             this.grpEstado.Controls.Add(this.lblNuevoEstado);
             this.grpEstado.Controls.Add(this.cmbNuevoEstado);
@@ -452,7 +455,7 @@ namespace _012IP_GUI
             // lblFiltro
             // 
             this.lblFiltro.AutoSize = true;
-            this.lblFiltro.Location = new System.Drawing.Point(12, 331);
+            this.lblFiltro.Location = new System.Drawing.Point(12, 347);
             this.lblFiltro.Name = "lblFiltro";
             this.lblFiltro.Size = new System.Drawing.Size(60, 16);
             this.lblFiltro.TabIndex = 5;
@@ -464,7 +467,7 @@ namespace _012IP_GUI
             this.cmbFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFiltro.ForeColor = System.Drawing.Color.Black;
             this.cmbFiltro.FormattingEnabled = true;
-            this.cmbFiltro.Location = new System.Drawing.Point(85, 327);
+            this.cmbFiltro.Location = new System.Drawing.Point(85, 343);
             this.cmbFiltro.Name = "cmbFiltro";
             this.cmbFiltro.Size = new System.Drawing.Size(170, 24);
             this.cmbFiltro.TabIndex = 6;
@@ -474,31 +477,26 @@ namespace _012IP_GUI
             // 
             this.txtBuscar.BackColor = System.Drawing.Color.White;
             this.txtBuscar.ForeColor = System.Drawing.Color.Black;
-            this.txtBuscar.Location = new System.Drawing.Point(268, 328);
+            this.txtBuscar.Location = new System.Drawing.Point(268, 344);
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(230, 22);
+            this.txtBuscar.Size = new System.Drawing.Size(340, 22);
             this.txtBuscar.TabIndex = 7;
+            this.txtBuscar.TextChanged += new System.EventHandler(this._012IP_txtBuscar_TextChanged);
             this.txtBuscar.KeyDown += new System.Windows.Forms.KeyEventHandler(this._012IP_txtBuscar_KeyDown);
             // 
-            // btnBuscar
+            // lblBuscar
             // 
-            this.btnBuscar.BackColor = System.Drawing.Color.Maroon;
-            this.btnBuscar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnBuscar.FlatAppearance.BorderSize = 0;
-            this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBuscar.ForeColor = System.Drawing.Color.White;
-            this.btnBuscar.Location = new System.Drawing.Point(508, 324);
-            this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(100, 28);
-            this.btnBuscar.TabIndex = 8;
-            this.btnBuscar.Text = "Buscar";
-            this.btnBuscar.UseVisualStyleBackColor = false;
-            this.btnBuscar.Click += new System.EventHandler(this._012IP_btnBuscar_Click);
+            this.lblBuscar.AutoSize = true;
+            this.lblBuscar.Location = new System.Drawing.Point(265, 324);
+            this.lblBuscar.Name = "lblBuscar";
+            this.lblBuscar.Size = new System.Drawing.Size(330, 16);
+            this.lblBuscar.TabIndex = 8;
+            this.lblBuscar.Text = "Buscar por codigo, N° de inventario, titulo o autor";
             // 
             // lblSeleccionado
             // 
             this.lblSeleccionado.AutoEllipsis = true;
-            this.lblSeleccionado.Location = new System.Drawing.Point(620, 331);
+            this.lblSeleccionado.Location = new System.Drawing.Point(620, 347);
             this.lblSeleccionado.Name = "lblSeleccionado";
             this.lblSeleccionado.Size = new System.Drawing.Size(468, 18);
             this.lblSeleccionado.TabIndex = 9;
@@ -506,9 +504,9 @@ namespace _012IP_GUI
             // 
             // dgvEjemplares
             // 
-            this.dgvEjemplares.Location = new System.Drawing.Point(12, 360);
+            this.dgvEjemplares.Location = new System.Drawing.Point(12, 376);
             this.dgvEjemplares.Name = "dgvEjemplares";
-            this.dgvEjemplares.Size = new System.Drawing.Size(1076, 232);
+            this.dgvEjemplares.Size = new System.Drawing.Size(1076, 216);
             this.dgvEjemplares.TabIndex = 10;
             this.dgvEjemplares.SelectionChanged += new System.EventHandler(this._012IP_dgvEjemplares_SelectionChanged);
             // 
@@ -519,6 +517,7 @@ namespace _012IP_GUI
             this.grpXml.Size = new System.Drawing.Size(1076, 62);
             this.grpXml.TabStop = false;
             this.grpXml.TabIndex = 11;
+            this.grpXml.ForeColor = System.Drawing.Color.White;
             this.grpXml.Text = "Serialización XML";
             this.grpXml.Controls.Add(this.txtRutaSer);
             this.grpXml.Controls.Add(this.btnExaminarSer);
@@ -660,7 +659,7 @@ namespace _012IP_GUI
             this.Controls.Add(this.lblFiltro);
             this.Controls.Add(this.cmbFiltro);
             this.Controls.Add(this.txtBuscar);
-            this.Controls.Add(this.btnBuscar);
+            this.Controls.Add(this.lblBuscar);
             this.Controls.Add(this.lblSeleccionado);
             this.Controls.Add(this.dgvEjemplares);
             this.Controls.Add(this.grpXml);
@@ -726,7 +725,7 @@ namespace _012IP_GUI
         private System.Windows.Forms.Label lblFiltro;
         private System.Windows.Forms.ComboBox cmbFiltro;
         private System.Windows.Forms.TextBox txtBuscar;
-        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Label lblBuscar;
         private System.Windows.Forms.Label lblSeleccionado;
         private System.Windows.Forms.DataGridView dgvEjemplares;
         private System.Windows.Forms.GroupBox grpXml;

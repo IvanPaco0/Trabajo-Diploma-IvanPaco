@@ -117,6 +117,7 @@ namespace _012IP_GUI
             this.grpSeccion.Size = new System.Drawing.Size(1076, 78);
             this.grpSeccion.TabStop = false;
             this.grpSeccion.TabIndex = 1;
+            this.grpSeccion.ForeColor = System.Drawing.Color.White;
             this.grpSeccion.Text = "Sección a auditar";
             this.grpSeccion.Controls.Add(this.lblSeccionAud);
             this.grpSeccion.Controls.Add(this.cmbSeccion);
@@ -175,6 +176,7 @@ namespace _012IP_GUI
             this.grpEsperado.Size = new System.Drawing.Size(520, 300);
             this.grpEsperado.TabStop = false;
             this.grpEsperado.TabIndex = 2;
+            this.grpEsperado.ForeColor = System.Drawing.Color.White;
             this.grpEsperado.Text = "Listado esperado";
             this.grpEsperado.Controls.Add(this.dgvEsperados);
             // 
@@ -192,6 +194,7 @@ namespace _012IP_GUI
             this.grpEncontrado.Size = new System.Drawing.Size(548, 300);
             this.grpEncontrado.TabStop = false;
             this.grpEncontrado.TabIndex = 3;
+            this.grpEncontrado.ForeColor = System.Drawing.Color.White;
             this.grpEncontrado.Text = "Ejemplares encontrados (un código de barras por línea)";
             this.grpEncontrado.Controls.Add(this.txtEncontrados);
             this.grpEncontrado.Controls.Add(this.btnConciliar);
@@ -230,6 +233,7 @@ namespace _012IP_GUI
             this.grpDiferencias.Size = new System.Drawing.Size(1076, 150);
             this.grpDiferencias.TabStop = false;
             this.grpDiferencias.TabIndex = 4;
+            this.grpDiferencias.ForeColor = System.Drawing.Color.White;
             this.grpDiferencias.Text = "Diferencias detectadas";
             this.grpDiferencias.Controls.Add(this.dgvDiferencias);
             // 

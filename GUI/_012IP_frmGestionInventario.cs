@@ -12,6 +12,8 @@ namespace _012IP_GUI
 {
     public partial class _012IP_frmGestionInventario : Form, IObserver
     {
+        private readonly System.Windows.Forms.Timer timerBusqueda = new System.Windows.Forms.Timer { Interval = 300 };
+
         private _012IP_EjemplarBLL ejemplarBLL;
         private List<_012IP_EjemplarBE> ejemplaresMostrados = new List<_012IP_EjemplarBE>();
         private bool actualizandoGrilla;
@@ -24,6 +26,7 @@ namespace _012IP_GUI
         public _012IP_frmGestionInventario()
         {
             InitializeComponent();
+            timerBusqueda.Tick += _012IP_timerBusqueda_Tick;
         }
 
         private void _012IP_frmGestionInventario_Load(object sender, EventArgs e)
@@ -45,6 +48,8 @@ namespace _012IP_GUI
 
         private void _012IP_frmGestionInventario_FormClosed(object sender, FormClosedEventArgs e)
         {
+            timerBusqueda.Stop();
+            timerBusqueda.Dispose();
             LanguageManager.Instance.EliminarObservador(this);
         }
 
@@ -71,14 +76,14 @@ namespace _012IP_GUI
             btnCambiarEstado.Text = _012IP_Texto("InvBtnCambiarEstado");
             btnBaja.Text = _012IP_Texto("InvBtnBaja");
             lblFiltro.Text = _012IP_Texto("InvFiltroEstado");
-            btnBuscar.Text = _012IP_Texto("InvBtnBuscar");
+            lblBuscar.Text = _012IP_Texto("InvBuscarAyuda");
             btnSalir.Text = _012IP_Texto("btnSalir");
             grpXml.Text = _012IP_Texto("InvGrpXml");
             btnSerializar.Text = _012IP_Texto("InvBtnSerializar");
             btnDesserializar.Text = _012IP_Texto("InvBtnDesserializar");
             btnLimpiar.Text = _012IP_Texto("InvBtnLimpiar");
             toolTip.SetToolTip(btnLimpiar, _012IP_Texto("InvTipLimpiar"));
-            toolTip.SetToolTip(btnBuscar, _012IP_Texto("InvTipBuscar"));
+            toolTip.SetToolTip(txtBuscar, _012IP_Texto("InvTipBuscar"));
             toolTip.SetToolTip(btnExaminarSer, _012IP_Texto("InvTipExaminarSer"));
             toolTip.SetToolTip(btnExaminarDes, _012IP_Texto("InvTipExaminarDes"));
 
@@ -420,8 +425,16 @@ namespace _012IP_GUI
             }
         }
 
-        private void _012IP_btnBuscar_Click(object sender, EventArgs e)
+        // Busqueda dinamica por el evento TextChanged (con una pequena espera para no consultar por cada tecla).
+        private void _012IP_txtBuscar_TextChanged(object sender, EventArgs e)
         {
+            timerBusqueda.Stop();
+            timerBusqueda.Start();
+        }
+
+        private void _012IP_timerBusqueda_Tick(object sender, EventArgs e)
+        {
+            timerBusqueda.Stop();
             _012IP_RefrescarTodo(null);
         }
 
@@ -435,6 +448,7 @@ namespace _012IP_GUI
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
+                timerBusqueda.Stop();
                 _012IP_RefrescarTodo(null);
             }
         }

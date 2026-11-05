@@ -211,10 +211,22 @@ namespace GUI
             }
         }
 
+        // Ultima lista traida de la base (activos o todos); la busqueda filtra sobre esta lista.
+        private List<Usuario> usuariosCargados = new List<Usuario>();
+
         public void MostrarUsuarios(DataGridView dgv, object obj)
         {
-            dgv.DataSource = null;
-            dgv.DataSource = obj;
+            usuariosCargados = (obj as List<Usuario>) ?? new List<Usuario>();
+            AplicarBusquedaUsuarios();
+        }
+
+        // Busqueda dinamica: se ejecuta en el evento TextChanged del cuadro de busqueda.
+        private void txtBuscarUsuario_TextChanged(object sender, EventArgs e) => AplicarBusquedaUsuarios();
+
+        private void AplicarBusquedaUsuarios()
+        {
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = usuarioBLL.FiltrarUsuarios(usuariosCargados, txtBuscarUsuario.Text);
         }
 
         private bool ValidarCamposVacios(params Control[] controles)
@@ -475,6 +487,7 @@ namespace GUI
         public void Actualizar(LanguageManager lenguaje)
         {
             lblTextoTabla.Text = lenguaje.GetTraduction("lblTextoTabla");
+            lblBuscarUsuario.Text = lenguaje.GetTraduction("UsuBuscarAyuda");
             txtDni.Text = lenguaje.GetTraduction("DNI");
             lblApe.Text = lenguaje.GetTraduction("lblApe");
             lblNombre.Text = lenguaje.GetTraduction("lblNombre");

@@ -22,31 +22,29 @@ namespace GUI
             InitializeComponent();
             customMenu();
         }
+        // Submenús del menú lateral (solo uno abierto a la vez).
+        private Panel[] Submenus => new[]
+        {
+            panelAdminSubmenu, panelMaestroSubmenu, panelUsuarioSubmenu, panelMembresiaSubmenu,
+            panelInventarioSubmenu, panelReportesSubmenu, panelAyudaSubmenu
+        };
+
         private void customMenu()
         {
-            panelAdminSubmenu.Visible = false;
-            panelUsuarioSubmenu.Visible = false;
-            panelInventarioSubmenu.Visible = false;
-
+            esconderSubmenu();
         }
+
         private void esconderSubmenu()
         {
-            if (panelAdminSubmenu.Visible == true)
-                panelAdminSubmenu.Visible = false;
-            if (panelUsuarioSubmenu.Visible == true)
-                panelUsuarioSubmenu.Visible = false;
-            if (panelInventarioSubmenu.Visible == true)
-                panelInventarioSubmenu.Visible = false;
+            foreach (Panel submenu in Submenus)
+                submenu.Visible = false;
         }
+
         private void mostrarSubmenu(Panel submenu)
         {
-            if (submenu.Visible == false)
-            {
-                esconderSubmenu();
-                submenu.Visible = true;
-            }
-            else
-                submenu.Visible = false;
+            bool abrir = !submenu.Visible;
+            esconderSubmenu();
+            submenu.Visible = abrir;
         }
 
         private void btnAdmin_Click(object sender, EventArgs e)
@@ -59,31 +57,144 @@ namespace GUI
             mostrarSubmenu(panelUsuarioSubmenu);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btnMaestro_Click(object sender, EventArgs e)
         {
-
+            mostrarSubmenu(panelMaestroSubmenu);
         }
 
-        private void panelContenedor_Paint(object sender, PaintEventArgs e)
+        private void btnMembresias_Click(object sender, EventArgs e)
         {
+            mostrarSubmenu(panelMembresiaSubmenu);
+        }
 
+        private void btnReportes_Click(object sender, EventArgs e)
+        {
+            mostrarSubmenu(panelReportesSubmenu);
+        }
+
+        private void btnAyuda_Click(object sender, EventArgs e)
+        {
+            mostrarSubmenu(panelAyudaSubmenu);
+        }
+
+        // Reportes y ayuda en línea: se completan en la Entrega 3 (A02 y D02).
+        private void MostrarProximamente()
+        {
+            MessageBox.Show(LanguageManager.Instance.GetTraduction("MenuProximamente"),
+                LanguageManager.Instance.GetTraduction("Informacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // Rep. 1 (RFN1): informe de recaudación y vencimientos (CUN-05)
+        private void btnReporteRFN1_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.UsuarioActual().TienePermiso("Renovar Membresia"))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("InfMemSinPermiso"),
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            this.Hide();
+            _012IP_frmInformeMembresias frm = new _012IP_frmInformeMembresias();
+            frm.Show();
+        }
+
+        private void btnReporteRFN2_Click(object sender, EventArgs e) => MostrarProximamente();
+
+        // Reporte de socios (listado con estado de membresía y exportación a PDF)
+        private void btnReporteSocios_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.UsuarioActual().TienePermiso("Renovar Membresia"))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("InfMemSinPermiso"),
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            this.Hide();
+            _012IP_frmReporteSocios frm = new _012IP_frmReporteSocios();
+            frm.Show();
+        }
+
+        private void btnAyudaMembresias_Click(object sender, EventArgs e) => MostrarProximamente();
+
+        private void btnAyudaInventario_Click(object sender, EventArgs e) => MostrarProximamente();
+
+        private void btnAcercaDe_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(LanguageManager.Instance.GetTraduction("MenuAcercaDeTexto"),
+                LanguageManager.Instance.GetTraduction("MenuAcercaDe"), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void Menu_Load(object sender, EventArgs e)
         {
+            AplicarPermisos();
             customMenu();
             LanguageManager.Instance.AgregarObservador(this);
             Actualizar(LanguageManager.Instance);
         }
 
-        private void btnAdmin_Click_1(object sender, EventArgs e)
+        // ===================== Menú según el perfil del usuario =====================
+        // Cada opción se muestra solo si el usuario tiene el permiso que la habilita.
+        // Si un grupo (ADMIN, MAESTROS, ...) se queda sin opciones, se oculta el grupo entero.
+        private void AplicarPermisos()
         {
-            mostrarSubmenu(panelAdminSubmenu);
+            var usuario = SessionManager.Instance.UsuarioActual();
+            Func<string, bool> tiene = permiso => usuario != null && usuario.TienePermiso(permiso);
+
+            // ADMIN
+            Mostrar(btnUsuarios, tiene("Ver Usuarios"));
+            Mostrar(btnPerfiles, tiene("Ver Perfiles"));
+            Mostrar(btnDigitoVerificador, tiene("Gestionar DigitoVerificadores"));
+            Mostrar(btnBitacora, tiene("Ver Bitacora"));
+            Mostrar(btnBackUp, tiene("Ver Respaldos"));
+            Mostrar(btnRestore, tiene("Ver Respaldos"));
+
+            // MAESTROS
+            Mostrar(btnRegistrarSocio, tiene("Renovar Membresia"));
+            Mostrar(btnGestionInventario, tiene("Gestionar Inventario"));
+
+            // MEMBRESÍAS
+            Mostrar(btnRenovarMembresia, tiene("Renovar Membresia"));
+
+            // INVENTARIO
+            Mostrar(btnAuditoriaInventario, tiene("Auditar Inventario"));
+
+            // REPORTES
+            Mostrar(btnReporteRFN1, tiene("Renovar Membresia"));
+            Mostrar(btnReporteSocios, tiene("Renovar Membresia"));
+            Mostrar(btnReporteRFN2, tiene("Gestionar Inventario") || tiene("Auditar Inventario"));
+
+            // AYUDA (Acerca de siempre visible)
+            Mostrar(btnAyudaMembresias, tiene("Renovar Membresia"));
+            Mostrar(btnAyudaInventario, tiene("Gestionar Inventario") || tiene("Auditar Inventario"));
+
+            // USUARIO (cambiar clave, idioma, cerrar sesión) queda siempre visible.
+
+            AjustarGrupo(btnAdmin, panelAdminSubmenu);
+            AjustarGrupo(btnMaestro, panelMaestroSubmenu);
+            AjustarGrupo(btnUsuario, panelUsuarioSubmenu);
+            AjustarGrupo(btnMembresias, panelMembresiaSubmenu);
+            AjustarGrupo(btnInventario, panelInventarioSubmenu);
+            AjustarGrupo(btnReportes, panelReportesSubmenu);
+            AjustarGrupo(btnAyuda, panelAyudaSubmenu);
         }
 
-        private void btnUsuario_Click_1(object sender, EventArgs e)
+        // Visible no sirve para leer el estado (da false mientras el submenú está cerrado),
+        // por eso lo que corresponde mostrar se guarda en Tag.
+        private void Mostrar(Control opcion, bool visible)
         {
-            mostrarSubmenu(panelUsuarioSubmenu);
+            opcion.Visible = visible;
+            opcion.Tag = visible;
+        }
+
+        // El alto del submenú se ajusta a las opciones permitidas; sin opciones se oculta el encabezado.
+        private void AjustarGrupo(Button encabezado, Panel submenu)
+        {
+            int alto = 0;
+            foreach (Control c in submenu.Controls)
+                if (!(c.Tag is bool permitido) || permitido)
+                    alto += c.Height;
+            submenu.Height = alto;
+            encabezado.Visible = alto > 0;
         }
 
         private void btnCerrar_Click(object sender, EventArgs e)
@@ -147,15 +258,6 @@ namespace GUI
             Usuarios usuarios = new Usuarios();
             usuarios.Show();
         }
-
-        private void btnReLogin_Click(object sender, EventArgs e)
-        {
-            if (SessionManager.Instance != null)
-            {
-                MessageBox.Show(LanguageManager.Instance.GetTraduction("YaHaySesionActiva"), LanguageManager.Instance.GetTraduction("Informacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
@@ -262,11 +364,6 @@ namespace GUI
             frm.Show();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            mostrarSubmenu(panelMembresiaSubmenu);
-        }
-
         private void btnRegistrarSocio_Click(object sender, EventArgs e)
         {
             var frmRegistrarSocio = new _012IP_frmRegistrarSocio();
@@ -306,23 +403,40 @@ namespace GUI
 
         public void Actualizar(LanguageManager lenguaje)
         {
-            btnAdmin.Text = LanguageManager.Instance.GetTraduction("btnAdmin");
-            btnUsuarios.Text = LanguageManager.Instance.GetTraduction("btnUsuarios");
-            btnPerfiles.Text = LanguageManager.Instance.GetTraduction("btnPerfiles");
-            btnBackUp.Text = LanguageManager.Instance.GetTraduction("btnBackUp");
-            btnRestore.Text = LanguageManager.Instance.GetTraduction("btnRestore");
-            btnBitacora.Text = LanguageManager.Instance.GetTraduction("btnBitacora");
-            btnDigitoVerificador.Text = LanguageManager.Instance.GetTraduction("btnDigitoVerificador");
-            btnMaestro.Text = LanguageManager.Instance.GetTraduction("btnMaestro");
-            btnUsuario.Text = LanguageManager.Instance.GetTraduction("btnUsuario");
-            btnReLogin.Text = LanguageManager.Instance.GetTraduction("btnReLogin");
-            btnCambiarClave.Text = LanguageManager.Instance.GetTraduction("btnCambiarClave");
-            btnLogout.Text = LanguageManager.Instance.GetTraduction("btnLogout");
-            btnCambiarIdioma.Text = LanguageManager.Instance.GetTraduction("btnCambiarIdioma");
-            btnRenovarMembresia.Text = LanguageManager.Instance.GetTraduction("RenMemTitulo");
-            btnInventario.Text = LanguageManager.Instance.GetTraduction("InvMenuGrupo");
-            btnGestionInventario.Text = LanguageManager.Instance.GetTraduction("InvMenuGestion");
-            btnAuditoriaInventario.Text = LanguageManager.Instance.GetTraduction("InvMenuAuditoria");
+            Func<string, string> t = LanguageManager.Instance.GetTraduction;
+
+            btnAdmin.Text = t("btnAdmin");
+            btnUsuarios.Text = t("MenuGestionUsuarios");
+            btnPerfiles.Text = t("MenuGestionPerfiles");
+            btnDigitoVerificador.Text = t("MenuDigitosVerificadores");
+            btnBitacora.Text = t("MenuEventos");
+            btnBackUp.Text = t("btnBackUp");
+            btnRestore.Text = t("btnRestore");
+
+            btnMaestro.Text = t("MenuGrupoMaestros");
+            btnRegistrarSocio.Text = t("MenuSocios");
+            btnGestionInventario.Text = t("MenuEjemplares");
+
+            btnUsuario.Text = t("MenuGrupoUsuario");
+            btnCambiarClave.Text = t("btnCambiarClave");
+            btnLogout.Text = t("btnLogout");
+            btnCambiarIdioma.Text = t("btnCambiarIdioma");
+
+            btnMembresias.Text = t("MenuGrupoMembresias");
+            btnRenovarMembresia.Text = t("RenMemTitulo");
+
+            btnInventario.Text = t("MenuGrupoInventario");
+            btnAuditoriaInventario.Text = t("InvMenuAuditoria");
+
+            btnReportes.Text = t("MenuGrupoReportes");
+            btnReporteRFN1.Text = t("MenuReporteRFN1");
+            btnReporteSocios.Text = t("MenuReporteSocios");
+            btnReporteRFN2.Text = t("MenuReporteRFN2");
+
+            btnAyuda.Text = t("MenuGrupoAyuda");
+            btnAyudaMembresias.Text = t("MenuMembresias");
+            btnAyudaInventario.Text = t("InvMenuGrupo");
+            btnAcercaDe.Text = t("MenuAcercaDe");
         }
     }
 }

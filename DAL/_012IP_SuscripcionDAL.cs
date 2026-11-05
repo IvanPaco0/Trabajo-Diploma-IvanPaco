@@ -60,14 +60,11 @@ namespace _012IP_DAL
         }
 
        
-        public void _012IP_ActualizarSuscripcion(string dni, int idMembresia, DateTime fechaInicio, DateTime fechaVencimiento)
+        // Actualiza (o crea) la suscripción del socio. El DVH lo calcula la BLL.
+        public void _012IP_ActualizarSuscripcion(string dni, int idMembresia, DateTime fechaInicio, DateTime fechaVencimiento, string dvh)
         {
             try
             {
-                
-                string dvh = DigitoVerificador.CalcularDVH(
-                    dni + idMembresia + fechaInicio.ToString("yyyy-MM-dd") + fechaVencimiento.ToString("yyyy-MM-dd") + "Activa");
-
                 _sqlcommand.CommandText = @"
                     UPDATE su
                     SET su.IdMembresia = @idMembresia,
@@ -97,6 +94,46 @@ namespace _012IP_DAL
                         FROM Socio WHERE DNI = @dni;";
                     _sqlcommand.ExecuteNonQuery();
                 }
+            }
+            catch { throw; }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+    
+        // Última suscripción de cada socio activo, para el informe de vencimientos (CUN-05).
+        public List<_012IP_VencimientoSocioBE> _012IP_ListarSuscripciones()
+        {
+            var lista = new List<_012IP_VencimientoSocioBE>();
+            try
+            {
+                _sqlcommand.CommandText = @"
+                    SELECT s.DNI, s.Nombre, s.Apellido, m.Nombre AS Membresia, su.FechaVencimiento
+                    FROM Suscripcion su
+                    JOIN Socio s ON s.IdSocio = su.IdSocio
+                    JOIN Membresia m ON m.IdMembresia = su.IdMembresia
+                    WHERE s.Activo = 1
+                      AND su.FechaVencimiento = (SELECT MAX(x.FechaVencimiento) FROM Suscripcion x WHERE x.IdSocio = su.IdSocio)
+                    ORDER BY su.FechaVencimiento;";
+
+                _sqlserver.Open();
+                using (var reader = _sqlcommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lista.Add(new _012IP_VencimientoSocioBE
+                        {
+                            DNI = (string)reader["DNI"],
+                            Nombre = (string)reader["Nombre"],
+                            Apellido = (string)reader["Apellido"],
+                            Membresia = (string)reader["Membresia"],
+                            FechaVencimiento = (DateTime)reader["FechaVencimiento"]
+                        });
+                    }
+                }
+                return lista;
             }
             catch { throw; }
             finally

@@ -20,6 +20,11 @@ namespace BLL
             try
             {
                 unEvento.Fecha = DateTime.Now;
+                // Las columnas de la tabla Bitacora tienen largo fijo (Login 50, Modulo 50, Evento 100).
+                // Se recorta antes de calcular el DVH para que el texto guardado y el DVH coincidan.
+                unEvento.Login = Recortar(unEvento.Login, 50);
+                unEvento.Modulo = Recortar(unEvento.Modulo, 50);
+                unEvento.Evento = Recortar(unEvento.Evento, 100);
                 string cadenaDVH = unEvento.Login + unEvento.Fecha.ToString("yyyy-MM-dd HH:mm:ss") + unEvento.Modulo + unEvento.Evento + unEvento.Criticidad.ToString();
 
                 DAL.RegistrarEvento(unEvento, DigitoVerificador.CalcularDVH(cadenaDVH));
@@ -31,6 +36,12 @@ namespace BLL
             }
         }
 
+
+        private static string Recortar(string texto, int largo)
+        {
+            texto = texto ?? string.Empty;
+            return texto.Length <= largo ? texto : texto.Substring(0, largo - 3) + "...";
+        }
 
         public List<Bitacora> FiltrarEventos(string nombre, string apellido, string login, string modulo, string evento, DateTime desde, DateTime hasta, int? criticidad)
         {

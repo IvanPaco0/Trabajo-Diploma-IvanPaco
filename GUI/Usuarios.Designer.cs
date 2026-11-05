@@ -53,6 +53,8 @@
             this.pnFiltrado = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblTextoTabla = new System.Windows.Forms.Label();
+            this.lblBuscarUsuario = new System.Windows.Forms.Label();
+            this.txtBuscarUsuario = new System.Windows.Forms.TextBox();
             this.lblCantidadUsers = new System.Windows.Forms.Label();
             this.btnCrear = new System.Windows.Forms.Button();
             this.btnDesbloquear = new System.Windows.Forms.Button();
@@ -162,10 +164,10 @@
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 34);
+            this.dataGridView1.Location = new System.Drawing.Point(3, 50);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(762, 161);
+            this.dataGridView1.Size = new System.Drawing.Size(762, 165);
             this.dataGridView1.TabIndex = 21;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
@@ -347,11 +349,13 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.Maroon;
+            this.panel3.Controls.Add(this.lblBuscarUsuario);
+            this.panel3.Controls.Add(this.txtBuscarUsuario);
             this.panel3.Controls.Add(this.lblTextoTabla);
             this.panel3.Controls.Add(this.dataGridView1);
-            this.panel3.Location = new System.Drawing.Point(71, 161);
+            this.panel3.Location = new System.Drawing.Point(71, 150);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(769, 198);
+            this.panel3.Size = new System.Drawing.Size(769, 218);
             this.panel3.TabIndex = 43;
             // 
             // lblTextoTabla
@@ -359,11 +363,30 @@
             this.lblTextoTabla.AutoSize = true;
             this.lblTextoTabla.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTextoTabla.ForeColor = System.Drawing.SystemColors.Control;
-            this.lblTextoTabla.Location = new System.Drawing.Point(305, 7);
+            this.lblTextoTabla.Location = new System.Drawing.Point(480, 18);
             this.lblTextoTabla.Name = "lblTextoTabla";
             this.lblTextoTabla.Size = new System.Drawing.Size(143, 24);
             this.lblTextoTabla.TabIndex = 22;
             this.lblTextoTabla.Text = "Texto de tabla";
+            // 
+            // lblBuscarUsuario
+            // 
+            this.lblBuscarUsuario.AutoSize = true;
+            this.lblBuscarUsuario.ForeColor = System.Drawing.SystemColors.Control;
+            this.lblBuscarUsuario.Location = new System.Drawing.Point(3, 4);
+            this.lblBuscarUsuario.Name = "lblBuscarUsuario";
+            this.lblBuscarUsuario.Size = new System.Drawing.Size(260, 13);
+            this.lblBuscarUsuario.TabIndex = 23;
+            this.lblBuscarUsuario.Text = "Buscar por DNI, nombre, apellido o usuario";
+            // 
+            // txtBuscarUsuario
+            // 
+            this.txtBuscarUsuario.Location = new System.Drawing.Point(3, 22);
+            this.txtBuscarUsuario.MaxLength = 100;
+            this.txtBuscarUsuario.Name = "txtBuscarUsuario";
+            this.txtBuscarUsuario.Size = new System.Drawing.Size(300, 20);
+            this.txtBuscarUsuario.TabIndex = 24;
+            this.txtBuscarUsuario.TextChanged += new System.EventHandler(this.txtBuscarUsuario_TextChanged);
             // 
             // lblCantidadUsers
             // 
@@ -711,6 +734,8 @@
         private System.Windows.Forms.Panel pnFiltrado;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label lblTextoTabla;
+        private System.Windows.Forms.Label lblBuscarUsuario;
+        private System.Windows.Forms.TextBox txtBuscarUsuario;
         private System.Windows.Forms.Label lblCantidadUsers;
         private System.Windows.Forms.Button btnCrear;
         private System.Windows.Forms.Button btnDesbloquear;

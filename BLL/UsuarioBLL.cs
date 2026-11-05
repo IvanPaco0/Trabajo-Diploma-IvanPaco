@@ -272,6 +272,22 @@ namespace BLL
             }
         }
 
+        // Filtro de la busqueda dinamica de la pantalla Usuarios: cada palabra escrita tiene que
+        // aparecer en el DNI, nombre, apellido o nombre de usuario.
+        public List<Usuario> FiltrarUsuarios(List<Usuario> usuarios, string texto)
+        {
+            if (usuarios == null) return new List<Usuario>();
+            string[] palabras = (texto ?? "").Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            if (palabras.Length == 0) return usuarios;
+
+            return usuarios.Where(u => palabras.All(p =>
+                    (u.DNI ?? "").StartsWith(p, StringComparison.OrdinalIgnoreCase)
+                 || (u.Nombre ?? "").IndexOf(p, StringComparison.OrdinalIgnoreCase) >= 0
+                 || (u.Apellido ?? "").IndexOf(p, StringComparison.OrdinalIgnoreCase) >= 0
+                 || (u.Username ?? "").IndexOf(p, StringComparison.OrdinalIgnoreCase) >= 0))
+                .ToList();
+        }
+
         public List<Usuario> ListarTodosUsuarios() => usuarioDAL.ListarTodosLosUsuarios();
         public Usuario BuscarUsuarioPorDNI(string v) => usuarioDAL.BuscarUsuarioPorDNI(v);
         public Usuario BuscarUsuarioPorUserName(string user) => usuarioDAL.ObtenerPorUserName(user);

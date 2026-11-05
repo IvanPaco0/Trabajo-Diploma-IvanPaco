@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace _012IP_GUI
@@ -25,13 +25,8 @@ namespace _012IP_GUI
             this.btnMinimizar = new System.Windows.Forms.Button();
             this.btnCerrar = new System.Windows.Forms.Button();
             this.grpBusqueda = new System.Windows.Forms.GroupBox();
-            this.lblDNI = new System.Windows.Forms.Label();
-            this.txtDNI = new System.Windows.Forms.TextBox();
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.lblApellido = new System.Windows.Forms.Label();
-            this.txtApellido = new System.Windows.Forms.TextBox();
-            this.btnBuscar = new System.Windows.Forms.Button();
+            this.lblBuscar = new System.Windows.Forms.Label();
+            this.txtBuscar = new System.Windows.Forms.TextBox();
             this.dgvSocios = new System.Windows.Forms.DataGridView();
             this.btnRegistrarSocio = new System.Windows.Forms.Button();
             this.grpEstadoCuenta = new System.Windows.Forms.GroupBox();
@@ -47,6 +42,10 @@ namespace _012IP_GUI
             this.lblPeriodo = new System.Windows.Forms.Label();
             this.lblPeriodoValor = new System.Windows.Forms.Label();
             this.btnRenovar = new System.Windows.Forms.Button();
+            this.lblMeses = new System.Windows.Forms.Label();
+            this.nudMeses = new System.Windows.Forms.NumericUpDown();
+            this.lblTotal = new System.Windows.Forms.Label();
+            this.lblTotalValor = new System.Windows.Forms.Label();
             this.lblMsj = new System.Windows.Forms.Label();
             this.btnSalir = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
@@ -56,6 +55,7 @@ namespace _012IP_GUI
             this.pnlDeuda.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCuotasImpagas)).BeginInit();
             this.grpRenovacion.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMeses)).BeginInit();
             this.SuspendLayout();
             // 
             // BarraTitulo
@@ -120,13 +120,8 @@ namespace _012IP_GUI
             // 
             // grpBusqueda
             // 
-            this.grpBusqueda.Controls.Add(this.lblDNI);
-            this.grpBusqueda.Controls.Add(this.txtDNI);
-            this.grpBusqueda.Controls.Add(this.lblNombre);
-            this.grpBusqueda.Controls.Add(this.txtNombre);
-            this.grpBusqueda.Controls.Add(this.lblApellido);
-            this.grpBusqueda.Controls.Add(this.txtApellido);
-            this.grpBusqueda.Controls.Add(this.btnBuscar);
+            this.grpBusqueda.Controls.Add(this.lblBuscar);
+            this.grpBusqueda.Controls.Add(this.txtBuscar);
             this.grpBusqueda.Controls.Add(this.dgvSocios);
             this.grpBusqueda.Controls.Add(this.btnRegistrarSocio);
             this.grpBusqueda.Location = new System.Drawing.Point(12, 55);
@@ -134,79 +129,29 @@ namespace _012IP_GUI
             this.grpBusqueda.Size = new System.Drawing.Size(876, 222);
             this.grpBusqueda.TabIndex = 1;
             this.grpBusqueda.TabStop = false;
+            this.grpBusqueda.ForeColor = System.Drawing.Color.White;
             this.grpBusqueda.Text = "Buscar socio";
             // 
-            // lblDNI
+            // lblBuscar
             // 
-            this.lblDNI.AutoSize = true;
-            this.lblDNI.Location = new System.Drawing.Point(15, 25);
-            this.lblDNI.Name = "lblDNI";
-            this.lblDNI.Size = new System.Drawing.Size(29, 16);
-            this.lblDNI.TabIndex = 0;
-            this.lblDNI.Text = "DNI";
+            this.lblBuscar.AutoSize = true;
+            this.lblBuscar.Location = new System.Drawing.Point(15, 25);
+            this.lblBuscar.Name = "lblBuscar";
+            this.lblBuscar.Size = new System.Drawing.Size(300, 16);
+            this.lblBuscar.TabIndex = 0;
+            this.lblBuscar.Text = "Buscar por DNI, nombre o apellido";
             // 
-            // txtDNI
+            // txtBuscar
             // 
-            this.txtDNI.BackColor = System.Drawing.Color.White;
-            this.txtDNI.ForeColor = System.Drawing.Color.Black;
-            this.txtDNI.Location = new System.Drawing.Point(15, 45);
-            this.txtDNI.MaxLength = 20;
-            this.txtDNI.Name = "txtDNI";
-            this.txtDNI.Size = new System.Drawing.Size(150, 22);
-            this.txtDNI.TabIndex = 1;
-            // 
-            // lblNombre
-            // 
-            this.lblNombre.AutoSize = true;
-            this.lblNombre.Location = new System.Drawing.Point(180, 25);
-            this.lblNombre.Name = "lblNombre";
-            this.lblNombre.Size = new System.Drawing.Size(55, 16);
-            this.lblNombre.TabIndex = 2;
-            this.lblNombre.Text = "Nombre";
-            // 
-            // txtNombre
-            // 
-            this.txtNombre.BackColor = System.Drawing.Color.White;
-            this.txtNombre.ForeColor = System.Drawing.Color.Black;
-            this.txtNombre.Location = new System.Drawing.Point(180, 45);
-            this.txtNombre.MaxLength = 100;
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(180, 22);
-            this.txtNombre.TabIndex = 3;
-            // 
-            // lblApellido
-            // 
-            this.lblApellido.AutoSize = true;
-            this.lblApellido.Location = new System.Drawing.Point(375, 25);
-            this.lblApellido.Name = "lblApellido";
-            this.lblApellido.Size = new System.Drawing.Size(58, 16);
-            this.lblApellido.TabIndex = 4;
-            this.lblApellido.Text = "Apellido";
-            // 
-            // txtApellido
-            // 
-            this.txtApellido.BackColor = System.Drawing.Color.White;
-            this.txtApellido.ForeColor = System.Drawing.Color.Black;
-            this.txtApellido.Location = new System.Drawing.Point(375, 45);
-            this.txtApellido.MaxLength = 100;
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.Size = new System.Drawing.Size(180, 22);
-            this.txtApellido.TabIndex = 5;
-            // 
-            // btnBuscar
-            // 
-            this.btnBuscar.BackColor = System.Drawing.Color.Maroon;
-            this.btnBuscar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnBuscar.FlatAppearance.BorderSize = 0;
-            this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBuscar.ForeColor = System.Drawing.Color.White;
-            this.btnBuscar.Location = new System.Drawing.Point(575, 43);
-            this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(110, 28);
-            this.btnBuscar.TabIndex = 6;
-            this.btnBuscar.Text = "Buscar";
-            this.btnBuscar.UseVisualStyleBackColor = false;
-            this.btnBuscar.Click += new System.EventHandler(this._012IP_btnBuscar_Click);
+            this.txtBuscar.BackColor = System.Drawing.Color.White;
+            this.txtBuscar.ForeColor = System.Drawing.Color.Black;
+            this.txtBuscar.Location = new System.Drawing.Point(15, 46);
+            this.txtBuscar.MaxLength = 100;
+            this.txtBuscar.Name = "txtBuscar";
+            this.txtBuscar.Size = new System.Drawing.Size(520, 22);
+            this.txtBuscar.TabIndex = 1;
+            this.txtBuscar.TextChanged += new System.EventHandler(this._012IP_txtBuscar_TextChanged);
+            this.txtBuscar.KeyDown += new System.Windows.Forms.KeyEventHandler(this._012IP_txtBuscar_KeyDown);
             // 
             // dgvSocios
             // 
@@ -223,13 +168,12 @@ namespace _012IP_GUI
             this.btnRegistrarSocio.FlatAppearance.BorderSize = 0;
             this.btnRegistrarSocio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRegistrarSocio.ForeColor = System.Drawing.Color.White;
-            this.btnRegistrarSocio.Location = new System.Drawing.Point(711, 184);
+            this.btnRegistrarSocio.Location = new System.Drawing.Point(711, 42);
             this.btnRegistrarSocio.Name = "btnRegistrarSocio";
             this.btnRegistrarSocio.Size = new System.Drawing.Size(150, 28);
             this.btnRegistrarSocio.TabIndex = 8;
             this.btnRegistrarSocio.Text = "Registrar socio";
             this.btnRegistrarSocio.UseVisualStyleBackColor = false;
-            this.btnRegistrarSocio.Visible = false;
             this.btnRegistrarSocio.Click += new System.EventHandler(this._012IP_btnRegistrarSocio_Click);
             // 
             // grpEstadoCuenta
@@ -241,6 +185,7 @@ namespace _012IP_GUI
             this.grpEstadoCuenta.Size = new System.Drawing.Size(500, 270);
             this.grpEstadoCuenta.TabIndex = 2;
             this.grpEstadoCuenta.TabStop = false;
+            this.grpEstadoCuenta.ForeColor = System.Drawing.Color.White;
             this.grpEstadoCuenta.Text = "Estado de cuenta";
             // 
             // lblEstadoCuenta
@@ -291,13 +236,17 @@ namespace _012IP_GUI
             this.grpRenovacion.Controls.Add(this.lblCostoValor);
             this.grpRenovacion.Controls.Add(this.lblPeriodo);
             this.grpRenovacion.Controls.Add(this.lblPeriodoValor);
+            this.grpRenovacion.Controls.Add(this.lblMeses);
+            this.grpRenovacion.Controls.Add(this.nudMeses);
+            this.grpRenovacion.Controls.Add(this.lblTotal);
+            this.grpRenovacion.Controls.Add(this.lblTotalValor);
             this.grpRenovacion.Controls.Add(this.btnRenovar);
-            this.grpRenovacion.Enabled = false;
             this.grpRenovacion.Location = new System.Drawing.Point(522, 287);
             this.grpRenovacion.Name = "grpRenovacion";
             this.grpRenovacion.Size = new System.Drawing.Size(366, 270);
             this.grpRenovacion.TabIndex = 3;
             this.grpRenovacion.TabStop = false;
+            this.grpRenovacion.ForeColor = System.Drawing.Color.White;
             this.grpRenovacion.Text = "Renovación";
             // 
             // lblTipoMembresia
@@ -324,7 +273,7 @@ namespace _012IP_GUI
             // lblCosto
             // 
             this.lblCosto.AutoSize = true;
-            this.lblCosto.Location = new System.Drawing.Point(15, 105);
+            this.lblCosto.Location = new System.Drawing.Point(15, 118);
             this.lblCosto.Name = "lblCosto";
             this.lblCosto.Size = new System.Drawing.Size(88, 16);
             this.lblCosto.TabIndex = 2;
@@ -333,7 +282,7 @@ namespace _012IP_GUI
             // lblCostoValor
             // 
             this.lblCostoValor.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCostoValor.Location = new System.Drawing.Point(160, 102);
+            this.lblCostoValor.Location = new System.Drawing.Point(160, 115);
             this.lblCostoValor.Name = "lblCostoValor";
             this.lblCostoValor.Size = new System.Drawing.Size(190, 22);
             this.lblCostoValor.TabIndex = 3;
@@ -342,7 +291,7 @@ namespace _012IP_GUI
             // lblPeriodo
             // 
             this.lblPeriodo.AutoSize = true;
-            this.lblPeriodo.Location = new System.Drawing.Point(15, 140);
+            this.lblPeriodo.Location = new System.Drawing.Point(15, 174);
             this.lblPeriodo.Name = "lblPeriodo";
             this.lblPeriodo.Size = new System.Drawing.Size(88, 16);
             this.lblPeriodo.TabIndex = 4;
@@ -351,11 +300,50 @@ namespace _012IP_GUI
             // lblPeriodoValor
             // 
             this.lblPeriodoValor.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPeriodoValor.Location = new System.Drawing.Point(120, 137);
+            this.lblPeriodoValor.Location = new System.Drawing.Point(120, 171);
             this.lblPeriodoValor.Name = "lblPeriodoValor";
             this.lblPeriodoValor.Size = new System.Drawing.Size(230, 22);
             this.lblPeriodoValor.TabIndex = 5;
             this.lblPeriodoValor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblMeses
+            // 
+            this.lblMeses.AutoSize = true;
+            this.lblMeses.Location = new System.Drawing.Point(15, 90);
+            this.lblMeses.Name = "lblMeses";
+            this.lblMeses.Size = new System.Drawing.Size(92, 16);
+            this.lblMeses.TabIndex = 7;
+            this.lblMeses.Text = "Meses a pagar";
+            // 
+            // nudMeses
+            // 
+            this.nudMeses.Location = new System.Drawing.Point(290, 87);
+            this.nudMeses.Maximum = new decimal(new int[] { 12, 0, 0, 0 });
+            this.nudMeses.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudMeses.Name = "nudMeses";
+            this.nudMeses.Size = new System.Drawing.Size(60, 22);
+            this.nudMeses.TabIndex = 8;
+            this.nudMeses.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.nudMeses.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudMeses.ValueChanged += new System.EventHandler(this._012IP_nudMeses_ValueChanged);
+            // 
+            // lblTotal
+            // 
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Location = new System.Drawing.Point(15, 146);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(85, 16);
+            this.lblTotal.TabIndex = 9;
+            this.lblTotal.Text = "Total a pagar";
+            // 
+            // lblTotalValor
+            // 
+            this.lblTotalValor.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalValor.Location = new System.Drawing.Point(160, 143);
+            this.lblTotalValor.Name = "lblTotalValor";
+            this.lblTotalValor.Size = new System.Drawing.Size(190, 22);
+            this.lblTotalValor.TabIndex = 10;
+            this.lblTotalValor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // btnRenovar
             // 
@@ -421,6 +409,7 @@ namespace _012IP_GUI
             this.grpEstadoCuenta.ResumeLayout(false);
             this.pnlDeuda.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvCuotasImpagas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMeses)).EndInit();
             this.grpRenovacion.ResumeLayout(false);
             this.grpRenovacion.PerformLayout();
             this.ResumeLayout(false);
@@ -434,13 +423,8 @@ namespace _012IP_GUI
         private System.Windows.Forms.Button btnMinimizar;
         private System.Windows.Forms.Button btnCerrar;
         private System.Windows.Forms.GroupBox grpBusqueda;
-        private System.Windows.Forms.Label lblDNI;
-        private System.Windows.Forms.TextBox txtDNI;
-        private System.Windows.Forms.Label lblNombre;
-        private System.Windows.Forms.TextBox txtNombre;
-        private System.Windows.Forms.Label lblApellido;
-        private System.Windows.Forms.TextBox txtApellido;
-        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Label lblBuscar;
+        private System.Windows.Forms.TextBox txtBuscar;
         private System.Windows.Forms.DataGridView dgvSocios;
         private System.Windows.Forms.Button btnRegistrarSocio;
         private System.Windows.Forms.GroupBox grpEstadoCuenta;
@@ -455,6 +439,10 @@ namespace _012IP_GUI
         private System.Windows.Forms.Label lblCostoValor;
         private System.Windows.Forms.Label lblPeriodo;
         private System.Windows.Forms.Label lblPeriodoValor;
+        private System.Windows.Forms.Label lblMeses;
+        private System.Windows.Forms.NumericUpDown nudMeses;
+        private System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.Label lblTotalValor;
         private System.Windows.Forms.Button btnRenovar;
         private System.Windows.Forms.Label lblMsj;
         private System.Windows.Forms.Button btnSalir;

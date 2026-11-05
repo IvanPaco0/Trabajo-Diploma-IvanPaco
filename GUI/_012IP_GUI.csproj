@@ -241,6 +241,18 @@
     <Compile Include="_012IP_frmGestionInventario.Designer.cs">
       <DependentUpon>_012IP_frmGestionInventario.cs</DependentUpon>
     </Compile>
+    <Compile Include="_012IP_frmInformeMembresias.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_012IP_frmInformeMembresias.Designer.cs">
+      <DependentUpon>_012IP_frmInformeMembresias.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_012IP_frmReporteSocios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_012IP_frmReporteSocios.Designer.cs">
+      <DependentUpon>_012IP_frmReporteSocios.cs</DependentUpon>
+    </Compile>
     <Compile Include="_012IP_frmRegistrarPago.cs">
       <SubType>Form</SubType>
     </Compile>

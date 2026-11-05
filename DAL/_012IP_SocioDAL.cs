@@ -10,12 +10,7 @@ namespace _012IP_DAL
     {
         public _012IP_SocioDAL() : base() { }
 
-        public List<_012IP_SocioBE> _012IP_BuscarSocio(string dni, string nombre, string apellido)
-        {
-            var socios = new List<_012IP_SocioBE>();
-            try
-            {
-                _sqlcommand.CommandText = @"
+        private const string SelectSocios = @"
                     SELECT s.IdSocio, s.DNI, s.Nombre, s.Apellido, s.Email, s.Telefono, s.Activo,
                            su.IdSuscripcion, su.IdMembresia, su.FechaInicio, su.FechaVencimiento, su.Estado,
                            m.Nombre AS NombreMembresia, m.CostoMensual
@@ -25,6 +20,13 @@ namespace _012IP_DAL
                                  WHERE x.IdSocio = s.IdSocio
                                  ORDER BY x.FechaVencimiento DESC) su
                     LEFT JOIN Membresia m ON m.IdMembresia = su.IdMembresia
+                    ";
+
+        public List<_012IP_SocioBE> _012IP_BuscarSocio(string dni, string nombre, string apellido)
+        {
+            try
+            {
+                _sqlcommand.CommandText = SelectSocios + @"
                     WHERE s.Activo = 1
                       AND (@dni = '' OR s.DNI = @dni)
                       AND (@nombre = '' OR s.Nombre LIKE '%' + @nombre + '%')
@@ -35,7 +37,48 @@ namespace _012IP_DAL
                 _sqlcommand.Parameters.AddWithValue("@nombre", (nombre ?? "").Trim());
                 _sqlcommand.Parameters.AddWithValue("@apellido", (apellido ?? "").Trim());
 
-                _sqlserver.Open();
+                return _012IP_LeerSocios();
+            }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
+        // Busqueda con un solo texto: cada palabra tiene que coincidir con el DNI (empieza con),
+        // el nombre o el apellido. Asi "perez juan" o "3011" encuentran al socio.
+        // Sin palabras devuelve los primeros socios activos (para mostrar la grilla al abrir).
+        public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(List<string> palabras, int maximo)
+        {
+            try
+            {
+                var condiciones = new System.Text.StringBuilder();
+                for (int i = 0; i < palabras.Count; i++)
+                {
+                    string p = "@p" + i;
+                    condiciones.Append(" AND (s.DNI LIKE " + p + " + '%' OR s.Nombre LIKE '%' + " + p + " + '%' OR s.Apellido LIKE '%' + " + p + " + '%')");
+                    _sqlcommand.Parameters.AddWithValue(p, palabras[i]);
+                }
+
+                _sqlcommand.CommandText = SelectSocios.Replace("SELECT s.IdSocio", "SELECT TOP (@maximo) s.IdSocio") + @"
+                    WHERE s.Activo = 1" + condiciones + @"
+                    ORDER BY s.Apellido, s.Nombre;";
+                _sqlcommand.Parameters.AddWithValue("@maximo", maximo);
+
+                return _012IP_LeerSocios();
+            }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
+        private List<_012IP_SocioBE> _012IP_LeerSocios()
+        {
+            var socios = new List<_012IP_SocioBE>();
+            _sqlserver.Open();
                 using (var reader = _sqlcommand.ExecuteReader())
                 {
                     while (reader.Read())
@@ -72,14 +115,7 @@ namespace _012IP_DAL
                         socios.Add(socio);
                     }
                 }
-                return socios;
-            }
-            catch { throw; }
-            finally
-            {
-                _sqlcommand.Parameters.Clear();
-                _sqlserver.Close();
-            }
+            return socios;
         }
 
         public bool _012IP_ExisteSocioConDNI(string dni)
