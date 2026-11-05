@@ -19,6 +19,9 @@ namespace _012IP_GUI
         private readonly string nombreInicial;
         private readonly string apellidoInicial;
 
+        // Modo modificación: se editan los datos de un socio existente (genera una versión en la bitácora de cambios).
+        private readonly _012IP_SocioBE socioAEditar;
+
         int posX, posY;
         bool arrastrando = false;
 
@@ -35,7 +38,10 @@ namespace _012IP_GUI
             apellidoInicial = apellido;
         }
 
-      
+        public _012IP_frmRegistrarSocio(_012IP_SocioBE socio) : this()
+        {
+            socioAEditar = socio;
+        }
 
         private void _012IP_frmRegistrarSocio_Load(object sender, EventArgs e)
         {
@@ -50,6 +56,18 @@ namespace _012IP_GUI
 
             LanguageManager.Instance.AgregarObservador(this);
             Actualizar(LanguageManager.Instance);
+
+            if (socioAEditar != null)
+            {
+                txtDNI.Text = socioAEditar.DNI;
+                txtNombre.Text = socioAEditar.Nombre;
+                txtApellido.Text = socioAEditar.Apellido;
+                txtEmail.Text = socioAEditar.Email;
+                txtTelefono.Text = socioAEditar.Telefono;
+                lblMsj.ForeColor = Color.White;
+                lblMsj.Text = _012IP_Texto("ModSocioIngrese");
+                return;
+            }
 
             if (!string.IsNullOrWhiteSpace(dniInicial) && dniInicial.Trim().Length > 0 && System.Linq.Enumerable.All(dniInicial.Trim(), char.IsDigit))
                 txtDNI.Text = dniInicial.Trim();
@@ -69,6 +87,11 @@ namespace _012IP_GUI
 
         private void _012IP_btnRegistrar_Click(object sender, EventArgs e)
         {
+            if (socioAEditar != null)
+            {
+                _012IP_GuardarModificacion();
+                return;
+            }
             try
             {
                
@@ -89,6 +112,28 @@ namespace _012IP_GUI
                
                 lblMsj.ForeColor = Color.FromArgb(255, 156, 156);
                 lblMsj.Text = ex.Message;
+            }
+        }
+
+        private void _012IP_GuardarModificacion()
+        {
+            try
+            {
+                _012IP_SocioBE socio = socioBLL._012IP_ModificarSocio(socioAEditar.IdSocio,
+                    txtDNI.Text, txtNombre.Text, txtApellido.Text, txtEmail.Text, txtTelefono.Text);
+
+                SocioRegistrado = socio;
+                MessageBox.Show(
+                    string.Format(_012IP_Texto("ModSocioExitoso"), socio.Nombre, socio.Apellido, socio.DNI),
+                    _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                lblMsj.ForeColor = Color.FromArgb(255, 156, 156);
+                lblMsj.Text = ex.InnerException != null ? ex.Message + " (" + ex.InnerException.Message + ")" : ex.Message;
             }
         }
 
@@ -122,6 +167,11 @@ namespace _012IP_GUI
             lblEmail.Text = _012IP_Texto("lblEmail");
             lblTelefono.Text = _012IP_Texto("RenMemTelefono");
             btnRegistrar.Text = _012IP_Texto("RegSocioBtnRegistrar");
+            if (socioAEditar != null)
+            {
+                lblTitulo.Text = _012IP_Texto("ModSocioTitulo");
+                btnRegistrar.Text = _012IP_Texto("ModSocioBtnGuardar");
+            }
             btnCancelar.Text = _012IP_Texto("btnCancelar");
         }
 

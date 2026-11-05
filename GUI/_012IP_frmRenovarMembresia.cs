@@ -169,6 +169,28 @@ namespace _012IP_GUI
             }
         }
 
+        // Corrige los datos del socio seleccionado (email, teléfono, etc.). El cambio queda
+        // registrado en la bitácora de cambios de Socio (trigger de la base).
+        private void _012IP_btnModificarSocio_Click(object sender, EventArgs e)
+        {
+            if (socioSeleccionado == null)
+            {
+                lblMsj.ForeColor = Color.White;
+                lblMsj.Text = _012IP_Texto("RenMemSeleccione");
+                return;
+            }
+            using (var frm = new _012IP_frmRegistrarSocio(socioSeleccionado))
+            {
+                if (frm.ShowDialog(this) == DialogResult.OK && frm.SocioRegistrado != null)
+                {
+                    txtBuscar.Text = frm.SocioRegistrado.DNI;
+                    timerBusqueda.Stop();
+                    socioSeleccionado = null;
+                    _012IP_BuscarSocios();
+                }
+            }
+        }
+
         private void _012IP_SeleccionarSocio(string dni)
         {
             try
@@ -550,6 +572,7 @@ namespace _012IP_GUI
             grpBusqueda.Text = _012IP_Texto("RenMemGrpBusqueda");
             lblBuscar.Text = _012IP_Texto("RenMemBuscarAyuda");
             btnRegistrarSocio.Text = _012IP_Texto("RenMemBtnRegistrarSocio");
+            btnModificarSocio.Text = _012IP_Texto("RenMemBtnModificarSocio");
             grpEstadoCuenta.Text = _012IP_Texto("RenMemGrpEstado");
             btnRegularizarDeuda.Text = _012IP_Texto("RenMemBtnRegularizar");
             grpRenovacion.Text = _012IP_Texto("RenMemGrpRenovacion");

@@ -231,7 +231,7 @@ namespace _012IP_BLL
             try
             {
                
-                registrado = socioDAL._012IP_RegistrarNuevoSocio(socio, dvh);
+                registrado = socioDAL._012IP_RegistrarNuevoSocio(socio, dvh, SessionManager.Instance.UsuarioActual()?.Username);
             }
             catch (Exception ex)
             {
@@ -254,6 +254,72 @@ namespace _012IP_BLL
             bitacoraBLL.RegistrarEvento(bitacora);
 
             return socio;
+        }
+
+        // ===================== Modificación de datos (genera versión en la bitácora de cambios) =====================
+
+        // Cadena del DVH de Socio (igual que en el alta).
+        public static string _012IP_CalcularDVH(_012IP_SocioBE socio)
+        {
+            return DigitoVerificador.CalcularDVH(socio.DNI + socio.Nombre + socio.Apellido + socio.Email + socio.Telefono + socio.Activo);
+        }
+
+        public _012IP_SocioBE _012IP_ModificarSocio(int idSocio, string dni, string nombre, string apellido, string email, string telefono)
+        {
+            var socio = new _012IP_SocioBE
+            {
+                IdSocio = idSocio,
+                DNI = (dni ?? "").Trim(),
+                Nombre = (nombre ?? "").Trim(),
+                Apellido = (apellido ?? "").Trim(),
+                Email = (email ?? "").Trim(),
+                Telefono = (telefono ?? "").Trim(),
+                Activo = true
+            };
+
+            if (!_012IP_ValidarFormato(socio.DNI, socio.Nombre, socio.Apellido, socio.Email, socio.Telefono))
+                throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText6"));
+
+            _012IP_GuardarCambios(socio, "Modificación");
+
+            bitacoraBLL.RegistrarEvento(new Bitacora
+            {
+                Login = SessionManager.Instance.UsuarioActual().Username,
+                Modulo = "Socios",
+                Evento = $"Modificar socio - DNI {socio.DNI} - {socio.Nombre} {socio.Apellido}",
+                Criticidad = 2
+            });
+            return socio;
+        }
+
+        // Valida DNI único (sin contar al mismo socio), calcula el DVH y actualiza la tabla Socio.
+        internal void _012IP_GuardarCambios(_012IP_SocioBE socio, string operacion)
+        {
+            bool dniRepetido;
+            try
+            {
+                dniRepetido = socioDAL._012IP_ExisteOtroSocioConDNI(socio.DNI, socio.IdSocio);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText3"), ex);
+            }
+            if (dniRepetido)
+                throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText7"));
+
+            socio.DVH = _012IP_CalcularDVH(socio);
+
+            bool ok;
+            try
+            {
+                ok = socioDAL._012IP_ModificarSocio(socio, socio.DVH, SessionManager.Instance.UsuarioActual()?.Username, operacion);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText9"), ex);
+            }
+            if (!ok)
+                throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText9"));
         }
     }
 }

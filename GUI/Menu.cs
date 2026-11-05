@@ -145,6 +145,7 @@ namespace GUI
             Mostrar(btnPerfiles, tiene("Ver Perfiles"));
             Mostrar(btnDigitoVerificador, tiene("Gestionar DigitoVerificadores"));
             Mostrar(btnBitacora, tiene("Ver Bitacora"));
+            Mostrar(btnBitacoraCambios, tiene("Ver Bitacora Cambios"));
             Mostrar(btnBackUp, tiene("Ver Respaldos"));
             Mostrar(btnRestore, tiene("Ver Respaldos"));
 
@@ -244,6 +245,20 @@ namespace GUI
             this.Hide();
             FormBitacora formBitacora = new FormBitacora();
             formBitacora.Show();
+        }
+
+        // T06.B Bitácora de cambios de la tabla Socio (historial y restauración de versiones)
+        private void btnBitacoraCambios_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.UsuarioActual().TienePermiso("Ver Bitacora Cambios"))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("BitCamSinPermiso"),
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            this.Hide();
+            _012IP_frmBitacoraCambios frm = new _012IP_frmBitacoraCambios();
+            frm.Show();
         }
 
         private void btnUsuarios_Click(object sender, EventArgs e)
@@ -410,6 +425,7 @@ namespace GUI
             btnPerfiles.Text = t("MenuGestionPerfiles");
             btnDigitoVerificador.Text = t("MenuDigitosVerificadores");
             btnBitacora.Text = t("MenuEventos");
+            btnBitacoraCambios.Text = t("MenuBitacoraCambios");
             btnBackUp.Text = t("btnBackUp");
             btnRestore.Text = t("btnRestore");
 

@@ -29,6 +29,7 @@ namespace _012IP_GUI
             this.txtBuscar = new System.Windows.Forms.TextBox();
             this.dgvSocios = new System.Windows.Forms.DataGridView();
             this.btnRegistrarSocio = new System.Windows.Forms.Button();
+            this.btnModificarSocio = new System.Windows.Forms.Button();
             this.grpEstadoCuenta = new System.Windows.Forms.GroupBox();
             this.lblEstadoCuenta = new System.Windows.Forms.Label();
             this.pnlDeuda = new System.Windows.Forms.Panel();
@@ -124,6 +125,7 @@ namespace _012IP_GUI
             this.grpBusqueda.Controls.Add(this.txtBuscar);
             this.grpBusqueda.Controls.Add(this.dgvSocios);
             this.grpBusqueda.Controls.Add(this.btnRegistrarSocio);
+            this.grpBusqueda.Controls.Add(this.btnModificarSocio);
             this.grpBusqueda.Location = new System.Drawing.Point(12, 55);
             this.grpBusqueda.Name = "grpBusqueda";
             this.grpBusqueda.Size = new System.Drawing.Size(876, 222);
@@ -175,6 +177,21 @@ namespace _012IP_GUI
             this.btnRegistrarSocio.Text = "Registrar socio";
             this.btnRegistrarSocio.UseVisualStyleBackColor = false;
             this.btnRegistrarSocio.Click += new System.EventHandler(this._012IP_btnRegistrarSocio_Click);
+            // 
+            // btnModificarSocio
+            // 
+            this.btnModificarSocio.BackColor = System.Drawing.Color.Maroon;
+            this.btnModificarSocio.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnModificarSocio.FlatAppearance.BorderSize = 0;
+            this.btnModificarSocio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnModificarSocio.ForeColor = System.Drawing.Color.White;
+            this.btnModificarSocio.Location = new System.Drawing.Point(551, 42);
+            this.btnModificarSocio.Name = "btnModificarSocio";
+            this.btnModificarSocio.Size = new System.Drawing.Size(150, 28);
+            this.btnModificarSocio.TabIndex = 9;
+            this.btnModificarSocio.Text = "Modificar datos";
+            this.btnModificarSocio.UseVisualStyleBackColor = false;
+            this.btnModificarSocio.Click += new System.EventHandler(this._012IP_btnModificarSocio_Click);
             // 
             // grpEstadoCuenta
             // 
@@ -427,6 +444,7 @@ namespace _012IP_GUI
         private System.Windows.Forms.TextBox txtBuscar;
         private System.Windows.Forms.DataGridView dgvSocios;
         private System.Windows.Forms.Button btnRegistrarSocio;
+        private System.Windows.Forms.Button btnModificarSocio;
         private System.Windows.Forms.GroupBox grpEstadoCuenta;
         private System.Windows.Forms.Label lblEstadoCuenta;
         private System.Windows.Forms.Panel pnlDeuda;

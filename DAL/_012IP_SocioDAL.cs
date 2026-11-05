@@ -137,14 +137,20 @@ namespace _012IP_DAL
             }
         }
 
-        public bool _012IP_RegistrarNuevoSocio(_012IP_SocioBE socio, string dvh)
+        // El usuario del sistema y la operación se pasan a los triggers de la bitácora de cambios
+        // (SocioHistorial) con SESSION_CONTEXT, en el mismo lote que el INSERT / UPDATE.
+        private const string ContextoBitacora = @"
+                    EXEC sp_set_session_context @key = N'Usuario', @value = @usuarioSistema;
+                    EXEC sp_set_session_context @key = N'Operacion', @value = @operacion;";
+
+        public bool _012IP_RegistrarNuevoSocio(_012IP_SocioBE socio, string dvh, string usuario = null)
         {
             try
             {
-                _sqlcommand.CommandText = @"
+                _sqlcommand.CommandText = ContextoBitacora + @"
                     INSERT INTO Socio (DNI, Nombre, Apellido, Email, Telefono, Activo, DVH)
-                    OUTPUT INSERTED.IdSocio
-                    VALUES (@dni, @nombre, @apellido, @email, @telefono, 1, @dvh);";
+                    VALUES (@dni, @nombre, @apellido, @email, @telefono, 1, @dvh);
+                    SELECT CAST(SCOPE_IDENTITY() AS int);";
 
                 _sqlcommand.Parameters.AddWithValue("@dni", socio.DNI);
                 _sqlcommand.Parameters.AddWithValue("@nombre", socio.Nombre);
@@ -152,6 +158,8 @@ namespace _012IP_DAL
                 _sqlcommand.Parameters.AddWithValue("@email", (object)socio.Email ?? "");
                 _sqlcommand.Parameters.AddWithValue("@telefono", (object)socio.Telefono ?? "");
                 _sqlcommand.Parameters.AddWithValue("@dvh", dvh);
+                _sqlcommand.Parameters.AddWithValue("@usuarioSistema", (object)usuario ?? DBNull.Value);
+                _sqlcommand.Parameters.AddWithValue("@operacion", "Alta");
 
                 _sqlserver.Open();
                 object idGenerado = _sqlcommand.ExecuteScalar();
@@ -164,6 +172,56 @@ namespace _012IP_DAL
                 return true;
             }
             catch { throw; }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
+        public bool _012IP_ExisteOtroSocioConDNI(string dni, int idSocio)
+        {
+            try
+            {
+                _sqlcommand.CommandText = "SELECT COUNT(1) FROM Socio WHERE DNI = @dni AND IdSocio <> @id;";
+                _sqlcommand.Parameters.AddWithValue("@dni", dni);
+                _sqlcommand.Parameters.AddWithValue("@id", idSocio);
+                _sqlserver.Open();
+                return (int)_sqlcommand.ExecuteScalar() > 0;
+            }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
+        // Modifica los datos del socio. El trigger TR_Socio_Update desactiva la versión vigente
+        // en SocioHistorial e inserta la nueva (operación "Modificación" o "Restauración").
+        public bool _012IP_ModificarSocio(_012IP_SocioBE socio, string dvh, string usuario, string operacion)
+        {
+            try
+            {
+                _sqlcommand.CommandText = ContextoBitacora + @"
+                    UPDATE Socio
+                    SET DNI = @dni, Nombre = @nombre, Apellido = @apellido, Email = @email,
+                        Telefono = @telefono, Activo = @activo, DVH = @dvh
+                    WHERE IdSocio = @id;";
+
+                _sqlcommand.Parameters.AddWithValue("@id", socio.IdSocio);
+                _sqlcommand.Parameters.AddWithValue("@dni", socio.DNI);
+                _sqlcommand.Parameters.AddWithValue("@nombre", socio.Nombre);
+                _sqlcommand.Parameters.AddWithValue("@apellido", socio.Apellido);
+                _sqlcommand.Parameters.AddWithValue("@email", (object)socio.Email ?? "");
+                _sqlcommand.Parameters.AddWithValue("@telefono", (object)socio.Telefono ?? "");
+                _sqlcommand.Parameters.AddWithValue("@activo", socio.Activo);
+                _sqlcommand.Parameters.AddWithValue("@dvh", dvh);
+                _sqlcommand.Parameters.AddWithValue("@usuarioSistema", (object)usuario ?? DBNull.Value);
+                _sqlcommand.Parameters.AddWithValue("@operacion", operacion);
+
+                _sqlserver.Open();
+                return _sqlcommand.ExecuteNonQuery() > 0;
+            }
             finally
             {
                 _sqlcommand.Parameters.Clear();

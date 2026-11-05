@@ -40,6 +40,7 @@
             this.btnPerfiles = new System.Windows.Forms.Button();
             this.btnDigitoVerificador = new System.Windows.Forms.Button();
             this.btnBitacora = new System.Windows.Forms.Button();
+            this.btnBitacoraCambios = new System.Windows.Forms.Button();
             this.btnBackUp = new System.Windows.Forms.Button();
             this.btnRestore = new System.Windows.Forms.Button();
             this.btnMaestro = new System.Windows.Forms.Button();
@@ -183,6 +184,7 @@
             this.panelAdminSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(92)))));
             this.panelAdminSubmenu.Controls.Add(this.btnRestore);
             this.panelAdminSubmenu.Controls.Add(this.btnBackUp);
+            this.panelAdminSubmenu.Controls.Add(this.btnBitacoraCambios);
             this.panelAdminSubmenu.Controls.Add(this.btnBitacora);
             this.panelAdminSubmenu.Controls.Add(this.btnDigitoVerificador);
             this.panelAdminSubmenu.Controls.Add(this.btnPerfiles);
@@ -190,7 +192,7 @@
             this.panelAdminSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelAdminSubmenu.Location = new System.Drawing.Point(0, 114);
             this.panelAdminSubmenu.Name = "panelAdminSubmenu";
-            this.panelAdminSubmenu.Size = new System.Drawing.Size(200, 210);
+            this.panelAdminSubmenu.Size = new System.Drawing.Size(200, 245);
             this.panelAdminSubmenu.TabIndex = 2;
             this.panelAdminSubmenu.Visible = false;
             // 
@@ -241,6 +243,22 @@
             this.btnDigitoVerificador.Text = "Dígitos verificadores";
             this.btnDigitoVerificador.UseVisualStyleBackColor = true;
             this.btnDigitoVerificador.Click += new System.EventHandler(this.btnDigitoVerificador_Click);
+            // 
+            // btnBitacoraCambios
+            // 
+            this.btnBitacoraCambios.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnBitacoraCambios.FlatAppearance.BorderSize = 0;
+            this.btnBitacoraCambios.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnBitacoraCambios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBitacoraCambios.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBitacoraCambios.ForeColor = System.Drawing.Color.White;
+            this.btnBitacoraCambios.Location = new System.Drawing.Point(0, 140);
+            this.btnBitacoraCambios.Name = "btnBitacoraCambios";
+            this.btnBitacoraCambios.Size = new System.Drawing.Size(200, 35);
+            this.btnBitacoraCambios.TabIndex = 6;
+            this.btnBitacoraCambios.Text = "Cambios de socios";
+            this.btnBitacoraCambios.UseVisualStyleBackColor = true;
+            this.btnBitacoraCambios.Click += new System.EventHandler(this.btnBitacoraCambios_Click);
             // 
             // btnBitacora
             // 
@@ -732,6 +750,7 @@
         private System.Windows.Forms.Button btnPerfiles;
         private System.Windows.Forms.Button btnDigitoVerificador;
         private System.Windows.Forms.Button btnBitacora;
+        private System.Windows.Forms.Button btnBitacoraCambios;
         private System.Windows.Forms.Button btnBackUp;
         private System.Windows.Forms.Button btnRestore;
         private System.Windows.Forms.Button btnMaestro;
