@@ -18,11 +18,9 @@ namespace _012IP_BE
         public DateTime FechaPago { get; set; }
         public string DVH { get; set; }
 
-        // Pago con tarjeta: solo se guardan la marca y los últimos 4 dígitos (nunca el número completo ni el CVV).
         public string? MarcaTarjeta { get; set; }
         public string? UltimosDigitos { get; set; }
 
-        // Solo lectura para informes (no se persiste en Pago).
         public string NombreMembresia { get; set; } = string.Empty;
 
         public _012IP_PagoBE() { }

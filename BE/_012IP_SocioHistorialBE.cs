@@ -2,8 +2,6 @@
 
 namespace _012IP_BE
 {
-    // Una versión de los datos de un socio guardada en la bitácora de cambios (tabla SocioHistorial).
-    // Las filas las generan los triggers de la tabla Socio; VersionActiva = true es la versión vigente.
     public class _012IP_SocioHistorialBE
     {
         public int IdHistorial { get; set; }

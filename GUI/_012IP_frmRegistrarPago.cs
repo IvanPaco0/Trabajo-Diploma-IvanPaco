@@ -22,11 +22,8 @@ namespace _012IP_GUI
        
         public _012IP_PagoBE PagoRegistrado { get; private set; }
 
-        // Cuando es true, la pantalla solo valida y devuelve el medio de pago elegido;
-        // el registro lo hace quien la invocó (por ejemplo, la renovación dentro de su transacción).
         public bool SoloCapturarMedioDePago { get; set; }
         public string MedioDePagoElegido { get; private set; }
-        // Resultado de la validación de tarjeta (CUN-04): solo marca y últimos 4 dígitos.
         public string MarcaTarjeta { get; private set; }
         public string UltimosDigitos { get; private set; }
 
@@ -106,7 +103,6 @@ namespace _012IP_GUI
                 UltimosDigitos = null;
                 if (_012IP_PagoBLL._012IP_EsTarjeta(medioDePago))
                 {
-                    // CUN-04: validar la tarjeta antes de aceptar el pago
                     _012IP_TarjetaBE tarjeta = pagoBLL._012IP_ValidarTarjeta(txtNumeroTarjeta.Text, txtVencimientoTarjeta.Text, txtCVV.Text);
                     txtCVV.Clear();
                     if (!tarjeta.Valida)
@@ -149,7 +145,6 @@ namespace _012IP_GUI
             }
         }
 
-        // Muestra los datos de la tarjeta solo cuando el medio de pago es tarjeta y agranda el formulario.
         private void _012IP_cbMedioPago_SelectedIndexChanged(object sender, EventArgs e)
         {
             string medio = cbMedioPago.SelectedItem as string ?? cbMedioPago.Text;

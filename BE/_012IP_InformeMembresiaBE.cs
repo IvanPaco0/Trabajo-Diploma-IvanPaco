@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace _012IP_BE
 {
-    // Informe de recaudación y vencimientos (CUN-05).
     public class _012IP_InformeMembresiaBE
     {
         public DateTime Desde { get; set; }

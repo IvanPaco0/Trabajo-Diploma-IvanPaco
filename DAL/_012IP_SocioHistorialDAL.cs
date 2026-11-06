@@ -5,9 +5,6 @@ using System.Collections.Generic;
 
 namespace _012IP_DAL
 {
-    // Bitácora de cambios de la tabla maestra Socio.
-    // La tabla SocioHistorial la llenan los triggers TR_Socio_Insert y TR_Socio_Update;
-    // desde la aplicación solo se consulta.
     public class _012IP_SocioHistorialDAL : _012IP_AbstractDAL<_012IP_SocioHistorialBE>
     {
         public _012IP_SocioHistorialDAL() : base() { }
@@ -17,7 +14,6 @@ namespace _012IP_DAL
                            h.FechaCambio, h.Operacion, h.Usuario, h.VersionActiva
                     FROM SocioHistorial h";
 
-        // Filtros: palabras (DNI que empieza con / nombre o apellido que contiene) y rango de fechas del cambio.
         public List<_012IP_SocioHistorialBE> _012IP_ListarHistorial(string dni, List<string> palabras, DateTime? desde, DateTime? hasta, int maximo)
         {
             try

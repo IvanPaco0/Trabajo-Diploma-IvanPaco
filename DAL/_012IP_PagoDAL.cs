@@ -74,7 +74,6 @@ namespace _012IP_DAL
             }
         }
     
-        // Pagos registrados en el período (informe de recaudación, CUN-05).
         public List<_012IP_PagoBE> _012IP_ListarPagos(DateTime desde, DateTime hasta)
         {
             var lista = new List<_012IP_PagoBE>();

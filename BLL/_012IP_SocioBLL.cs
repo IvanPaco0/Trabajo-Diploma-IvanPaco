@@ -22,7 +22,6 @@ namespace _012IP_BLL
             bitacoraBLL = new BitacoraBLL();
         }
 
-        // ===================== Reporte de socios =====================
         public const string ESTADO_TODOS = "Todos";
         public const string ESTADO_VIGENTE = "Vigente";
         public const string ESTADO_POR_VENCER = "PorVencer";
@@ -30,8 +29,6 @@ namespace _012IP_BLL
         public const string ESTADO_SIN_MEMBRESIA = "SinMembresia";
         private const int MaximoFilasReporte = 100000;
 
-        // Arma el reporte: socios activos filtrados por texto (DNI, nombre o apellido),
-        // por estado de la membresía y por tipo de membresía (null = todas).
         public List<_012IP_ReporteSocioBE> _012IP_GenerarReporteSocios(string texto, string estado, int? idMembresia)
         {
             List<string> palabras = (texto ?? "")
@@ -90,7 +87,6 @@ namespace _012IP_BLL
             };
         }
 
-        // Deja constancia en la bitácora de que se exportó el reporte.
         public void _012IP_RegistrarExportacionReporte(int cantidad, string archivo)
         {
             bitacoraBLL.RegistrarEvento(new Bitacora
@@ -104,7 +100,6 @@ namespace _012IP_BLL
 
         public const int MaximoResultadosBusqueda = 50;
 
-        // Busqueda dinamica de un solo cuadro: acepta DNI, nombre, apellido o combinaciones ("perez juan").
         public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(string texto, bool incluirInactivos = false)
         {
             List<string> palabras = (texto ?? "")
@@ -256,9 +251,6 @@ namespace _012IP_BLL
             return socio;
         }
 
-        // ===================== Modificación de datos (genera versión en la bitácora de cambios) =====================
-
-        // Cadena del DVH de Socio (igual que en el alta).
         public static string _012IP_CalcularDVH(_012IP_SocioBE socio)
         {
             return DigitoVerificador.CalcularDVH(socio.DNI + socio.Nombre + socio.Apellido + socio.Email + socio.Telefono + socio.Activo);
@@ -292,8 +284,6 @@ namespace _012IP_BLL
             return socio;
         }
 
-        // Baja lógica (Activo = 0) o reactivación del socio. No se borra nada: el trigger de Socio
-        // guarda la versión en la bitácora de cambios y el socio deja de aparecer en Renovar membresía.
         public void _012IP_CambiarEstadoSocio(_012IP_SocioBE seleccionado, bool activo)
         {
             if (seleccionado == null)
@@ -323,7 +313,6 @@ namespace _012IP_BLL
             });
         }
 
-        // Valida DNI único (sin contar al mismo socio), calcula el DVH y actualiza la tabla Socio.
         internal void _012IP_GuardarCambios(_012IP_SocioBE socio, string operacion)
         {
             bool dniRepetido;

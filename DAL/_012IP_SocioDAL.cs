@@ -46,9 +46,6 @@ namespace _012IP_DAL
             }
         }
 
-        // Busqueda con un solo texto: cada palabra tiene que coincidir con el DNI (empieza con),
-        // el nombre o el apellido. Asi "perez juan" o "3011" encuentran al socio.
-        // Sin palabras devuelve los primeros socios activos (para mostrar la grilla al abrir).
         public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(List<string> palabras, int maximo, bool incluirInactivos = false)
         {
             try
@@ -137,8 +134,6 @@ namespace _012IP_DAL
             }
         }
 
-        // El usuario del sistema y la operación se pasan a los triggers de la bitácora de cambios
-        // (SocioHistorial) con SESSION_CONTEXT, en el mismo lote que el INSERT / UPDATE.
         private const string ContextoBitacora = @"
                     EXEC sp_set_session_context @key = N'Usuario', @value = @usuarioSistema;
                     EXEC sp_set_session_context @key = N'Operacion', @value = @operacion;";
@@ -196,8 +191,6 @@ namespace _012IP_DAL
             }
         }
 
-        // Modifica los datos del socio. El trigger TR_Socio_Update desactiva la versión vigente
-        // en SocioHistorial e inserta la nueva (operación "Modificación" o "Activación").
         public bool _012IP_ModificarSocio(_012IP_SocioBE socio, string dvh, string usuario, string operacion)
         {
             try

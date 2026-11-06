@@ -60,12 +60,9 @@ namespace _012IP_BLL
         }
 
        
-        // Días antes del vencimiento a partir de los cuales se avisa "por vencer".
         public const int DiasAvisoVencimiento = 7;
         public const int MaximoMesesPorPago = 12;
 
-        // Membresía prepaga: el nuevo período arranca cuando vence la vigente (o hoy si ya venció)
-        // y se extiende la cantidad de meses que el socio paga.
         public void _012IP_CalcularPeriodoRenovacion(_012IP_SuscripcionBE actual, int cantidadMeses, out DateTime fechaInicio, out DateTime fechaVencimiento)
         {
             DateTime hoy = DateTime.Today;
@@ -84,9 +81,6 @@ namespace _012IP_BLL
             return membresia.CostoMensual * cantidadMeses;
         }
 
-        // Renueva la membresía prepaga en una sola transacción:
-        // registra el pago de los meses elegidos y extiende la fecha de vencimiento.
-        // Si algo falla, no queda ni el pago ni la renovación.
         public _012IP_PagoBE _012IP_RenovarSuscripcion(_012IP_SocioBE socio, _012IP_MembresiaBE membresia, int cantidadMeses,
             DateTime fechaInicio, DateTime fechaVencimiento, string medioDePago, string? marcaTarjeta = null, string? ultimosDigitos = null)
         {
@@ -128,8 +122,6 @@ namespace _012IP_BLL
             }
         }
     
-        // ===================== CUN-05 Informe de vencimientos =====================
-        // Socios con membresía vencida o que vence dentro de los próximos "diasAviso" días.
         public List<_012IP_VencimientoSocioBE> _012IP_ListarVencimientos(int diasAviso)
         {
             try

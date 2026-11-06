@@ -20,8 +20,6 @@ namespace BLL
             try
             {
                 unEvento.Fecha = DateTime.Now;
-                // Las columnas de la tabla Bitacora tienen largo fijo (Login 50, Modulo 50, Evento 100).
-                // Se recorta antes de calcular el DVH para que el texto guardado y el DVH coincidan.
                 unEvento.Login = Recortar(unEvento.Login, 50);
                 unEvento.Modulo = Recortar(unEvento.Modulo, 50);
                 unEvento.Evento = Recortar(unEvento.Evento, 100);

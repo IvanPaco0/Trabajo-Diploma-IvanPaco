@@ -45,9 +45,6 @@ namespace _012IP_BLL
             return (medioDePago ?? "").Trim().StartsWith("Tarjeta", StringComparison.OrdinalIgnoreCase);
         }
 
-        // ===================== CUN-04 Validar tarjeta =====================
-        // Valida número (Luhn), marca (BIN), vencimiento (MM/AA) y formato del CVV.
-        // El CVV y el número completo nunca se guardan: solo se devuelven la marca y los últimos 4 dígitos.
         public _012IP_TarjetaBE _012IP_ValidarTarjeta(string numero, string vencimiento, string cvv)
         {
             var r = new _012IP_TarjetaBE();
@@ -72,7 +69,6 @@ namespace _012IP_BLL
             return r;
         }
 
-        // Algoritmo de Luhn (módulo 10).
         public bool _012IP_VerificarLuhn(string digitos)
         {
             int suma = 0;
@@ -87,7 +83,6 @@ namespace _012IP_BLL
             return suma % 10 == 0;
         }
 
-        // Marca según el BIN (primeros dígitos). Devuelve "" si no se reconoce.
         public string _012IP_ObtenerMarca(string digitos)
         {
             if (digitos.StartsWith("589562")) return "Naranja";
@@ -101,11 +96,9 @@ namespace _012IP_BLL
             return "";
         }
 
-        // Vencimiento en formato MM/AA; la tarjeta vale hasta el último día de ese mes.
         public bool _012IP_ValidarVencimiento(string vencimiento)
         {
             DateTime fecha;
-            // Acepta "MM/AA" y tambien "MMAA" (sin barra).
             string v = (vencimiento ?? "").Trim().Replace("-", "/");
             if (v.Length == 4 && v.All(char.IsDigit)) v = v.Substring(0, 2) + "/" + v.Substring(2);
             if (!DateTime.TryParseExact(v, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fecha))
@@ -114,7 +107,6 @@ namespace _012IP_BLL
             return finDeMes >= DateTime.Today;
         }
 
-        // CVV: 4 dígitos para American Express, 3 para el resto.
         public bool _012IP_ValidarFormatoCVV(string cvv, string marca)
         {
             cvv = (cvv ?? "").Trim();
@@ -122,7 +114,6 @@ namespace _012IP_BLL
             return cvv.Length == largo && cvv.All(char.IsDigit);
         }
 
-        // ===================== CUN-05 Informe de recaudación =====================
         public _012IP_InformeMembresiaBE _012IP_ObtenerRecaudacion(DateTime desde, DateTime hasta)
         {
             if (hasta.Date < desde.Date)
@@ -169,7 +160,6 @@ namespace _012IP_BLL
             if (!_012IP_ValidarDatosPago(idSocio, idCuota, monto, medioDePago))
                 throw new Exception(LanguageManager.Instance.GetTraduction("PagoBLLText1"));
 
-            // Un pago con tarjeta solo se acepta si la tarjeta fue validada (CUN-04).
             if (_012IP_EsTarjeta(medioDePago) && (string.IsNullOrWhiteSpace(marcaTarjeta) || string.IsNullOrWhiteSpace(ultimosDigitos)))
                 throw new Exception(LanguageManager.Instance.GetTraduction("TarjetaRequerida"));
 

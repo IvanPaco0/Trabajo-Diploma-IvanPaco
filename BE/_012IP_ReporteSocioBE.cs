@@ -2,7 +2,6 @@
 
 namespace _012IP_BE
 {
-    // Fila del reporte de socios: datos del socio y estado de su membresía.
     public class _012IP_ReporteSocioBE
     {
         public string DNI { get; set; } = string.Empty;
@@ -14,11 +13,9 @@ namespace _012IP_BE
         public string Membresia { get; set; } = string.Empty;
         public DateTime? FechaVencimiento { get; set; }
         public int? DiasRestantes { get; set; }
-        // Vigente | PorVencer | Vencida | SinMembresia
         public string Estado { get; set; } = string.Empty;
     }
 
-    // Totales que se muestran arriba del reporte.
     public class _012IP_ResumenReporteSociosBE
     {
         public int Total { get; set; }

@@ -12,8 +12,6 @@ using iText = iTextSharp.text;
 
 namespace _012IP_GUI
 {
-    // Reporte de socios: listado filtrable por texto, estado y tipo de membresía, con totales
-    // y exportación a PDF (iTextSharp).
     public partial class _012IP_frmReporteSocios : Form, IObserver
     {
         private readonly System.Windows.Forms.Timer timerBusqueda = new System.Windows.Forms.Timer { Interval = 300 };
@@ -58,8 +56,6 @@ namespace _012IP_GUI
             LanguageManager.Instance.EliminarObservador(this);
         }
 
-        // ------------------------------------------------------------ filtros
-
         private void _012IP_CargarFiltros()
         {
             cargando = true;
@@ -98,7 +94,6 @@ namespace _012IP_GUI
             }
         }
 
-        // Búsqueda dinámica (evento TextChanged con una pequeña espera).
         private void _012IP_txtBuscar_TextChanged(object sender, EventArgs e)
         {
             timerBusqueda.Stop();
@@ -115,8 +110,6 @@ namespace _012IP_GUI
         {
             if (!cargando) _012IP_Generar();
         }
-
-        // ------------------------------------------------------------ reporte
 
         private void _012IP_Generar()
         {
@@ -183,8 +176,6 @@ namespace _012IP_GUI
                 default: return Color.DarkGreen;
             }
         }
-
-        // ------------------------------------------------------------ PDF
 
         private void _012IP_btnExportarPdf_Click(object sender, EventArgs e)
         {
@@ -272,8 +263,6 @@ namespace _012IP_GUI
                 doc.Close();
             }
         }
-
-        // ------------------------------------------------------------ utilidades
 
         private void _012IP_ConfigurarGrilla(DataGridView grilla)
         {

@@ -211,7 +211,6 @@ namespace GUI
             }
         }
 
-        // Ultima lista traida de la base (activos o todos); la busqueda filtra sobre esta lista.
         private List<Usuario> usuariosCargados = new List<Usuario>();
 
         public void MostrarUsuarios(DataGridView dgv, object obj)
@@ -220,7 +219,6 @@ namespace GUI
             AplicarBusquedaUsuarios();
         }
 
-        // Busqueda dinamica: se ejecuta en el evento TextChanged del cuadro de busqueda.
         private void txtBuscarUsuario_TextChanged(object sender, EventArgs e) => AplicarBusquedaUsuarios();
 
         private void AplicarBusquedaUsuarios()

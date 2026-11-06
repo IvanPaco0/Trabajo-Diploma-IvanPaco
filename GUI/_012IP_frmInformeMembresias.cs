@@ -9,7 +9,6 @@ using System.Windows.Forms;
 
 namespace _012IP_GUI
 {
-    // CUN-05 Emitir informe de recaudación y vencimientos
     public partial class _012IP_frmInformeMembresias : Form, IObserver
     {
         private _012IP_PagoBLL pagoBLL;

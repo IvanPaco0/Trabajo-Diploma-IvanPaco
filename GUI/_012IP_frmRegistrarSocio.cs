@@ -19,7 +19,6 @@ namespace _012IP_GUI
         private readonly string nombreInicial;
         private readonly string apellidoInicial;
 
-        // Modo modificación: se editan los datos de un socio existente (genera una versión en la bitácora de cambios).
         private readonly _012IP_SocioBE socioAEditar;
 
         int posX, posY;

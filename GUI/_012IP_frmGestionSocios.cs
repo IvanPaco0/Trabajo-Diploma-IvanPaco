@@ -9,9 +9,6 @@ using System.Windows.Forms;
 
 namespace _012IP_GUI
 {
-    // Gestión de socios (MAESTROS > Socios): alta, modificación y baja lógica / reactivación.
-    // La baja es lógica (Activo = 0): el socio no se borra, deja de aparecer en Renovar membresía
-    // y el cambio queda en la bitácora de cambios (trigger de la tabla Socio).
     public partial class _012IP_frmGestionSocios : Form, IObserver
     {
         private readonly System.Windows.Forms.Timer timerBusqueda = new System.Windows.Forms.Timer { Interval = 300 };
@@ -51,8 +48,6 @@ namespace _012IP_GUI
             timerBusqueda.Dispose();
             LanguageManager.Instance.EliminarObservador(this);
         }
-
-        // ------------------------------------------------------------ búsqueda
 
         private void _012IP_txtBuscar_TextChanged(object sender, EventArgs e)
         {
@@ -137,8 +132,6 @@ namespace _012IP_GUI
             btnBaja.Text = s != null && !s.Activo ? _012IP_Texto("GesSocReactivar") : _012IP_Texto("GesSocBaja");
         }
 
-        // ------------------------------------------------------------ alta / modificación / baja
-
         private void _012IP_btnNuevo_Click(object sender, EventArgs e)
         {
             using (var frm = new _012IP_frmRegistrarSocio())
@@ -203,8 +196,6 @@ namespace _012IP_GUI
                 _012IP_MostrarError(ex);
             }
         }
-
-        // ------------------------------------------------------------ utilidades
 
         private void _012IP_ConfigurarGrilla(DataGridView grilla)
         {

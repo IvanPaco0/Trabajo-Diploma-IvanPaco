@@ -8,10 +8,6 @@ using System.Linq;
 
 namespace _012IP_BLL
 {
-    // T06.B Bitácora de cambios de la tabla maestra Socio.
-    // - Consulta el historial de versiones (lo generan los triggers de la base).
-    // - Activa una versión anterior: vuelve a escribir esos datos en Socio; el trigger
-    //   desactiva la versión vigente e inserta la restaurada como nueva versión activa.
     public class _012IP_BitacoraCambiosBLL
     {
         public const int MaximoFilas = 2000;
@@ -27,7 +23,6 @@ namespace _012IP_BLL
             bitacoraBLL = new BitacoraBLL();
         }
 
-        // Filtros: DNI (empieza con), nombre o apellido (cada palabra debe coincidir) y rango de fechas.
         public List<_012IP_SocioHistorialBE> _012IP_ConsultarHistorial(string dni, string nombre, DateTime? desde, DateTime? hasta)
         {
             if (desde.HasValue && hasta.HasValue && desde.Value.Date > hasta.Value.Date)
@@ -78,7 +73,6 @@ namespace _012IP_BLL
                 Activo = version.Activo
             };
 
-            // Misma validación de DNI único y mismo DVH que una modificación normal.
             socioBLL._012IP_GuardarCambios(socio, "Activación");
 
             bitacoraBLL.RegistrarEvento(new Bitacora

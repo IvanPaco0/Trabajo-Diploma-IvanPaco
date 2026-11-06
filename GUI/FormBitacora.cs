@@ -91,7 +91,6 @@ namespace GUI
                 foreach (var l in bll.ObtenerLogins())
                     cmbLogin.Items.Add(l);
 
-                // Módulos y eventos tipificados según el listado de eventos que registra el sistema.
                 cmbModulo.SelectedIndexChanged -= cmbModulo_SelectedIndexChanged;
                 cmbModulo.DropDownStyle = ComboBoxStyle.DropDownList;
                 cmbModulo.DropDownWidth = 200;

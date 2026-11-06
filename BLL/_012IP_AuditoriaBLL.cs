@@ -275,8 +275,6 @@ namespace _012IP_BLL
             return auditoria;
         }
 
-        // CUN-10: emite el informe de inventario y patrimonio de una auditoría cerrada.
-        // Calcula el stock actual y registra la emisión en la bitácora.
         public _012IP_StockBE _012IP_EmitirInforme(_012IP_AuditoriaBE auditoria)
         {
             if (auditoria == null || auditoria.IdAuditoria == 0 && string.IsNullOrEmpty(auditoria.DVH))

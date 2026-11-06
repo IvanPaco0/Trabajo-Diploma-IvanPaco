@@ -63,7 +63,6 @@ namespace _012IP_GUI
             _012IP_ConfigurarGrilla(dgvCuotasImpagas);
             _012IP_LimpiarEstado();
             Actualizar(LanguageManager.Instance);
-            // Al abrir se listan los socios activos; despues se va filtrando a medida que se escribe.
             if (socioBLL != null) _012IP_BuscarSocios();
             ActiveControl = txtBuscar;
         }
@@ -77,8 +76,6 @@ namespace _012IP_GUI
 
        
 
-        // Busqueda dinamica: se dispara con el evento TextChanged del unico cuadro de busqueda.
-        // El timer espera un instante a que el usuario deje de tipear para no consultar la base por cada tecla.
         private void _012IP_txtBuscar_TextChanged(object sender, EventArgs e)
         {
             timerBusqueda.Stop();
@@ -115,7 +112,6 @@ namespace _012IP_GUI
                     return;
                 }
 
-                // Si quedo un solo socio, o el que estaba elegido sigue en la lista, se selecciona solo.
                 string dniASeleccionar = socios.Count == 1 ? socios[0].DNI
                     : socios.Any(x => x.DNI == dniActual) ? dniActual : null;
 
@@ -146,7 +142,6 @@ namespace _012IP_GUI
 
         private void _012IP_btnRegistrarSocio_Click(object sender, EventArgs e)
         {
-            // Lo que se escribio en la busqueda se pasa al alta: numeros -> DNI, texto -> nombre / apellido.
             string texto = txtBuscar.Text.Trim();
             string dni = "", nombre = "", apellido = "";
             if (texto.Length > 0 && texto.All(char.IsDigit))
@@ -169,8 +164,6 @@ namespace _012IP_GUI
             }
         }
 
-        // Corrige los datos del socio seleccionado (email, teléfono, etc.). El cambio queda
-        // registrado en la bitácora de cambios de Socio (trigger de la base).
         private void _012IP_btnModificarSocio_Click(object sender, EventArgs e)
         {
             if (socioSeleccionado == null)
@@ -198,7 +191,6 @@ namespace _012IP_GUI
                 socioSeleccionado = sociosEncontrados.FirstOrDefault(s => s.DNI == dni);
                 if (socioSeleccionado == null) return;
 
-                // Membresia prepaga: no hay deuda, solo vigencia.
                 deudaRegularizada = false;
                 cuotasVencidas = new List<_012IP_CuotaBE>();
                 _012IP_MostrarEstadoCuenta();
@@ -219,7 +211,6 @@ namespace _012IP_GUI
             }
         }
 
-        // Muestra hasta cuándo tiene la membresía el socio y si está vigente, por vencer o vencida.
         private void _012IP_MostrarEstadoCuenta()
         {
             pnlDeuda.Visible = false;
@@ -332,7 +323,6 @@ namespace _012IP_GUI
                     return;
                 }
 
-                // Registra el pago y extiende la vigencia en una sola transaccion.
                 suscripcionBLL._012IP_RenovarSuscripcion(socioSeleccionado, membresia, meses, periodoInicio, periodoVencimiento, medioDePago, marcaTarjeta, ultimosDigitos);
 
                 _012IP_SuscripcionBE actualizada = suscripcionBLL._012IP_ConsultarSuscripcion(socioSeleccionado.DNI);
@@ -492,8 +482,6 @@ namespace _012IP_GUI
             _012IP_HabilitarRenovacion(false);
         }
 
-        // No se deshabilita el grupo entero porque los textos quedan grises e ilegibles:
-        // solo se bloquean los controles que el usuario puede tocar.
         private void _012IP_HabilitarRenovacion(bool habilitar)
         {
             foreach (Control c in grpRenovacion.Controls)
@@ -555,7 +543,6 @@ namespace _012IP_GUI
 
         private void _012IP_MostrarError(Exception ex)
         {
-            // Se muestra tambien la causa original (la excepcion mas interna) para saber que fallo.
             string mensaje = ex.Message;
             Exception causa = ex;
             while (causa.InnerException != null) causa = causa.InnerException;

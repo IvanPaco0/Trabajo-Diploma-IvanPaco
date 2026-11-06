@@ -425,7 +425,6 @@ namespace _012IP_GUI
             }
         }
 
-        // Busqueda dinamica por el evento TextChanged (con una pequena espera para no consultar por cada tecla).
         private void _012IP_txtBuscar_TextChanged(object sender, EventArgs e)
         {
             timerBusqueda.Stop();

@@ -9,10 +9,6 @@ using System.Windows.Forms;
 
 namespace _012IP_GUI
 {
-    // T06.B Bitácora de cambios de la tabla maestra Socio.
-    // Muestra todas las versiones de los datos de los socios (las genera la base con triggers),
-    // permite filtrar por DNI, nombre o apellido y rango de fechas (Aplicar / Limpiar)
-    // y activar una versión anterior (pasa a ser la versión vigente del socio).
     public partial class _012IP_frmBitacoraCambios : Form, IObserver
     {
         private _012IP_BitacoraCambiosBLL bitacoraCambiosBLL;
@@ -52,8 +48,6 @@ namespace _012IP_GUI
             LanguageManager.Instance.EliminarObservador(this);
         }
 
-        // ------------------------------------------------------------ filtros
-
         private void _012IP_chkFecha_CheckedChanged(object sender, EventArgs e)
         {
             dtpDesde.Enabled = chkDesde.Checked;
@@ -76,7 +70,6 @@ namespace _012IP_GUI
             _012IP_Consultar();
         }
 
-        // Carga las listas desplegables de DNI y nombre con los socios que tienen historial.
         private void _012IP_CargarListas()
         {
             if (bitacoraCambiosBLL == null) return;
@@ -100,8 +93,6 @@ namespace _012IP_GUI
                 _012IP_MostrarError(ex);
             }
         }
-
-        // ------------------------------------------------------------ consulta
 
         private void _012IP_Consultar()
         {
@@ -161,7 +152,6 @@ namespace _012IP_GUI
             return indice >= 0 && indice < versiones.Count ? versiones[indice] : null;
         }
 
-        // Solo se puede restaurar una versión que no sea la vigente.
         private void _012IP_dgvHistorial_SelectionChanged(object sender, EventArgs e)
         {
             _012IP_SocioHistorialBE v = _012IP_VersionSeleccionada();
@@ -176,8 +166,6 @@ namespace _012IP_GUI
                 lblMsj.Text = string.Empty;
             }
         }
-
-        // ------------------------------------------------------------ restaurar
 
         private void _012IP_btnActivar_Click(object sender, EventArgs e)
         {
@@ -207,8 +195,6 @@ namespace _012IP_GUI
                 _012IP_MostrarError(ex);
             }
         }
-
-        // ------------------------------------------------------------ utilidades
 
         private void _012IP_ConfigurarGrilla(DataGridView grilla)
         {

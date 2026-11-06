@@ -372,7 +372,6 @@ namespace _012IP_GUI
                 MessageBox.Show(_012IP_Texto("AudCerradaOk"), _012IP_Texto("MsjConfirmacion"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // CUN-10: el informe de inventario y patrimonio se muestra en pantalla (con el stock).
                 try
                 {
                     _012IP_StockBE stock = auditoriaBLL._012IP_EmitirInforme(auditoria);

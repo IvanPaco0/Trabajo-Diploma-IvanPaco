@@ -22,7 +22,6 @@ namespace GUI
             InitializeComponent();
             customMenu();
         }
-        // Submenús del menú lateral (solo uno abierto a la vez).
         private Panel[] Submenus => new[]
         {
             panelAdminSubmenu, panelMaestroSubmenu, panelUsuarioSubmenu, panelMembresiaSubmenu,
@@ -77,14 +76,12 @@ namespace GUI
             mostrarSubmenu(panelAyudaSubmenu);
         }
 
-        // Reportes y ayuda en línea: se completan en la Entrega 3 (A02 y D02).
         private void MostrarProximamente()
         {
             MessageBox.Show(LanguageManager.Instance.GetTraduction("MenuProximamente"),
                 LanguageManager.Instance.GetTraduction("Informacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // Rep. 1 (RFN1): informe de recaudación y vencimientos (CUN-05)
         private void btnReporteRFN1_Click(object sender, EventArgs e)
         {
             if (!SessionManager.Instance.UsuarioActual().TienePermiso("Renovar Membresia"))
@@ -100,7 +97,6 @@ namespace GUI
 
         private void btnReporteRFN2_Click(object sender, EventArgs e) => MostrarProximamente();
 
-        // Reporte de socios (listado con estado de membresía y exportación a PDF)
         private void btnReporteSocios_Click(object sender, EventArgs e)
         {
             if (!SessionManager.Instance.UsuarioActual().TienePermiso("Renovar Membresia"))
@@ -132,15 +128,11 @@ namespace GUI
             Actualizar(LanguageManager.Instance);
         }
 
-        // ===================== Menú según el perfil del usuario =====================
-        // Cada opción se muestra solo si el usuario tiene el permiso que la habilita.
-        // Si un grupo (ADMIN, MAESTROS, ...) se queda sin opciones, se oculta el grupo entero.
         private void AplicarPermisos()
         {
             var usuario = SessionManager.Instance.UsuarioActual();
             Func<string, bool> tiene = permiso => usuario != null && usuario.TienePermiso(permiso);
 
-            // ADMIN
             Mostrar(btnUsuarios, tiene("Ver Usuarios"));
             Mostrar(btnPerfiles, tiene("Ver Perfiles"));
             Mostrar(btnDigitoVerificador, tiene("Gestionar DigitoVerificadores"));
@@ -148,27 +140,20 @@ namespace GUI
             Mostrar(btnBackUp, tiene("Ver Respaldos"));
             Mostrar(btnRestore, tiene("Ver Respaldos"));
 
-            // MAESTROS
             Mostrar(btnRegistrarSocio, tiene("Renovar Membresia"));
             Mostrar(btnGestionInventario, tiene("Gestionar Inventario"));
             Mostrar(btnBitacoraCambios, tiene("Ver Bitacora Cambios"));
 
-            // MEMBRESÍAS
             Mostrar(btnRenovarMembresia, tiene("Renovar Membresia"));
 
-            // INVENTARIO
             Mostrar(btnAuditoriaInventario, tiene("Auditar Inventario"));
 
-            // REPORTES
             Mostrar(btnReporteRFN1, tiene("Renovar Membresia"));
             Mostrar(btnReporteSocios, tiene("Renovar Membresia"));
             Mostrar(btnReporteRFN2, tiene("Gestionar Inventario") || tiene("Auditar Inventario"));
 
-            // AYUDA (Acerca de siempre visible)
             Mostrar(btnAyudaMembresias, tiene("Renovar Membresia"));
             Mostrar(btnAyudaInventario, tiene("Gestionar Inventario") || tiene("Auditar Inventario"));
-
-            // USUARIO (cambiar clave, idioma, cerrar sesión) queda siempre visible.
 
             AjustarGrupo(btnAdmin, panelAdminSubmenu);
             AjustarGrupo(btnMaestro, panelMaestroSubmenu);
@@ -179,15 +164,12 @@ namespace GUI
             AjustarGrupo(btnAyuda, panelAyudaSubmenu);
         }
 
-        // Visible no sirve para leer el estado (da false mientras el submenú está cerrado),
-        // por eso lo que corresponde mostrar se guarda en Tag.
         private void Mostrar(Control opcion, bool visible)
         {
             opcion.Visible = visible;
             opcion.Tag = visible;
         }
 
-        // El alto del submenú se ajusta a las opciones permitidas; sin opciones se oculta el encabezado.
         private void AjustarGrupo(Button encabezado, Panel submenu)
         {
             int alto = 0;
@@ -247,7 +229,6 @@ namespace GUI
             formBitacora.Show();
         }
 
-        // T06.B Bitácora de cambios de la tabla Socio (historial y restauración de versiones)
         private void btnBitacoraCambios_Click(object sender, EventArgs e)
         {
             if (!SessionManager.Instance.UsuarioActual().TienePermiso("Ver Bitacora Cambios"))
@@ -381,7 +362,6 @@ namespace GUI
 
         private void btnRegistrarSocio_Click(object sender, EventArgs e)
         {
-            // Gestión de socios: alta, modificación y baja lógica
             this.Hide();
             var frmGestionSocios = new _012IP_frmGestionSocios();
             frmGestionSocios.Show();

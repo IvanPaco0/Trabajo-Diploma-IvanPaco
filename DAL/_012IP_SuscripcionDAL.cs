@@ -60,7 +60,6 @@ namespace _012IP_DAL
         }
 
        
-        // Actualiza (o crea) la suscripción del socio. El DVH lo calcula la BLL.
         public void _012IP_ActualizarSuscripcion(string dni, int idMembresia, DateTime fechaInicio, DateTime fechaVencimiento, string dvh)
         {
             try
@@ -103,7 +102,6 @@ namespace _012IP_DAL
             }
         }
     
-        // Última suscripción de cada socio activo, para el informe de vencimientos (CUN-05).
         public List<_012IP_VencimientoSocioBE> _012IP_ListarSuscripciones()
         {
             var lista = new List<_012IP_VencimientoSocioBE>();

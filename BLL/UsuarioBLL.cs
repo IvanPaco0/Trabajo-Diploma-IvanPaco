@@ -283,8 +283,6 @@ namespace BLL
             }
         }
 
-        // Filtro de la busqueda dinamica de la pantalla Usuarios: cada palabra escrita tiene que
-        // aparecer en el DNI, nombre, apellido o nombre de usuario.
         public List<Usuario> FiltrarUsuarios(List<Usuario> usuarios, string texto)
         {
             if (usuarios == null) return new List<Usuario>();
