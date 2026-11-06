@@ -21,8 +21,12 @@
             this.lblTitulo = new System.Windows.Forms.Label();
             this.btnMinimizar = new System.Windows.Forms.Button();
             this.btnCerrar = new System.Windows.Forms.Button();
-            this.lblBuscar = new System.Windows.Forms.Label();
-            this.txtBuscar = new System.Windows.Forms.TextBox();
+            this.lblDni = new System.Windows.Forms.Label();
+            this.cmbDni = new System.Windows.Forms.ComboBox();
+            this.lblNombre = new System.Windows.Forms.Label();
+            this.cmbNombre = new System.Windows.Forms.ComboBox();
+            this.btnAplicar = new System.Windows.Forms.Button();
+            this.btnLimpiar = new System.Windows.Forms.Button();
             this.chkDesde = new System.Windows.Forms.CheckBox();
             this.dtpDesde = new System.Windows.Forms.DateTimePicker();
             this.chkHasta = new System.Windows.Forms.CheckBox();
@@ -30,7 +34,7 @@
             this.lblResumen = new System.Windows.Forms.Label();
             this.dgvHistorial = new System.Windows.Forms.DataGridView();
             this.lblMsj = new System.Windows.Forms.Label();
-            this.btnRestaurar = new System.Windows.Forms.Button();
+            this.btnActivar = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorial)).BeginInit();
@@ -91,61 +95,109 @@
             this.btnCerrar.UseVisualStyleBackColor = true;
             this.btnCerrar.Click += new System.EventHandler(this._012IP_btnCerrar_Click);
             //
-            // lblBuscar
+            // lblDni
             //
-            this.lblBuscar.AutoSize = true;
-            this.lblBuscar.Location = new System.Drawing.Point(12, 56);
-            this.lblBuscar.Name = "lblBuscar";
-            this.lblBuscar.Text = "Buscar por DNI, nombre o apellido";
+            this.lblDni.AutoSize = true;
+            this.lblDni.Location = new System.Drawing.Point(12, 56);
+            this.lblDni.Name = "lblDni";
+            this.lblDni.Text = "DNI";
             //
-            // txtBuscar
+            // cmbDni
             //
-            this.txtBuscar.BackColor = System.Drawing.Color.White;
-            this.txtBuscar.ForeColor = System.Drawing.Color.Black;
-            this.txtBuscar.Location = new System.Drawing.Point(12, 77);
-            this.txtBuscar.MaxLength = 100;
-            this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(380, 22);
-            this.txtBuscar.TabIndex = 0;
-            this.txtBuscar.TextChanged += new System.EventHandler(this._012IP_txtBuscar_TextChanged);
+            this.cmbDni.BackColor = System.Drawing.Color.White;
+            this.cmbDni.ForeColor = System.Drawing.Color.Black;
+            this.cmbDni.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbDni.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbDni.Location = new System.Drawing.Point(12, 77);
+            this.cmbDni.MaxLength = 10;
+            this.cmbDni.Name = "cmbDni";
+            this.cmbDni.Size = new System.Drawing.Size(150, 24);
+            this.cmbDni.TabIndex = 0;
+            //
+            // lblNombre
+            //
+            this.lblNombre.AutoSize = true;
+            this.lblNombre.Location = new System.Drawing.Point(175, 56);
+            this.lblNombre.Name = "lblNombre";
+            this.lblNombre.Text = "Nombre o apellido";
+            //
+            // cmbNombre
+            //
+            this.cmbNombre.BackColor = System.Drawing.Color.White;
+            this.cmbNombre.ForeColor = System.Drawing.Color.Black;
+            this.cmbNombre.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbNombre.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbNombre.Location = new System.Drawing.Point(175, 77);
+            this.cmbNombre.MaxLength = 100;
+            this.cmbNombre.Name = "cmbNombre";
+            this.cmbNombre.Size = new System.Drawing.Size(230, 24);
+            this.cmbNombre.TabIndex = 1;
             //
             // chkDesde
             //
             this.chkDesde.AutoSize = true;
-            this.chkDesde.Location = new System.Drawing.Point(410, 55);
+            this.chkDesde.Location = new System.Drawing.Point(420, 55);
             this.chkDesde.Name = "chkDesde";
-            this.chkDesde.TabIndex = 1;
+            this.chkDesde.TabIndex = 2;
             this.chkDesde.Text = "Desde";
             this.chkDesde.UseVisualStyleBackColor = true;
-            this.chkDesde.CheckedChanged += new System.EventHandler(this._012IP_Filtro_Changed);
+            this.chkDesde.CheckedChanged += new System.EventHandler(this._012IP_chkFecha_CheckedChanged);
             //
             // dtpDesde
             //
             this.dtpDesde.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDesde.Location = new System.Drawing.Point(410, 77);
+            this.dtpDesde.Location = new System.Drawing.Point(420, 77);
             this.dtpDesde.Name = "dtpDesde";
-            this.dtpDesde.Size = new System.Drawing.Size(150, 22);
-            this.dtpDesde.TabIndex = 2;
-            this.dtpDesde.ValueChanged += new System.EventHandler(this._012IP_Filtro_Changed);
+            this.dtpDesde.Size = new System.Drawing.Size(130, 22);
+            this.dtpDesde.TabIndex = 3;
             //
             // chkHasta
             //
             this.chkHasta.AutoSize = true;
-            this.chkHasta.Location = new System.Drawing.Point(580, 55);
+            this.chkHasta.Location = new System.Drawing.Point(565, 55);
             this.chkHasta.Name = "chkHasta";
-            this.chkHasta.TabIndex = 3;
+            this.chkHasta.TabIndex = 4;
             this.chkHasta.Text = "Hasta";
             this.chkHasta.UseVisualStyleBackColor = true;
-            this.chkHasta.CheckedChanged += new System.EventHandler(this._012IP_Filtro_Changed);
+            this.chkHasta.CheckedChanged += new System.EventHandler(this._012IP_chkFecha_CheckedChanged);
             //
             // dtpHasta
             //
             this.dtpHasta.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpHasta.Location = new System.Drawing.Point(580, 77);
+            this.dtpHasta.Location = new System.Drawing.Point(565, 77);
             this.dtpHasta.Name = "dtpHasta";
-            this.dtpHasta.Size = new System.Drawing.Size(150, 22);
-            this.dtpHasta.TabIndex = 4;
-            this.dtpHasta.ValueChanged += new System.EventHandler(this._012IP_Filtro_Changed);
+            this.dtpHasta.Size = new System.Drawing.Size(130, 22);
+            this.dtpHasta.TabIndex = 5;
+            //
+            // btnAplicar
+            //
+            this.btnAplicar.BackColor = System.Drawing.Color.Maroon;
+            this.btnAplicar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAplicar.FlatAppearance.BorderSize = 0;
+            this.btnAplicar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAplicar.ForeColor = System.Drawing.Color.White;
+            this.btnAplicar.Location = new System.Drawing.Point(712, 70);
+            this.btnAplicar.Name = "btnAplicar";
+            this.btnAplicar.Size = new System.Drawing.Size(134, 34);
+            this.btnAplicar.TabIndex = 6;
+            this.btnAplicar.Text = "Aplicar";
+            this.btnAplicar.UseVisualStyleBackColor = false;
+            this.btnAplicar.Click += new System.EventHandler(this._012IP_btnAplicar_Click);
+            //
+            // btnLimpiar
+            //
+            this.btnLimpiar.BackColor = System.Drawing.Color.Maroon;
+            this.btnLimpiar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLimpiar.FlatAppearance.BorderSize = 0;
+            this.btnLimpiar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLimpiar.ForeColor = System.Drawing.Color.White;
+            this.btnLimpiar.Location = new System.Drawing.Point(854, 70);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(134, 34);
+            this.btnLimpiar.TabIndex = 7;
+            this.btnLimpiar.Text = "Limpiar";
+            this.btnLimpiar.UseVisualStyleBackColor = false;
+            this.btnLimpiar.Click += new System.EventHandler(this._012IP_btnLimpiar_Click);
             //
             // lblResumen
             //
@@ -162,7 +214,7 @@
             this.dgvHistorial.Location = new System.Drawing.Point(12, 140);
             this.dgvHistorial.Name = "dgvHistorial";
             this.dgvHistorial.Size = new System.Drawing.Size(976, 400);
-            this.dgvHistorial.TabIndex = 5;
+            this.dgvHistorial.TabIndex = 8;
             this.dgvHistorial.SelectionChanged += new System.EventHandler(this._012IP_dgvHistorial_SelectionChanged);
             //
             // lblMsj
@@ -172,21 +224,21 @@
             this.lblMsj.Size = new System.Drawing.Size(600, 40);
             this.lblMsj.Text = "";
             //
-            // btnRestaurar
+            // btnActivar
             //
-            this.btnRestaurar.BackColor = System.Drawing.Color.Maroon;
-            this.btnRestaurar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRestaurar.Enabled = false;
-            this.btnRestaurar.FlatAppearance.BorderSize = 0;
-            this.btnRestaurar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRestaurar.ForeColor = System.Drawing.Color.White;
-            this.btnRestaurar.Location = new System.Drawing.Point(628, 552);
-            this.btnRestaurar.Name = "btnRestaurar";
-            this.btnRestaurar.Size = new System.Drawing.Size(180, 40);
-            this.btnRestaurar.TabIndex = 6;
-            this.btnRestaurar.Text = "Restaurar versión";
-            this.btnRestaurar.UseVisualStyleBackColor = false;
-            this.btnRestaurar.Click += new System.EventHandler(this._012IP_btnRestaurar_Click);
+            this.btnActivar.BackColor = System.Drawing.Color.Maroon;
+            this.btnActivar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnActivar.Enabled = false;
+            this.btnActivar.FlatAppearance.BorderSize = 0;
+            this.btnActivar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnActivar.ForeColor = System.Drawing.Color.White;
+            this.btnActivar.Location = new System.Drawing.Point(628, 552);
+            this.btnActivar.Name = "btnActivar";
+            this.btnActivar.Size = new System.Drawing.Size(180, 40);
+            this.btnActivar.TabIndex = 9;
+            this.btnActivar.Text = "Activar versión";
+            this.btnActivar.UseVisualStyleBackColor = false;
+            this.btnActivar.Click += new System.EventHandler(this._012IP_btnActivar_Click);
             //
             // btnSalir
             //
@@ -198,7 +250,7 @@
             this.btnSalir.Location = new System.Drawing.Point(828, 552);
             this.btnSalir.Name = "btnSalir";
             this.btnSalir.Size = new System.Drawing.Size(160, 40);
-            this.btnSalir.TabIndex = 7;
+            this.btnSalir.TabIndex = 10;
             this.btnSalir.Text = "Salir";
             this.btnSalir.UseVisualStyleBackColor = false;
             this.btnSalir.Click += new System.EventHandler(this._012IP_btnSalir_Click);
@@ -209,7 +261,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(1000, 606);
             this.Controls.Add(this.btnSalir);
-            this.Controls.Add(this.btnRestaurar);
+            this.Controls.Add(this.btnActivar);
             this.Controls.Add(this.lblMsj);
             this.Controls.Add(this.dgvHistorial);
             this.Controls.Add(this.lblResumen);
@@ -217,8 +269,12 @@
             this.Controls.Add(this.chkHasta);
             this.Controls.Add(this.dtpDesde);
             this.Controls.Add(this.chkDesde);
-            this.Controls.Add(this.txtBuscar);
-            this.Controls.Add(this.lblBuscar);
+            this.Controls.Add(this.btnLimpiar);
+            this.Controls.Add(this.btnAplicar);
+            this.Controls.Add(this.cmbNombre);
+            this.Controls.Add(this.lblNombre);
+            this.Controls.Add(this.cmbDni);
+            this.Controls.Add(this.lblDni);
             this.Controls.Add(this.BarraTitulo);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.Color.White;
@@ -242,8 +298,12 @@
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Button btnMinimizar;
         private System.Windows.Forms.Button btnCerrar;
-        private System.Windows.Forms.Label lblBuscar;
-        private System.Windows.Forms.TextBox txtBuscar;
+        private System.Windows.Forms.Label lblDni;
+        private System.Windows.Forms.ComboBox cmbDni;
+        private System.Windows.Forms.Label lblNombre;
+        private System.Windows.Forms.ComboBox cmbNombre;
+        private System.Windows.Forms.Button btnAplicar;
+        private System.Windows.Forms.Button btnLimpiar;
         private System.Windows.Forms.CheckBox chkDesde;
         private System.Windows.Forms.DateTimePicker dtpDesde;
         private System.Windows.Forms.CheckBox chkHasta;
@@ -251,7 +311,7 @@
         private System.Windows.Forms.Label lblResumen;
         private System.Windows.Forms.DataGridView dgvHistorial;
         private System.Windows.Forms.Label lblMsj;
-        private System.Windows.Forms.Button btnRestaurar;
+        private System.Windows.Forms.Button btnActivar;
         private System.Windows.Forms.Button btnSalir;
     }
 }

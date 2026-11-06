@@ -11,11 +11,10 @@ namespace _012IP_GUI
 {
     // T06.B Bitácora de cambios de la tabla maestra Socio.
     // Muestra todas las versiones de los datos de los socios (las genera la base con triggers),
-    // permite filtrar por DNI / nombre / apellido y por fechas, y restaurar una versión anterior.
+    // permite filtrar por DNI, nombre o apellido y rango de fechas (Aplicar / Limpiar)
+    // y activar una versión anterior (pasa a ser la versión vigente del socio).
     public partial class _012IP_frmBitacoraCambios : Form, IObserver
     {
-        private readonly System.Windows.Forms.Timer timerBusqueda = new System.Windows.Forms.Timer { Interval = 300 };
-
         private _012IP_BitacoraCambiosBLL bitacoraCambiosBLL;
         private List<_012IP_SocioHistorialBE> versiones = new List<_012IP_SocioHistorialBE>();
 
@@ -25,7 +24,6 @@ namespace _012IP_GUI
         public _012IP_frmBitacoraCambios()
         {
             InitializeComponent();
-            timerBusqueda.Tick += _012IP_timerBusqueda_Tick;
         }
 
         private void _012IP_frmBitacoraCambios_Load(object sender, EventArgs e)
@@ -45,35 +43,62 @@ namespace _012IP_GUI
             _012IP_ConfigurarGrilla(dgvHistorial);
             LanguageManager.Instance.AgregarObservador(this);
             Actualizar(LanguageManager.Instance);
-            ActiveControl = txtBuscar;
+            _012IP_CargarListas();
+            ActiveControl = cmbDni;
         }
 
         private void _012IP_frmBitacoraCambios_FormClosed(object sender, FormClosedEventArgs e)
         {
-            timerBusqueda.Stop();
-            timerBusqueda.Dispose();
             LanguageManager.Instance.EliminarObservador(this);
         }
 
         // ------------------------------------------------------------ filtros
 
-        private void _012IP_txtBuscar_TextChanged(object sender, EventArgs e)
-        {
-            timerBusqueda.Stop();
-            timerBusqueda.Start();
-        }
-
-        private void _012IP_timerBusqueda_Tick(object sender, EventArgs e)
-        {
-            timerBusqueda.Stop();
-            _012IP_Consultar();
-        }
-
-        private void _012IP_Filtro_Changed(object sender, EventArgs e)
+        private void _012IP_chkFecha_CheckedChanged(object sender, EventArgs e)
         {
             dtpDesde.Enabled = chkDesde.Checked;
             dtpHasta.Enabled = chkHasta.Checked;
+        }
+
+        private void _012IP_btnAplicar_Click(object sender, EventArgs e)
+        {
             _012IP_Consultar();
+        }
+
+        private void _012IP_btnLimpiar_Click(object sender, EventArgs e)
+        {
+            cmbDni.Text = string.Empty;
+            cmbNombre.Text = string.Empty;
+            chkDesde.Checked = false;
+            chkHasta.Checked = false;
+            dtpDesde.Value = DateTime.Today.AddMonths(-1);
+            dtpHasta.Value = DateTime.Today;
+            _012IP_Consultar();
+        }
+
+        // Carga las listas desplegables de DNI y nombre con los socios que tienen historial.
+        private void _012IP_CargarListas()
+        {
+            if (bitacoraCambiosBLL == null) return;
+            try
+            {
+                List<_012IP_SocioHistorialBE> todas = bitacoraCambiosBLL._012IP_ConsultarHistorial(null, null, null, null);
+                var socios = todas.GroupBy(v => v.IdSocio)
+                    .Select(g => g.OrderByDescending(v => v.VersionActiva).ThenByDescending(v => v.FechaCambio).First())
+                    .ToList();
+
+                cmbDni.Items.Clear();
+                foreach (string dni in socios.Select(v => v.DNI).Distinct().OrderBy(d => d))
+                    cmbDni.Items.Add(dni);
+
+                cmbNombre.Items.Clear();
+                foreach (string nombre in socios.Select(v => v.Apellido + ", " + v.Nombre).Distinct().OrderBy(n => n))
+                    cmbNombre.Items.Add(nombre);
+            }
+            catch (Exception ex)
+            {
+                _012IP_MostrarError(ex);
+            }
         }
 
         // ------------------------------------------------------------ consulta
@@ -85,7 +110,8 @@ namespace _012IP_GUI
             {
                 lblMsj.Text = string.Empty;
                 versiones = bitacoraCambiosBLL._012IP_ConsultarHistorial(
-                    txtBuscar.Text,
+                    cmbDni.Text,
+                    cmbNombre.Text,
                     chkDesde.Checked ? (DateTime?)dtpDesde.Value : null,
                     chkHasta.Checked ? (DateTime?)dtpHasta.Value : null);
 
@@ -117,7 +143,7 @@ namespace _012IP_GUI
 
                 _012IP_AplicarEncabezados();
                 dgvHistorial.ClearSelection();
-                btnRestaurar.Enabled = false;
+                btnActivar.Enabled = false;
 
                 lblResumen.Text = string.Format(_012IP_Texto("BitCamResumen"),
                     versiones.Count, versiones.Select(v => v.IdSocio).Distinct().Count());
@@ -139,7 +165,7 @@ namespace _012IP_GUI
         private void _012IP_dgvHistorial_SelectionChanged(object sender, EventArgs e)
         {
             _012IP_SocioHistorialBE v = _012IP_VersionSeleccionada();
-            btnRestaurar.Enabled = v != null && !v.VersionActiva;
+            btnActivar.Enabled = v != null && !v.VersionActiva;
             if (v != null && v.VersionActiva)
             {
                 lblMsj.ForeColor = Color.White;
@@ -153,7 +179,7 @@ namespace _012IP_GUI
 
         // ------------------------------------------------------------ restaurar
 
-        private void _012IP_btnRestaurar_Click(object sender, EventArgs e)
+        private void _012IP_btnActivar_Click(object sender, EventArgs e)
         {
             _012IP_SocioHistorialBE v = _012IP_VersionSeleccionada();
             if (v == null)
@@ -171,7 +197,7 @@ namespace _012IP_GUI
 
             try
             {
-                bitacoraCambiosBLL._012IP_RestaurarVersion(v.IdHistorial);
+                bitacoraCambiosBLL._012IP_ActivarVersion(v.IdHistorial);
                 _012IP_Consultar();
                 lblMsj.ForeColor = Color.LightGreen;
                 lblMsj.Text = string.Format(_012IP_Texto("BitCamRestaurada"), v.DNI);
@@ -238,10 +264,13 @@ namespace _012IP_GUI
         public void Actualizar(LanguageManager lenguaje)
         {
             lblTitulo.Text = _012IP_Texto("BitCamTitulo");
-            lblBuscar.Text = _012IP_Texto("RenMemBuscarAyuda");
+            lblDni.Text = _012IP_Texto("BitCamFiltroDni");
+            lblNombre.Text = _012IP_Texto("BitCamFiltroNombre");
+            btnAplicar.Text = _012IP_Texto("BitCamAplicar");
+            btnLimpiar.Text = _012IP_Texto("BitCamLimpiar");
             chkDesde.Text = _012IP_Texto("BitCamDesde");
             chkHasta.Text = _012IP_Texto("BitCamHasta");
-            btnRestaurar.Text = _012IP_Texto("BitCamRestaurar");
+            btnActivar.Text = _012IP_Texto("BitCamRestaurar");
             btnSalir.Text = _012IP_Texto("btnSalir");
             dtpDesde.Enabled = chkDesde.Checked;
             dtpHasta.Enabled = chkHasta.Checked;

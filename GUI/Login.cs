@@ -134,7 +134,7 @@ namespace GUI
                         Bitacora bitacora = new Bitacora();
                         bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                         bitacora.Modulo = "Usuarios";
-                        bitacora.Evento = "Login exitoso";
+                        bitacora.Evento = "Login";
                         bitacora.Criticidad = 1;
                         bitacoraBLL.RegistrarEvento(bitacora);
 

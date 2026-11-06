@@ -514,7 +514,7 @@ namespace BLL
             }
             catch (Exception ex)
             {
-                RegistrarEvento("Error al recalcular DVV y DVH", 3);
+                RegistrarEvento("Error al recalcular DVV y DVH", 1);
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV13") + ex.Message);
             }
 

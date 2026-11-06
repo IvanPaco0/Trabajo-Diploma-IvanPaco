@@ -145,13 +145,13 @@ namespace GUI
             Mostrar(btnPerfiles, tiene("Ver Perfiles"));
             Mostrar(btnDigitoVerificador, tiene("Gestionar DigitoVerificadores"));
             Mostrar(btnBitacora, tiene("Ver Bitacora"));
-            Mostrar(btnBitacoraCambios, tiene("Ver Bitacora Cambios"));
             Mostrar(btnBackUp, tiene("Ver Respaldos"));
             Mostrar(btnRestore, tiene("Ver Respaldos"));
 
             // MAESTROS
             Mostrar(btnRegistrarSocio, tiene("Renovar Membresia"));
             Mostrar(btnGestionInventario, tiene("Gestionar Inventario"));
+            Mostrar(btnBitacoraCambios, tiene("Ver Bitacora Cambios"));
 
             // MEMBRESÍAS
             Mostrar(btnRenovarMembresia, tiene("Renovar Membresia"));

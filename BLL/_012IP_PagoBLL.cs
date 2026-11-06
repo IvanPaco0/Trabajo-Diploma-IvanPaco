@@ -148,9 +148,9 @@ namespace _012IP_BLL
                 Bitacora bitacora = new Bitacora
                 {
                     Login = SessionManager.Instance.UsuarioActual().Username,
-                    Modulo = "Membresias",
+                    Modulo = "Reportes",
                     Evento = $"Emitir informe de recaudación {desde:dd/MM/yyyy} - {hasta:dd/MM/yyyy}",
-                    Criticidad = 1
+                    Criticidad = 4
                 };
                 bitacoraBLL.RegistrarEvento(bitacora);
                 return informe;

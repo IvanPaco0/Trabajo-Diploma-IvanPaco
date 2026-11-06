@@ -18,15 +18,20 @@ namespace _012IP_DAL
                     FROM SocioHistorial h";
 
         // Filtros: palabras (DNI que empieza con / nombre o apellido que contiene) y rango de fechas del cambio.
-        public List<_012IP_SocioHistorialBE> _012IP_ListarHistorial(List<string> palabras, DateTime? desde, DateTime? hasta, int maximo)
+        public List<_012IP_SocioHistorialBE> _012IP_ListarHistorial(string dni, List<string> palabras, DateTime? desde, DateTime? hasta, int maximo)
         {
             try
             {
                 var condiciones = new System.Text.StringBuilder(" WHERE 1 = 1");
+                if (!string.IsNullOrEmpty(dni))
+                {
+                    condiciones.Append(" AND h.DNI LIKE @dni + '%'");
+                    _sqlcommand.Parameters.AddWithValue("@dni", dni);
+                }
                 for (int i = 0; i < palabras.Count; i++)
                 {
                     string p = "@p" + i;
-                    condiciones.Append(" AND (h.DNI LIKE " + p + " + '%' OR h.Nombre LIKE '%' + " + p + " + '%' OR h.Apellido LIKE '%' + " + p + " + '%')");
+                    condiciones.Append(" AND (h.Nombre LIKE '%' + " + p + " + '%' OR h.Apellido LIKE '%' + " + p + " + '%')");
                     _sqlcommand.Parameters.AddWithValue(p, palabras[i]);
                 }
                 if (desde.HasValue)

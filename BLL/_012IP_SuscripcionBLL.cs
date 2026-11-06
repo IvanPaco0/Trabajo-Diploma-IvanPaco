@@ -114,7 +114,7 @@ namespace _012IP_BLL
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                     bitacora.Modulo = "Membresias";
-                    bitacora.Evento = $"Renovar membresia - DNI {dni} - {membresia.Nombre} - {cantidadMeses} mes(es) - vence {fechaVencimiento:dd/MM/yyyy}";
+                    bitacora.Evento = $"Renovar membresía - DNI {dni} - {membresia.Nombre} - {cantidadMeses} mes(es) - vence {fechaVencimiento:dd/MM/yyyy}";
                     bitacora.Criticidad = 2;
                     bitacoraBLL.RegistrarEvento(bitacora);
 

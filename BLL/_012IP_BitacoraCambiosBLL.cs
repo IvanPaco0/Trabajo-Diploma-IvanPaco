@@ -10,7 +10,7 @@ namespace _012IP_BLL
 {
     // T06.B Bitácora de cambios de la tabla maestra Socio.
     // - Consulta el historial de versiones (lo generan los triggers de la base).
-    // - Restaura una versión anterior: vuelve a escribir esos datos en Socio; el trigger
+    // - Activa una versión anterior: vuelve a escribir esos datos en Socio; el trigger
     //   desactiva la versión vigente e inserta la restaurada como nueva versión activa.
     public class _012IP_BitacoraCambiosBLL
     {
@@ -27,17 +27,22 @@ namespace _012IP_BLL
             bitacoraBLL = new BitacoraBLL();
         }
 
-        public List<_012IP_SocioHistorialBE> _012IP_ConsultarHistorial(string texto, DateTime? desde, DateTime? hasta)
+        // Filtros: DNI (empieza con), nombre o apellido (cada palabra debe coincidir) y rango de fechas.
+        public List<_012IP_SocioHistorialBE> _012IP_ConsultarHistorial(string dni, string nombre, DateTime? desde, DateTime? hasta)
         {
             if (desde.HasValue && hasta.HasValue && desde.Value.Date > hasta.Value.Date)
                 throw new Exception(LanguageManager.Instance.GetTraduction("BitCamFechasInvalidas"));
 
-            List<string> palabras = (texto ?? "")
+            dni = (dni ?? "").Trim();
+            if (dni.Length > 0 && !dni.All(char.IsDigit))
+                throw new Exception(LanguageManager.Instance.GetTraduction("BitCamDniInvalido"));
+
+            List<string> palabras = (nombre ?? "")
                 .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
                 .Take(4).ToList();
             try
             {
-                return historialDAL._012IP_ListarHistorial(palabras, desde, hasta, MaximoFilas);
+                return historialDAL._012IP_ListarHistorial(dni, palabras, desde, hasta, MaximoFilas);
             }
             catch (Exception ex)
             {
@@ -45,7 +50,7 @@ namespace _012IP_BLL
             }
         }
 
-        public _012IP_SocioHistorialBE _012IP_RestaurarVersion(int idHistorial)
+        public _012IP_SocioHistorialBE _012IP_ActivarVersion(int idHistorial)
         {
             _012IP_SocioHistorialBE version;
             try
@@ -74,14 +79,14 @@ namespace _012IP_BLL
             };
 
             // Misma validación de DNI único y mismo DVH que una modificación normal.
-            socioBLL._012IP_GuardarCambios(socio, "Restauración");
+            socioBLL._012IP_GuardarCambios(socio, "Activación");
 
             bitacoraBLL.RegistrarEvento(new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
                 Modulo = "Bitácora de cambios",
-                Evento = $"Restaurar versión {version.IdHistorial} del socio DNI {version.DNI}",
-                Criticidad = 3
+                Evento = $"Activar versión {version.IdHistorial} del socio DNI {version.DNI}",
+                Criticidad = 1
             });
             return version;
         }

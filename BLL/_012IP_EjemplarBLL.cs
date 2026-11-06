@@ -341,7 +341,7 @@ namespace _012IP_BLL
 
             _012IP_RegistrarBitacora(
                 $"Ubicar ejemplar - Código {ejemplar.CodigoBarras} - {anterior} -> {pasillo}/{seccion}/{estanteria}",
-                1);
+                3);
 
             return ejemplar;
         }
@@ -411,7 +411,7 @@ namespace _012IP_BLL
             {
                 _012IP_RegistrarBitacora(
                     $"Baja de ejemplar - Código {ejemplar.CodigoBarras} - Estado previo {_012IP_EstadoBitacora(estadoAnterior)} - Motivo: {motivoEvento}",
-                    3);
+                    1);
             }
             else
             {
@@ -473,7 +473,7 @@ namespace _012IP_BLL
 
             _012IP_RegistrarBitacora(
                 $"Serializar ejemplares a XML - {ejemplares.Count} registros - {_012IP_Recortar(Path.GetFileName(ruta), 60)}",
-                1);
+                3);
         }
 
         /// <summary>DES-SERIALIZAR: lee un XML y devuelve los ejemplares para mostrarlos en la grilla. No escribe en la base.</summary>
@@ -507,7 +507,7 @@ namespace _012IP_BLL
 
             _012IP_RegistrarBitacora(
                 $"Des-serializar ejemplares desde XML - {lista.Count} registros - {_012IP_Recortar(Path.GetFileName(ruta), 60)}",
-                1);
+                3);
 
             return lista;
         }

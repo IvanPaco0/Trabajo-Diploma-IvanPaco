@@ -98,7 +98,7 @@ namespace _012IP_BLL
                 Login = SessionManager.Instance.UsuarioActual().Username,
                 Modulo = "Reportes",
                 Evento = $"Exportar reporte de socios a PDF - {cantidad} socio(s) - {System.IO.Path.GetFileName(archivo)}",
-                Criticidad = 2
+                Criticidad = 4
             });
         }
 
@@ -319,7 +319,7 @@ namespace _012IP_BLL
                 Login = SessionManager.Instance.UsuarioActual().Username,
                 Modulo = "Socios",
                 Evento = (activo ? "Reactivar socio" : "Baja lógica de socio") + $" - DNI {socio.DNI} - {socio.Nombre} {socio.Apellido}",
-                Criticidad = activo ? 2 : 3
+                Criticidad = 2
             });
         }
 

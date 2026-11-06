@@ -270,7 +270,7 @@ namespace _012IP_BLL
 
             _012IP_RegistrarBitacora(
                 $"Auditoría de inventario cerrada - Sección {auditoria.Seccion} - Esperados {auditoria.Esperados} - Faltantes {auditoria.Faltantes} ({conciliacion.FaltantesSinResolver} sin resolver) - Sobrantes {auditoria.Sobrantes}",
-                auditoria.Faltantes > 0 ? 3 : 2);
+                2);
 
             return auditoria;
         }
@@ -285,7 +285,7 @@ namespace _012IP_BLL
             _012IP_StockBE stock = ejemplarBLL._012IP_ObtenerStock();
 
             _012IP_RegistrarBitacora(
-                $"Emitir informe de inventario y patrimonio - Sección {auditoria.Seccion}", 1);
+                $"Emitir informe de inventario y patrimonio - Sección {auditoria.Seccion}", 4);
             return stock;
         }
 

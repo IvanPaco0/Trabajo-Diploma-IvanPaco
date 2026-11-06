@@ -184,7 +184,6 @@
             this.panelAdminSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(92)))));
             this.panelAdminSubmenu.Controls.Add(this.btnRestore);
             this.panelAdminSubmenu.Controls.Add(this.btnBackUp);
-            this.panelAdminSubmenu.Controls.Add(this.btnBitacoraCambios);
             this.panelAdminSubmenu.Controls.Add(this.btnBitacora);
             this.panelAdminSubmenu.Controls.Add(this.btnDigitoVerificador);
             this.panelAdminSubmenu.Controls.Add(this.btnPerfiles);
@@ -192,7 +191,7 @@
             this.panelAdminSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelAdminSubmenu.Location = new System.Drawing.Point(0, 114);
             this.panelAdminSubmenu.Name = "panelAdminSubmenu";
-            this.panelAdminSubmenu.Size = new System.Drawing.Size(200, 245);
+            this.panelAdminSubmenu.Size = new System.Drawing.Size(200, 210);
             this.panelAdminSubmenu.TabIndex = 2;
             this.panelAdminSubmenu.Visible = false;
             // 
@@ -252,7 +251,7 @@
             this.btnBitacoraCambios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBitacoraCambios.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBitacoraCambios.ForeColor = System.Drawing.Color.White;
-            this.btnBitacoraCambios.Location = new System.Drawing.Point(0, 140);
+            this.btnBitacoraCambios.Location = new System.Drawing.Point(0, 70);
             this.btnBitacoraCambios.Name = "btnBitacoraCambios";
             this.btnBitacoraCambios.Size = new System.Drawing.Size(200, 35);
             this.btnBitacoraCambios.TabIndex = 6;
@@ -327,12 +326,13 @@
             // panelMaestroSubmenu
             // 
             this.panelMaestroSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(92)))));
+            this.panelMaestroSubmenu.Controls.Add(this.btnBitacoraCambios);
             this.panelMaestroSubmenu.Controls.Add(this.btnGestionInventario);
             this.panelMaestroSubmenu.Controls.Add(this.btnRegistrarSocio);
             this.panelMaestroSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelMaestroSubmenu.Location = new System.Drawing.Point(0, 149);
             this.panelMaestroSubmenu.Name = "panelMaestroSubmenu";
-            this.panelMaestroSubmenu.Size = new System.Drawing.Size(200, 70);
+            this.panelMaestroSubmenu.Size = new System.Drawing.Size(200, 105);
             this.panelMaestroSubmenu.TabIndex = 4;
             this.panelMaestroSubmenu.Visible = false;
             // 

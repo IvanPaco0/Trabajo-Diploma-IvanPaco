@@ -34,7 +34,7 @@ namespace BLL
             Bitacora bita = new Bitacora();
             bita.Criticidad = 5;
             bita.Modulo = MODULO_BITACORA;
-            bita.Evento = $"Se guardo el idioma {idioma}";
+            bita.Evento = $"Cambiar idioma - {idioma}";
             bita.Login = userName;
             bll.RegistrarEvento(bita);
         }

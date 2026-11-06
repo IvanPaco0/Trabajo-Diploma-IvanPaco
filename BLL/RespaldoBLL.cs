@@ -74,7 +74,7 @@ namespace BLL
             }
             catch (Exception ex)
             {
-                RegistrarEvento("Error al generar Backup: " + ex.Message, 4);
+                RegistrarEvento("Error al generar Backup: " + ex.Message, 1);
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV16"), ex);
             }
         }
@@ -100,7 +100,7 @@ namespace BLL
             }
             catch (Exception ex)
             {
-                RegistrarEvento("Error al ejecutar Restore: " + ex.Message, 4);
+                RegistrarEvento("Error al ejecutar Restore: " + ex.Message, 1);
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV21"), ex);
             }
         }

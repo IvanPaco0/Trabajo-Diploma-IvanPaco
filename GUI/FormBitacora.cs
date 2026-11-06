@@ -91,26 +91,19 @@ namespace GUI
                 foreach (var l in bll.ObtenerLogins())
                     cmbLogin.Items.Add(l);
 
+                // Módulos y eventos tipificados según el listado de eventos que registra el sistema.
+                cmbModulo.SelectedIndexChanged -= cmbModulo_SelectedIndexChanged;
+                cmbModulo.DropDownStyle = ComboBoxStyle.DropDownList;
+                cmbModulo.DropDownWidth = 200;
                 cmbModulo.Items.Clear();
-                cmbModulo.Items.Add("Todos");
-                cmbModulo.Items.Add("Usuarios");
-                cmbModulo.Items.Add("Ventas");
-                cmbModulo.Items.Add("Compras");
-                cmbModulo.Items.Add("Maestro");
-                cmbModulo.Items.Add("Perfiles");
-                cmbModulo.Items.Add("Inventario");
+                cmbModulo.Items.Add(CatalogoEventos.Todos);
+                foreach (string m in CatalogoEventos.Modulos())
+                    cmbModulo.Items.Add(m);
                 cmbModulo.SelectedIndex = 0;
+                cmbModulo.SelectedIndexChanged += cmbModulo_SelectedIndexChanged;
 
-                cmbEvento.Items.Clear();
-                cmbEvento.Items.Add("Login");
-                cmbEvento.Items.Add("Logout");
-                cmbEvento.Items.Add("Crear Usuario");
-                cmbEvento.Items.Add("Cambiar Clave");
-                cmbEvento.Items.Add("Bloquear Usuario");
-                cmbEvento.Items.Add("Generar Carrito");
-                cmbEvento.Items.Add("Generar Factura");
-                cmbEvento.Items.Add("Imprimir Factura");
-                cmbEvento.Items.Add("Eliminar Producto");
+                cmbEvento.DropDownWidth = 300;
+                CargarEventos(null);
 
                 cmbCriticidad.Items.Clear();
                 cmbCriticidad.Items.Add("Todos");
@@ -126,6 +119,20 @@ namespace GUI
             {
                 cmbLogin.SelectedIndexChanged += cmbLogin_SelectedIndexChanged;
             }
+        }
+
+        private void CargarEventos(string modulo)
+        {
+            cmbEvento.Items.Clear();
+            foreach (string ev in CatalogoEventos.EventosDe(modulo))
+                cmbEvento.Items.Add(ev);
+            cmbEvento.SelectedIndex = -1;
+            cmbEvento.Text = string.Empty;
+        }
+
+        private void cmbModulo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CargarEventos(cmbModulo.SelectedItem?.ToString());
         }
 
         private void DtgvBitacora_SelectionChanged(object sender, EventArgs e)

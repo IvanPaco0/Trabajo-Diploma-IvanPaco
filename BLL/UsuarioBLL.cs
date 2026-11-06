@@ -47,6 +47,17 @@ namespace BLL
                         if (usuarioDAL.ObtenerIntentosFallidos(usuarioBE.DNI) >= 3)
                         {
                             usuarioDAL.BloquearUsuario(usuarioBE.Username);
+                            try
+                            {
+                                bitacoraBLL.RegistrarEvento(new Bitacora
+                                {
+                                    Login = usuarioBE.Username,
+                                    Modulo = "Usuarios",
+                                    Evento = "Bloquear usuario - 3 intentos fallidos",
+                                    Criticidad = 1
+                                });
+                            }
+                            catch { }
                             return LoginResultado.Bloqueado;
                         }
                         return LoginResultado.ContraseñaIncorrecta;
@@ -86,7 +97,7 @@ namespace BLL
                 SessionManager.Instance.Desloguear();
 
                 bitacora.Modulo = "Usuarios";
-                bitacora.Evento = "Desloguear usuario";
+                bitacora.Evento = "Logout";
                 bitacora.Criticidad = 1;
                 bitacoraBLL.RegistrarEvento(bitacora);
             }
@@ -119,7 +130,7 @@ namespace BLL
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                     bitacora.Modulo = "Usuarios";
-                    bitacora.Evento = "Crear usuario exitoso";
+                    bitacora.Evento = "Crear usuario";
                     bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
@@ -164,7 +175,7 @@ namespace BLL
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                     bitacora.Modulo = "Usuarios";
-                    bitacora.Evento = "Eliminar Usuario (Baja lógica) exitoso";
+                    bitacora.Evento = "Baja lógica de usuario";
                     bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
@@ -176,7 +187,7 @@ namespace BLL
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                     bitacora.Modulo = "Usuarios";
-                    bitacora.Evento = "Activar Usuario (Baja lógica) exitoso";
+                    bitacora.Evento = "Reactivar usuario";
                     bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
@@ -204,7 +215,7 @@ namespace BLL
                 Bitacora bitacora = new Bitacora();
                 bitacora.Login = usuario;
                 bitacora.Modulo = "Usuarios";
-                bitacora.Evento = "Cambiar Clave exitoso";
+                bitacora.Evento = "Cambiar clave";
                 bitacora.Criticidad = 1;
                 bitacoraBLL.RegistrarEvento(bitacora);
 
@@ -234,7 +245,7 @@ namespace BLL
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                     bitacora.Modulo = "Usuarios";
-                    bitacora.Evento = "Modificar Usuario exitoso";
+                    bitacora.Evento = "Modificar usuario";
                     bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
@@ -257,7 +268,7 @@ namespace BLL
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
                     bitacora.Modulo = "Usuarios";
-                    bitacora.Evento = "Desbloquear Usuario exitoso";
+                    bitacora.Evento = "Desbloquear usuario";
                     bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }

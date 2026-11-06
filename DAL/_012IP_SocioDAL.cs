@@ -197,7 +197,7 @@ namespace _012IP_DAL
         }
 
         // Modifica los datos del socio. El trigger TR_Socio_Update desactiva la versión vigente
-        // en SocioHistorial e inserta la nueva (operación "Modificación" o "Restauración").
+        // en SocioHistorial e inserta la nueva (operación "Modificación" o "Activación").
         public bool _012IP_ModificarSocio(_012IP_SocioBE socio, string dvh, string usuario, string operacion)
         {
             try
