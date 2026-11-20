@@ -10,14 +10,14 @@
   "btnMaestro": "Maestro",
   "btnUsuario": "Usuario",
   "btnReLogin": "Re_Login",
-  "btnCambiarClave": "CambiarClave",
-  "btnLogout": "Log Out",
+  "btnCambiarClave": "Cambiar clave",
+  "btnLogout": "Cerrar sesión",
   "btnCambiarIdioma": "Cambiar Idioma",
 
   "YaHaySesionActiva": "Ya hay una sesión iniciada. Por favor, cierre sesión antes de intentar iniciar una nueva.",
-  "Informacion": "Informacion",
-  "menumsj1": "Quiere cerrar sesion?",
-  "menumsj2": "cerrar sesion",
+  "Informacion": "Información",
+  "menumsj1": "¿Desea cerrar la sesión?",
+  "menumsj2": "Cerrar sesión",
 
   //Form Usuario
   "lblTextoTabla": "Usuarios Activos",
@@ -40,7 +40,7 @@
   "rbActivos": "Activos",
   "lblTextoTablaUserActivos": "Usuarios Activos",
   "lblTextoTablaUserTodos": "Todos los Usuarios",
-  "txtBoxModoConsulta": "ModoConsulta",
+  "txtBoxModoConsulta": "Modo consulta",
   "txtBoxModoAnadir": "Modo Añadir",
   "txtBoxModoDesbloquear": "Modo desbloquear",
   "txtBoxModoActivar": "Modo activar",
@@ -120,14 +120,14 @@
   "lblCambiarIdioma": "Cambiar Idioma",
   "btnCambiarCI": "Cambiar",
   "MsjCambiarIdioma": "Idioma cambiado",
-  "MsjConfirmacion": "Confirmado",
+  "MsjConfirmacion": "Confirmación",
   "Salir": "Salir",
 
 
 
   "Español": "Español",
-  "Ingles": "Ingles",
-  "Japones": "Japones",
+  "Ingles": "Inglés",
+  "Japones": "Japonés",
   //FormGestionPerfiles
   "RbPermisos": "Permisos",
   "RbFamilias": "Familias",

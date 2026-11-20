@@ -16,8 +16,8 @@
 
   "YaHaySesionActiva": "既にセッションが開始されています。新しいセッションを開始する前にログアウトしてください。",
   "Informacion": "情報",
-  "menumsj1": "アウト?",
-  "menumsj2": "にセッ",
+  "menumsj1": "ログアウトしますか？",
+  "menumsj2": "ログアウト",
 
   //Form Usuario
   "lblTextoTabla": "アクティブユーザー",
@@ -120,7 +120,7 @@
   "lblCambiarIdioma": "言語変更",
   "btnCambiarCI": "変更",
   "MsjCambiarIdioma": "言語が変更されました",
-  "MsjConfirmacion": "確認済み",
+  "MsjConfirmacion": "確認",
   "Salir": "終了",
 
   "Español": "スペイン語",

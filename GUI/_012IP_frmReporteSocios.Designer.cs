@@ -1,4 +1,4 @@
-﻿namespace _012IP_GUI
+namespace _012IP_GUI
 {
     partial class _012IP_frmReporteSocios
     {

@@ -1,4 +1,4 @@
-﻿namespace Servicios
+namespace Servicios
 {
     public class TipoEvento
     {

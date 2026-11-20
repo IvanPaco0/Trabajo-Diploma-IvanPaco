@@ -10,13 +10,13 @@
   "btnMaestro": "Master",
   "btnUsuario": "User",
   "btnReLogin": "Re_Login",
-  "btnCambiarClave": "ChangePassword",
+  "btnCambiarClave": "Change password",
   "btnLogout": "Log Out",
   "btnCambiarIdioma": "Change Language",
 
   "YaHaySesionActiva": "A session is already active. Please log out before trying to start a new one.",
   "Informacion": "Information",
-  "menumsj1": "Confirm Logout?",
+  "menumsj1": "Do you want to log out?",
   "menumsj2": "Logout",
 
   //Form Usuario
@@ -40,7 +40,7 @@
   "rbActivos": "Active",
   "lblTextoTablaUserActivos": "Active Users",
   "lblTextoTablaUserTodos": "All Users",
-  "txtBoxModoConsulta": "QueryMode",
+  "txtBoxModoConsulta": "Query mode",
   "txtBoxModoAnadir": "Add Mode",
   "txtBoxModoDesbloquear": "Unlock mode",
   "txtBoxModoActivar": "Activate mode",
@@ -120,7 +120,7 @@
   "lblCambiarIdioma": "Change Language",
   "btnCambiarCI": "Change",
   "MsjCambiarIdioma": "Language changed",
-  "MsjConfirmacion": "Confirmed",
+  "MsjConfirmacion": "Confirmation",
   "Salir": "Exit",
 
   "Español": "Spanish",

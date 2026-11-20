@@ -29,8 +29,8 @@ namespace _012IP_DAL
                 _sqlcommand.CommandText = SelectSocios + @"
                     WHERE s.Activo = 1
                       AND (@dni = '' OR s.DNI = @dni)
-                      AND (@nombre = '' OR s.Nombre LIKE '%' + @nombre + '%')
-                      AND (@apellido = '' OR s.Apellido LIKE '%' + @apellido + '%')
+                      AND (@nombre = '' OR s.Nombre COLLATE Latin1_General_CI_AI LIKE '%' + @nombre + '%')
+                      AND (@apellido = '' OR s.Apellido COLLATE Latin1_General_CI_AI LIKE '%' + @apellido + '%')
                     ORDER BY s.Apellido, s.Nombre;";
 
                 _sqlcommand.Parameters.AddWithValue("@dni", (dni ?? "").Trim());
@@ -54,7 +54,7 @@ namespace _012IP_DAL
                 for (int i = 0; i < palabras.Count; i++)
                 {
                     string p = "@p" + i;
-                    condiciones.Append(" AND (s.DNI LIKE " + p + " + '%' OR s.Nombre LIKE '%' + " + p + " + '%' OR s.Apellido LIKE '%' + " + p + " + '%')");
+                    condiciones.Append(" AND (s.DNI LIKE " + p + " + '%' OR s.Nombre COLLATE Latin1_General_CI_AI LIKE '%' + " + p + " + '%' OR s.Apellido COLLATE Latin1_General_CI_AI LIKE '%' + " + p + " + '%')");
                     _sqlcommand.Parameters.AddWithValue(p, palabras[i]);
                 }
 

@@ -1,4 +1,4 @@
-﻿using _012IP_BE;
+using _012IP_BE;
 using _012IP_BLL;
 using Servicios;
 using System;
@@ -72,7 +72,9 @@ namespace _012IP_GUI
             try
             {
                 int? idActual = idSeleccionar ?? _012IP_SocioSeleccionado()?.IdSocio;
-                socios = socioBLL._012IP_BuscarSocioPorTexto(txtBuscar.Text, true)
+                var encontrados = socioBLL._012IP_BuscarSocioPorTexto(txtBuscar.Text, true);
+                int cantidadBajas = encontrados.Count(s => !s.Activo);
+                socios = encontrados
                     .Where(s => chkInactivos.Checked || s.Activo)
                     .ToList();
 
@@ -103,7 +105,7 @@ namespace _012IP_GUI
                         dgvSocios.CurrentCell = dgvSocios.Rows[indice].Cells[0];
                     }
                 }
-                lblResumen.Text = string.Format(_012IP_Texto("GesSocResumen"), socios.Count(s => s.Activo), socios.Count(s => !s.Activo));
+                lblResumen.Text = string.Format(_012IP_Texto("GesSocResumen"), socios.Count(s => s.Activo), cantidadBajas);
                 _012IP_ActualizarBotones();
             }
             catch (Exception ex)

@@ -1,4 +1,4 @@
-﻿using _012IP_BE;
+using _012IP_BE;
 using _012IP_BLL;
 using Servicios;
 using System;

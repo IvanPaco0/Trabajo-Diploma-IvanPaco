@@ -23,6 +23,7 @@ namespace _012IP_GUI
         public _012IP_PagoBE PagoRegistrado { get; private set; }
 
         public bool SoloCapturarMedioDePago { get; set; }
+        public DateTime? PeriodoHasta { get; set; }
         public _012IP_MedioDePagoBE MedioDePagoElegido { get; private set; }
         public string MarcaTarjeta { get; private set; }
         public string UltimosDigitos { get; private set; }
@@ -68,7 +69,9 @@ namespace _012IP_GUI
 
             
             lblSocioValue.Text = $"{nombreSocio}  -  DNI {dniSocio}";
-            lblPeriodoValue.Text = periodo.HasValue ? periodo.Value.ToString("MM/yyyy") : "-";
+            lblPeriodoValue.Text = !periodo.HasValue ? "-"
+                : PeriodoHasta.HasValue ? periodo.Value.ToString("dd/MM/yyyy") + " - " + PeriodoHasta.Value.ToString("dd/MM/yyyy")
+                : periodo.Value.ToString("MM/yyyy");
             lblImporteValue.Text = _012IP_Moneda(importe);
 
             if (cbMedioPago.Items.Count > 0)

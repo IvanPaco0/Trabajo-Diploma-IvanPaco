@@ -578,7 +578,7 @@
             this.btnReporteRFN1.FlatAppearance.BorderSize = 0;
             this.btnReporteRFN1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnReporteRFN1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReporteRFN1.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReporteRFN1.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReporteRFN1.ForeColor = System.Drawing.Color.White;
             this.btnReporteRFN1.Location = new System.Drawing.Point(0, 0);
             this.btnReporteRFN1.Name = "btnReporteRFN1";

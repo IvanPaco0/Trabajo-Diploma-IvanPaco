@@ -321,6 +321,7 @@ namespace _012IP_GUI
                 total, membresia.IdMembresia, periodo))
             {
                 frmPago.SoloCapturarMedioDePago = true;
+                frmPago.PeriodoHasta = periodoVencimiento;
                 DialogResult resultado = frmPago.ShowDialog(this);
                 if (resultado != DialogResult.OK) return null;
                 marcaTarjeta = frmPago.MarcaTarjeta;
