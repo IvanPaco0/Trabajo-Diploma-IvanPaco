@@ -10,17 +10,17 @@ namespace _012IP_BLL
 {
     public class _012IP_BitacoraCambiosBLL
     {
-        public const int MaximoFilas = 2000;
-
         private readonly _012IP_SocioHistorialDAL historialDAL;
         private readonly _012IP_SocioBLL socioBLL;
         private readonly BitacoraBLL bitacoraBLL;
+        private readonly _012IP_ParametroBLL parametroBLL;
 
         public _012IP_BitacoraCambiosBLL()
         {
             historialDAL = new _012IP_SocioHistorialDAL();
             socioBLL = new _012IP_SocioBLL();
             bitacoraBLL = new BitacoraBLL();
+            parametroBLL = new _012IP_ParametroBLL();
         }
 
         public List<_012IP_SocioHistorialBE> _012IP_ConsultarHistorial(string dni, string nombre, DateTime? desde, DateTime? hasta)
@@ -37,7 +37,7 @@ namespace _012IP_BLL
                 .Take(4).ToList();
             try
             {
-                return historialDAL._012IP_ListarHistorial(dni, palabras, desde, hasta, MaximoFilas);
+                return historialDAL._012IP_ListarHistorial(dni, palabras, desde, hasta, parametroBLL._012IP_MaximoFilasBitacoraCambios());
             }
             catch (Exception ex)
             {
@@ -78,9 +78,7 @@ namespace _012IP_BLL
             bitacoraBLL.RegistrarEvento(new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = "Bitácora de cambios",
                 Evento = $"Activar versión {version.IdHistorial} del socio DNI {version.DNI}",
-                Criticidad = 1
             });
             return version;
         }

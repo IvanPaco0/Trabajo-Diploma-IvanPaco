@@ -12,5 +12,6 @@ namespace Servicios
         Bloqueado,
         Error,
         ContraseñaIguales,
+        Inactivo,
     }
 }

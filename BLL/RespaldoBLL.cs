@@ -68,13 +68,13 @@ namespace BLL
                 string rutaCompleta = Path.Combine(carpetaDestino, nombreArchivo);
 
                 DAL.GenerarBackup(rutaCompleta);
-                RegistrarEvento("Backup generado exitosamente: " + nombreArchivo, 1);
+                RegistrarEvento("Backup generado exitosamente: " + nombreArchivo);
 
                 return rutaCompleta;
             }
             catch (Exception ex)
             {
-                RegistrarEvento("Error al generar Backup: " + ex.Message, 1);
+                RegistrarEvento("Error al generar Backup: " + ex.Message);
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV16"), ex);
             }
         }
@@ -96,16 +96,16 @@ namespace BLL
                     throw new Exception(LanguageManager.Instance.GetTraduction("TextDV20"));
 
                 DAL.RestaurarBackup(rutaArchivoBackup);
-                RegistrarEvento("Restore ejecutado desde: " + Path.GetFileName(rutaArchivoBackup), 1);
+                RegistrarEvento("Restore ejecutado desde: " + Path.GetFileName(rutaArchivoBackup));
             }
             catch (Exception ex)
             {
-                RegistrarEvento("Error al ejecutar Restore: " + ex.Message, 1);
+                RegistrarEvento("Error al ejecutar Restore: " + ex.Message);
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV21"), ex);
             }
         }
 
-        private void RegistrarEvento(string descripcion, int criticidad)
+        private void RegistrarEvento(string descripcion)
         {
             try
             {
@@ -113,9 +113,7 @@ namespace BLL
                 Bitacora evento = new Bitacora
                 {
                     Login = login,
-                    Modulo = "Respaldos",
                     Evento = descripcion,
-                    Criticidad = criticidad
                 };
                 bitacoraBLL.RegistrarEvento(evento);
             }

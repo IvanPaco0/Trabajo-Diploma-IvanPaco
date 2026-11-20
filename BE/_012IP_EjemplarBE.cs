@@ -13,11 +13,12 @@ namespace _012IP_BE
         public string NumeroInventario { get; set; } = string.Empty;
         public string Titulo { get; set; } = string.Empty;
         public string Autor { get; set; } = string.Empty;
-        public string Origen { get; set; } = "Compra";          // Compra | Donacion
-        public string Estado { get; set; } = "Bueno";           // Bueno | Deteriorado | EnRestauracion | Baja
+        public _012IP_OrigenEjemplar Origen { get; set; } = _012IP_OrigenEjemplar.Compra;
+        public _012IP_EstadoEjemplar Estado { get; set; } = _012IP_EstadoEjemplar.Bueno;
         public string Pasillo { get; set; } = string.Empty;
         public string Seccion { get; set; } = string.Empty;
         public string Estanteria { get; set; } = string.Empty;
+        public decimal Valor { get; set; }
         public DateTime FechaIngreso { get; set; }
         public DateTime? FechaEnvioRestauracion { get; set; }
         public DateTime? FechaBaja { get; set; }
@@ -28,7 +29,7 @@ namespace _012IP_BE
             !string.IsNullOrWhiteSpace(Seccion) &&
             !string.IsNullOrWhiteSpace(Estanteria);
 
-        public bool EstaDisponible => Estado == "Bueno" && EstaUbicado;
+        public bool EstaDisponible => Estado == _012IP_EstadoEjemplar.Bueno && EstaUbicado;
 
         public _012IP_EjemplarBE() { }
     }

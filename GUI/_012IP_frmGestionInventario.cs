@@ -64,6 +64,7 @@ namespace _012IP_GUI
             lblTituloLibro.Text = _012IP_Texto("InvTituloLibro");
             lblAutor.Text = _012IP_Texto("InvAutor");
             lblOrigen.Text = _012IP_Texto("InvOrigen");
+            lblValor.Text = _012IP_Texto("InvValor");
             btnRegistrar.Text = _012IP_Texto("InvBtnRegistrar");
             grpUbicacion.Text = _012IP_Texto("InvGrpUbicacion");
             lblPasillo.Text = _012IP_Texto("InvPasillo");
@@ -87,24 +88,42 @@ namespace _012IP_GUI
             toolTip.SetToolTip(btnExaminarSer, _012IP_Texto("InvTipExaminarSer"));
             toolTip.SetToolTip(btnExaminarDes, _012IP_Texto("InvTipExaminarDes"));
 
-            _012IP_BindCombo(cmbOrigen, new List<KeyValuePair<string, string>>
+            var origenes = new List<KeyValuePair<string, string>>();
+            var filtros = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>(_012IP_EjemplarBLL.ORIGEN_COMPRA, _012IP_EjemplarBLL._012IP_NombreOrigen(_012IP_EjemplarBLL.ORIGEN_COMPRA)),
-                new KeyValuePair<string, string>(_012IP_EjemplarBLL.ORIGEN_DONACION, _012IP_EjemplarBLL._012IP_NombreOrigen(_012IP_EjemplarBLL.ORIGEN_DONACION))
-            });
+                new KeyValuePair<string, string>(FILTRO_TODOS, _012IP_Texto("InvFiltroTodos")),
+                new KeyValuePair<string, string>(FILTRO_PENDIENTES, _012IP_Texto("InvFiltroPendientes"))
+            };
 
-            _012IP_BindCombo(cmbFiltro, new List<KeyValuePair<string, string>>
+            if (ejemplarBLL != null)
             {
-                new KeyValuePair<string, string>("Todos", _012IP_Texto("InvFiltroTodos")),
-                new KeyValuePair<string, string>("Pendientes", _012IP_Texto("InvFiltroPendientes")),
-                new KeyValuePair<string, string>(_012IP_EjemplarBLL.ESTADO_BUENO, _012IP_EjemplarBLL._012IP_NombreEstado(_012IP_EjemplarBLL.ESTADO_BUENO)),
-                new KeyValuePair<string, string>(_012IP_EjemplarBLL.ESTADO_DETERIORADO, _012IP_EjemplarBLL._012IP_NombreEstado(_012IP_EjemplarBLL.ESTADO_DETERIORADO)),
-                new KeyValuePair<string, string>(_012IP_EjemplarBLL.ESTADO_RESTAURACION, _012IP_EjemplarBLL._012IP_NombreEstado(_012IP_EjemplarBLL.ESTADO_RESTAURACION)),
-                new KeyValuePair<string, string>(_012IP_EjemplarBLL.ESTADO_BAJA, _012IP_EjemplarBLL._012IP_NombreEstado(_012IP_EjemplarBLL.ESTADO_BAJA))
-            });
+                try
+                {
+                    origenes.AddRange(ejemplarBLL._012IP_ListarOrigenes()
+                        .Select(o => new KeyValuePair<string, string>(o.ToString(), _012IP_EjemplarBLL._012IP_NombreOrigen(o))));
+                    filtros.AddRange(_012IP_ItemsEstados(ejemplarBLL._012IP_ListarEstados()));
+                }
+                catch (Exception ex)
+                {
+                    _012IP_Error(ex.Message);
+                }
+            }
+
+            _012IP_BindCombo(cmbOrigen, origenes);
+            _012IP_BindCombo(cmbFiltro, filtros);
 
             if (ejemplarBLL != null)
                 _012IP_RefrescarTodo(null);
+        }
+
+        private const string FILTRO_TODOS = "Todos";
+        private const string FILTRO_PENDIENTES = "Pendientes";
+
+        private static List<KeyValuePair<string, string>> _012IP_ItemsEstados(IEnumerable<_012IP_EstadoEjemplar> estados)
+        {
+            return estados
+                .Select(s => new KeyValuePair<string, string>(s.ToString(), _012IP_EjemplarBLL._012IP_NombreEstado(s)))
+                .ToList();
         }
 
         private string _012IP_Texto(string clave)
@@ -186,13 +205,15 @@ namespace _012IP_GUI
             {
                 _012IP_StockBE s = ejemplarBLL._012IP_ObtenerStock();
                 lblStock.Text = string.Format(_012IP_Texto("InvStockFormato"),
-                    s.Total, s.Disponibles, s.Deteriorados, s.EnRestauracion, s.Bajas, s.PendientesUbicar);
+                    s.Total, s.Disponibles, s.Deteriorados, s.EnRestauracion, s.Bajas, s.PendientesUbicar, _012IP_EjemplarBLL._012IP_TextoMoneda(s.ValorPatrimonio));
 
                 string previo = codigoASeleccionar ?? _012IP_CodigoSeleccionado();
-                string filtro = Convert.ToString(cmbFiltro.SelectedValue) ?? "Todos";
+                string filtro = Convert.ToString(cmbFiltro.SelectedValue) ?? FILTRO_TODOS;
+                bool soloPendientes = filtro == FILTRO_PENDIENTES;
+                _012IP_EstadoEjemplar? estado = Enum.TryParse(filtro, out _012IP_EstadoEjemplar elegido) ? elegido : (_012IP_EstadoEjemplar?)null;
 
                 modoXml = false;
-                _012IP_MostrarEnGrilla(ejemplarBLL._012IP_ListarEjemplares(filtro, txtBuscar.Text), previo);
+                _012IP_MostrarEnGrilla(ejemplarBLL._012IP_ListarEjemplares(estado, soloPendientes, txtBuscar.Text), previo);
             }
             catch (Exception ex)
             {
@@ -215,6 +236,7 @@ namespace _012IP_GUI
                     Titulo = x.Titulo,
                     Autor = x.Autor,
                     Origen = _012IP_EjemplarBLL._012IP_NombreOrigen(x.Origen),
+                    Valor = _012IP_EjemplarBLL._012IP_TextoMoneda(x.Valor),
                     Estado = _012IP_EjemplarBLL._012IP_NombreEstado(x.Estado),
                     Ubicacion = _012IP_EjemplarBLL._012IP_TextoUbicacion(x),
                     Disponible = x.EstaDisponible ? _012IP_Texto("InvSi") : _012IP_Texto("InvNo")
@@ -225,6 +247,7 @@ namespace _012IP_GUI
                 _012IP_Encabezado("Titulo", "InvTituloLibro");
                 _012IP_Encabezado("Autor", "InvAutor");
                 _012IP_Encabezado("Origen", "InvOrigen");
+                _012IP_Encabezado("Valor", "InvValor");
                 _012IP_Encabezado("Estado", "InvColEstado");
                 _012IP_Encabezado("Ubicacion", "InvColUbicacion");
                 _012IP_Encabezado("Disponible", "InvColDisponible");
@@ -286,13 +309,19 @@ namespace _012IP_GUI
             txtSeccion.Text = ej.Seccion;
             txtEstanteria.Text = ej.Estanteria;
 
-            var siguientes = _012IP_EjemplarBLL._012IP_EstadosPermitidos(ej.Estado)
-                .Where(s => s != _012IP_EjemplarBLL.ESTADO_BAJA)
-                .Select(s => new KeyValuePair<string, string>(s, _012IP_EjemplarBLL._012IP_NombreEstado(s)))
-                .ToList();
+            var siguientes = new List<KeyValuePair<string, string>>();
+            try
+            {
+                siguientes = _012IP_ItemsEstados(ejemplarBLL._012IP_EstadosPermitidos(ej.Estado)
+                    .Where(s => s != _012IP_EstadoEjemplar.Baja));
+            }
+            catch (Exception ex)
+            {
+                _012IP_Error(ex.Message);
+            }
             _012IP_BindCombo(cmbNuevoEstado, siguientes);
 
-            bool esBaja = ej.Estado == _012IP_EjemplarBLL.ESTADO_BAJA;
+            bool esBaja = ej.Estado == _012IP_EstadoEjemplar.Baja;
             btnUbicar.Enabled = !esBaja;
             btnCambiarEstado.Enabled = siguientes.Count > 0;
             btnBaja.Enabled = !esBaja;
@@ -313,14 +342,20 @@ namespace _012IP_GUI
         {
             try
             {
-                string origen = Convert.ToString(cmbOrigen.SelectedValue);
+                if (!Enum.TryParse(Convert.ToString(cmbOrigen.SelectedValue), out _012IP_OrigenEjemplar origen))
+                {
+                    _012IP_Error(_012IP_Texto("InvBLLFormato"));
+                    return;
+                }
+
                 _012IP_EjemplarBE ej = ejemplarBLL._012IP_RegistrarIngreso(
-                    txtCodigo.Text, txtNumeroInv.Text, txtTituloLibro.Text, txtAutor.Text, origen);
+                    txtCodigo.Text, txtNumeroInv.Text, txtTituloLibro.Text, txtAutor.Text, origen, nudValor.Value);
 
                 txtCodigo.Clear();
                 txtNumeroInv.Clear();
                 txtTituloLibro.Clear();
                 txtAutor.Clear();
+                nudValor.Value = 0;
 
                 _012IP_RefrescarTodo(ej.CodigoBarras);
                 _012IP_Ok(string.Format(_012IP_Texto("InvIngresoOk"), ej.Titulo, ej.CodigoBarras));
@@ -361,8 +396,7 @@ namespace _012IP_GUI
                 return;
             }
 
-            string nuevo = cmbNuevoEstado.SelectedValue as string;
-            if (nuevo == null)
+            if (!Enum.TryParse(cmbNuevoEstado.SelectedValue as string, out _012IP_EstadoEjemplar nuevo))
             {
                 _012IP_Error(_012IP_Texto("InvBLLEstadoInvalido"));
                 return;

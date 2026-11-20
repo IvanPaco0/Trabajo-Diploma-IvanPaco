@@ -62,12 +62,9 @@
             this.panelReportesSubmenu = new System.Windows.Forms.Panel();
             this.btnReporteRFN1 = new System.Windows.Forms.Button();
             this.btnReporteSocios = new System.Windows.Forms.Button();
-            this.btnReporteRFN2 = new System.Windows.Forms.Button();
             this.btnAyuda = new System.Windows.Forms.Button();
             this.panelAyudaSubmenu = new System.Windows.Forms.Panel();
-            this.btnAyudaMembresias = new System.Windows.Forms.Button();
-            this.btnAyudaInventario = new System.Windows.Forms.Button();
-            this.btnAcercaDe = new System.Windows.Forms.Button();
+            this.btnManualUsuario = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelContenedor = new System.Windows.Forms.Panel();
             this.BarraTitulo.SuspendLayout();
@@ -551,12 +548,11 @@
             // 
             this.panelReportesSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(92)))));
             this.panelReportesSubmenu.Controls.Add(this.btnReporteSocios);
-            this.panelReportesSubmenu.Controls.Add(this.btnReporteRFN2);
             this.panelReportesSubmenu.Controls.Add(this.btnReporteRFN1);
             this.panelReportesSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelReportesSubmenu.Location = new System.Drawing.Point(0, 289);
             this.panelReportesSubmenu.Name = "panelReportesSubmenu";
-            this.panelReportesSubmenu.Size = new System.Drawing.Size(200, 105);
+            this.panelReportesSubmenu.Size = new System.Drawing.Size(200, 70);
             this.panelReportesSubmenu.TabIndex = 12;
             this.panelReportesSubmenu.Visible = false;
             // 
@@ -568,7 +564,7 @@
             this.btnReporteSocios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReporteSocios.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReporteSocios.ForeColor = System.Drawing.Color.White;
-            this.btnReporteSocios.Location = new System.Drawing.Point(0, 0);
+            this.btnReporteSocios.Location = new System.Drawing.Point(0, 35);
             this.btnReporteSocios.Name = "btnReporteSocios";
             this.btnReporteSocios.Size = new System.Drawing.Size(200, 35);
             this.btnReporteSocios.TabIndex = 2;
@@ -588,25 +584,9 @@
             this.btnReporteRFN1.Name = "btnReporteRFN1";
             this.btnReporteRFN1.Size = new System.Drawing.Size(200, 35);
             this.btnReporteRFN1.TabIndex = 0;
-            this.btnReporteRFN1.Text = "Rep. 1 (RFN1) Recaudación";
+            this.btnReporteRFN1.Text = "Recaudación y vencimientos";
             this.btnReporteRFN1.UseVisualStyleBackColor = true;
             this.btnReporteRFN1.Click += new System.EventHandler(this.btnReporteRFN1_Click);
-            // 
-            // btnReporteRFN2
-            // 
-            this.btnReporteRFN2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnReporteRFN2.FlatAppearance.BorderSize = 0;
-            this.btnReporteRFN2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnReporteRFN2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReporteRFN2.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReporteRFN2.ForeColor = System.Drawing.Color.White;
-            this.btnReporteRFN2.Location = new System.Drawing.Point(0, 35);
-            this.btnReporteRFN2.Name = "btnReporteRFN2";
-            this.btnReporteRFN2.Size = new System.Drawing.Size(200, 35);
-            this.btnReporteRFN2.TabIndex = 1;
-            this.btnReporteRFN2.Text = "Rep. 2 (RFN2) Inventario";
-            this.btnReporteRFN2.UseVisualStyleBackColor = true;
-            this.btnReporteRFN2.Click += new System.EventHandler(this.btnReporteRFN2_Click);
             // 
             // btnAyuda
             // 
@@ -627,63 +607,29 @@
             // panelAyudaSubmenu
             // 
             this.panelAyudaSubmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(92)))));
-            this.panelAyudaSubmenu.Controls.Add(this.btnAcercaDe);
-            this.panelAyudaSubmenu.Controls.Add(this.btnAyudaInventario);
-            this.panelAyudaSubmenu.Controls.Add(this.btnAyudaMembresias);
+            this.panelAyudaSubmenu.Controls.Add(this.btnManualUsuario);
             this.panelAyudaSubmenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelAyudaSubmenu.Location = new System.Drawing.Point(0, 324);
             this.panelAyudaSubmenu.Name = "panelAyudaSubmenu";
-            this.panelAyudaSubmenu.Size = new System.Drawing.Size(200, 105);
+            this.panelAyudaSubmenu.Size = new System.Drawing.Size(200, 35);
             this.panelAyudaSubmenu.TabIndex = 14;
             this.panelAyudaSubmenu.Visible = false;
             // 
-            // btnAyudaMembresias
+            // btnManualUsuario
             // 
-            this.btnAyudaMembresias.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAyudaMembresias.FlatAppearance.BorderSize = 0;
-            this.btnAyudaMembresias.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnAyudaMembresias.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAyudaMembresias.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAyudaMembresias.ForeColor = System.Drawing.Color.White;
-            this.btnAyudaMembresias.Location = new System.Drawing.Point(0, 0);
-            this.btnAyudaMembresias.Name = "btnAyudaMembresias";
-            this.btnAyudaMembresias.Size = new System.Drawing.Size(200, 35);
-            this.btnAyudaMembresias.TabIndex = 0;
-            this.btnAyudaMembresias.Text = "Membresías";
-            this.btnAyudaMembresias.UseVisualStyleBackColor = true;
-            this.btnAyudaMembresias.Click += new System.EventHandler(this.btnAyudaMembresias_Click);
-            // 
-            // btnAyudaInventario
-            // 
-            this.btnAyudaInventario.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAyudaInventario.FlatAppearance.BorderSize = 0;
-            this.btnAyudaInventario.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnAyudaInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAyudaInventario.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAyudaInventario.ForeColor = System.Drawing.Color.White;
-            this.btnAyudaInventario.Location = new System.Drawing.Point(0, 35);
-            this.btnAyudaInventario.Name = "btnAyudaInventario";
-            this.btnAyudaInventario.Size = new System.Drawing.Size(200, 35);
-            this.btnAyudaInventario.TabIndex = 1;
-            this.btnAyudaInventario.Text = "Inventario";
-            this.btnAyudaInventario.UseVisualStyleBackColor = true;
-            this.btnAyudaInventario.Click += new System.EventHandler(this.btnAyudaInventario_Click);
-            // 
-            // btnAcercaDe
-            // 
-            this.btnAcercaDe.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAcercaDe.FlatAppearance.BorderSize = 0;
-            this.btnAcercaDe.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnAcercaDe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAcercaDe.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAcercaDe.ForeColor = System.Drawing.Color.White;
-            this.btnAcercaDe.Location = new System.Drawing.Point(0, 70);
-            this.btnAcercaDe.Name = "btnAcercaDe";
-            this.btnAcercaDe.Size = new System.Drawing.Size(200, 35);
-            this.btnAcercaDe.TabIndex = 2;
-            this.btnAcercaDe.Text = "Acerca de";
-            this.btnAcercaDe.UseVisualStyleBackColor = true;
-            this.btnAcercaDe.Click += new System.EventHandler(this.btnAcercaDe_Click);
+            this.btnManualUsuario.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnManualUsuario.FlatAppearance.BorderSize = 0;
+            this.btnManualUsuario.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnManualUsuario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnManualUsuario.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnManualUsuario.ForeColor = System.Drawing.Color.White;
+            this.btnManualUsuario.Location = new System.Drawing.Point(0, 0);
+            this.btnManualUsuario.Name = "btnManualUsuario";
+            this.btnManualUsuario.Size = new System.Drawing.Size(200, 35);
+            this.btnManualUsuario.TabIndex = 0;
+            this.btnManualUsuario.Text = "Manual de usuario";
+            this.btnManualUsuario.UseVisualStyleBackColor = true;
+            this.btnManualUsuario.Click += new System.EventHandler(this.btnManualUsuario_Click);
             // 
             // pictureBox1
             // 
@@ -772,11 +718,8 @@
         private System.Windows.Forms.Panel panelReportesSubmenu;
         private System.Windows.Forms.Button btnReporteRFN1;
         private System.Windows.Forms.Button btnReporteSocios;
-        private System.Windows.Forms.Button btnReporteRFN2;
         private System.Windows.Forms.Button btnAyuda;
         private System.Windows.Forms.Panel panelAyudaSubmenu;
-        private System.Windows.Forms.Button btnAyudaMembresias;
-        private System.Windows.Forms.Button btnAyudaInventario;
-        private System.Windows.Forms.Button btnAcercaDe;
+        private System.Windows.Forms.Button btnManualUsuario;
     }
 }

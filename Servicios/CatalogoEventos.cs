@@ -22,6 +22,7 @@
         {
             new TipoEvento("Usuarios", "Login", 1),
             new TipoEvento("Usuarios", "Logout", 1),
+            new TipoEvento("Usuarios", "Login fallido", 2),
             new TipoEvento("Usuarios", "Bloquear usuario", 1),
             new TipoEvento("Usuarios", "Desbloquear usuario", 1),
             new TipoEvento("Usuarios", "Crear usuario", 1),
@@ -58,6 +59,8 @@
 
             new TipoEvento("Membresias", "Renovar membresía", 2),
             new TipoEvento("Pagos", "Registrar pago", 2),
+            new TipoEvento("Pagos", "Validar tarjeta", 3),
+            new TipoEvento("Pagos", "Tarjeta rechazada", 2),
 
             new TipoEvento("Inventario", "Ingreso de ejemplar", 2),
             new TipoEvento("Inventario", "Ubicar ejemplar", 3),
@@ -73,6 +76,24 @@
 
             new TipoEvento("Idioma", "Cambiar idioma", 5),
         };
+
+        /// <summary>Tipo de evento del catalogo con el que empieza el texto registrado (gana el nombre mas largo).</summary>
+        public static TipoEvento? Buscar(string evento)
+        {
+            if (string.IsNullOrEmpty(evento)) return null;
+            return Eventos.Where(e => evento.StartsWith(e.Evento, StringComparison.Ordinal))
+                          .OrderByDescending(e => e.Evento.Length)
+                          .FirstOrDefault();
+        }
+
+        /// <summary>El modulo y la criticidad de un registro de bitacora salen del catalogo, no de cada BLL.</summary>
+        public static void Completar(Bitacora registro)
+        {
+            TipoEvento? tipo = Buscar(registro.Evento);
+            if (tipo == null) return;
+            registro.Modulo = tipo.Modulo;
+            registro.Criticidad = tipo.Criticidad;
+        }
 
         public static List<string> Modulos()
         {

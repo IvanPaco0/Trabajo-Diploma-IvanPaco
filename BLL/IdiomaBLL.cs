@@ -11,7 +11,6 @@ namespace BLL
         private readonly IdiomaDAL _idiomaDAL;
         private readonly BitacoraBLL bll;
         private readonly DigitoVerificadorBLL digitoVerificadorBLL = new DigitoVerificadorBLL();
-        private const string MODULO_BITACORA = "Idioma";
 
         public IdiomaBLL()
         {
@@ -32,8 +31,6 @@ namespace BLL
             _idiomaDAL.GuardarIdioma(userName, idioma, DigitoVerificador.CalcularDVH(cadenaDHV));
             digitoVerificadorBLL.RecalcularDVV_Idioma();
             Bitacora bita = new Bitacora();
-            bita.Criticidad = 5;
-            bita.Modulo = MODULO_BITACORA;
             bita.Evento = $"Cambiar idioma - {idioma}";
             bita.Login = userName;
             bll.RegistrarEvento(bita);

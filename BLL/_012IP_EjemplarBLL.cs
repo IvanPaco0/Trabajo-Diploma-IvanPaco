@@ -4,6 +4,7 @@ using BLL;
 using Servicios;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,18 +13,10 @@ namespace _012IP_BLL
 {
     public class _012IP_EjemplarBLL
     {
-        public const string ESTADO_BUENO = "Bueno";
-        public const string ESTADO_DETERIORADO = "Deteriorado";
-        public const string ESTADO_RESTAURACION = "EnRestauracion";
-        public const string ESTADO_BAJA = "Baja";
-
-        public const string ORIGEN_COMPRA = "Compra";
-        public const string ORIGEN_DONACION = "Donacion";
-
-        private const string MODULO_BITACORA = "Inventario";
         private const string RAIZ_XML = "Ejemplares";
         private const int MAX_MOTIVO = 100;
-        private const int MAX_EVENTO = 200;
+        private const int MAX_EVENTO = 100;
+        private const decimal VALOR_MAXIMO = 9999999999.99m;
 
         private readonly _012IP_EjemplarDAL ejemplarDAL;
         private readonly BitacoraBLL bitacoraBLL;
@@ -45,15 +38,25 @@ namespace _012IP_BLL
         {
             return DigitoVerificador.CalcularDVH(
                 e.CodigoBarras + e.NumeroInventario + e.Titulo + e.Autor + e.Origen +
-                e.Estado + e.Pasillo + e.Seccion + e.Estanteria);
+                e.Estado + e.Pasillo + e.Seccion + e.Estanteria + _012IP_TextoValor(e.Valor));
         }
 
-        public static string _012IP_NombreEstado(string estado)
+        public static string _012IP_TextoMoneda(decimal valor)
+        {
+            return "$" + valor.ToString("N2", CultureInfo.GetCultureInfo("es-AR"));
+        }
+
+        public static string _012IP_TextoValor(decimal valor)
+        {
+            return valor.ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
+        public static string _012IP_NombreEstado(_012IP_EstadoEjemplar estado)
         {
             return LanguageManager.Instance.GetTraduction("InvEstado" + estado);
         }
 
-        public static string _012IP_NombreOrigen(string origen)
+        public static string _012IP_NombreOrigen(_012IP_OrigenEjemplar origen)
         {
             return LanguageManager.Instance.GetTraduction("InvOrigen" + origen);
         }
@@ -66,19 +69,40 @@ namespace _012IP_BLL
             return e.Pasillo + " / " + e.Seccion + " / " + e.Estanteria;
         }
 
-        /// <summary>Estados a los que puede pasar un ejemplar segun su estado actual (Baja incluida; es irreversible).</summary>
-        public static List<string> _012IP_EstadosPermitidos(string estadoActual)
+        public List<_012IP_EstadoEjemplar> _012IP_ListarEstados()
         {
-            switch (estadoActual)
+            try
             {
-                case ESTADO_BUENO:
-                    return new List<string> { ESTADO_DETERIORADO, ESTADO_BAJA };
-                case ESTADO_DETERIORADO:
-                    return new List<string> { ESTADO_RESTAURACION, ESTADO_BAJA };
-                case ESTADO_RESTAURACION:
-                    return new List<string> { ESTADO_BUENO, ESTADO_BAJA };
-                default:
-                    return new List<string>();
+                return ejemplarDAL._012IP_ListarEstados();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(_012IP_Texto("InvBLLErrorConsulta"), ex);
+            }
+        }
+
+        public List<_012IP_OrigenEjemplar> _012IP_ListarOrigenes()
+        {
+            try
+            {
+                return ejemplarDAL._012IP_ListarOrigenes();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(_012IP_Texto("InvBLLErrorConsulta"), ex);
+            }
+        }
+
+        /// <summary>Estados a los que puede pasar un ejemplar segun su estado actual (Baja incluida; es irreversible). Salen de la tabla EstadoEjemplarTransicion.</summary>
+        public List<_012IP_EstadoEjemplar> _012IP_EstadosPermitidos(_012IP_EstadoEjemplar estadoActual)
+        {
+            try
+            {
+                return ejemplarDAL._012IP_ListarEstadosSiguientes(estadoActual);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(_012IP_Texto("InvBLLErrorConsulta"), ex);
             }
         }
 
@@ -100,19 +124,27 @@ namespace _012IP_BLL
             return texto.Length <= maximo ? texto : texto.Substring(0, maximo);
         }
 
-        private static string _012IP_EstadoBitacora(string estado)
+        private static string _012IP_EstadoBitacora(_012IP_EstadoEjemplar estado)
         {
-            return estado == ESTADO_RESTAURACION ? "En Restauración" : estado;
+            return estado == _012IP_EstadoEjemplar.EnRestauracion ? "En Restauración" : estado.ToString();
         }
 
-        private void _012IP_RegistrarBitacora(string evento, int criticidad)
+        private void _012IP_RegistrarMovimiento(string codigoBarras, _012IP_TipoMovimientoEjemplar tipo, _012IP_EstadoEjemplar? estadoAnterior, _012IP_EstadoEjemplar? estadoNuevo, string detalle)
+        {
+            try
+            {
+                ejemplarDAL._012IP_RegistrarMovimiento(codigoBarras, tipo, estadoAnterior, estadoNuevo, detalle,
+                    SessionManager.Instance.UsuarioActual().Username);
+            }
+            catch { }
+        }
+
+        private void _012IP_RegistrarBitacora(string evento)
         {
             Bitacora bitacora = new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = MODULO_BITACORA,
                 Evento = _012IP_Recortar(evento, MAX_EVENTO),
-                Criticidad = criticidad
             };
             bitacoraBLL.RegistrarEvento(bitacora);
         }
@@ -121,8 +153,11 @@ namespace _012IP_BLL
         //  Validaciones
         // ------------------------------------------------------------------
 
-        public bool _012IP_ValidarFormato(string codigoBarras, string numeroInventario, string titulo, string autor, string origen)
+        public bool _012IP_ValidarFormato(string codigoBarras, string numeroInventario, string titulo, string autor, _012IP_OrigenEjemplar origen, decimal valor)
         {
+            if (valor < 0 || valor > VALOR_MAXIMO)
+                return false;
+
             if (string.IsNullOrWhiteSpace(codigoBarras) || !Regex.IsMatch(codigoBarras.Trim(), @"^[0-9]{8,13}$"))
                 return false;
 
@@ -135,7 +170,7 @@ namespace _012IP_BLL
             if (string.IsNullOrWhiteSpace(autor) || autor.Trim().Length > 100)
                 return false;
 
-            if (origen != ORIGEN_COMPRA && origen != ORIGEN_DONACION)
+            if (!Enum.IsDefined(typeof(_012IP_OrigenEjemplar), origen))
                 return false;
 
             return true;
@@ -158,7 +193,7 @@ namespace _012IP_BLL
         }
 
         /// <summary>Estado nuevo valido segun el ciclo de vida: Bueno -> Deteriorado -> En Restauracion -> Bueno, y cualquiera -> Baja.</summary>
-        public bool _012IP_TransicionPermitida(string estadoActual, string nuevoEstado)
+        public bool _012IP_TransicionPermitida(_012IP_EstadoEjemplar estadoActual, _012IP_EstadoEjemplar nuevoEstado)
         {
             return _012IP_EstadosPermitidos(estadoActual).Contains(nuevoEstado);
         }
@@ -189,11 +224,13 @@ namespace _012IP_BLL
         //  Consultas
         // ------------------------------------------------------------------
 
-        public List<_012IP_EjemplarBE> _012IP_ListarEjemplares(string filtro, string texto)
+        /// <param name="estado">null = todos los estados</param>
+        /// <param name="soloPendientes">solo los ejemplares sin ubicacion</param>
+        public List<_012IP_EjemplarBE> _012IP_ListarEjemplares(_012IP_EstadoEjemplar? estado, bool soloPendientes, string texto)
         {
             try
             {
-                return ejemplarDAL._012IP_Listar(filtro, texto);
+                return ejemplarDAL._012IP_Listar(estado, soloPendientes, texto);
             }
             catch (Exception ex)
             {
@@ -238,16 +275,15 @@ namespace _012IP_BLL
         //  PN2.1 - Registrar ingreso (alta)
         // ------------------------------------------------------------------
 
-        public _012IP_EjemplarBE _012IP_RegistrarIngreso(string codigoBarras, string numeroInventario, string titulo, string autor, string origen)
+        public _012IP_EjemplarBE _012IP_RegistrarIngreso(string codigoBarras, string numeroInventario, string titulo, string autor, _012IP_OrigenEjemplar origen, decimal valor)
         {
             codigoBarras = (codigoBarras ?? "").Trim();
             numeroInventario = (numeroInventario ?? "").Trim();
             titulo = (titulo ?? "").Trim();
             autor = (autor ?? "").Trim();
-            origen = (origen ?? "").Trim();
 
             // PN2.4 - validacion automatica antes de guardar
-            if (!_012IP_ValidarFormato(codigoBarras, numeroInventario, titulo, autor, origen))
+            if (!_012IP_ValidarFormato(codigoBarras, numeroInventario, titulo, autor, origen, valor))
                 throw new Exception(_012IP_Texto("InvBLLFormato"));
 
             _012IP_ValidarDuplicados(codigoBarras, numeroInventario);
@@ -259,10 +295,11 @@ namespace _012IP_BLL
                 Titulo = titulo,
                 Autor = autor,
                 Origen = origen,
-                Estado = ESTADO_BUENO,
+                Estado = _012IP_EstadoEjemplar.Bueno,
                 Pasillo = string.Empty,
                 Seccion = string.Empty,
                 Estanteria = string.Empty,
+                Valor = valor,
                 FechaIngreso = _012IP_Ahora()
             };
 
@@ -285,9 +322,10 @@ namespace _012IP_BLL
 
             ejemplar.DVH = dvh;
 
+            _012IP_RegistrarMovimiento(ejemplar.CodigoBarras, _012IP_TipoMovimientoEjemplar.Ingreso, null, ejemplar.Estado, "Origen " + ejemplar.Origen);
+
             _012IP_RegistrarBitacora(
-                $"Ingreso de ejemplar - Código {ejemplar.CodigoBarras} - Inv. {ejemplar.NumeroInventario} - {_012IP_Recortar(ejemplar.Titulo, 40)} - Origen {ejemplar.Origen}",
-                2);
+                $"Ingreso de ejemplar - Código {ejemplar.CodigoBarras} - Inv. {ejemplar.NumeroInventario} - {_012IP_Recortar(ejemplar.Titulo, 30)} - Origen {ejemplar.Origen} - Valor {_012IP_TextoValor(ejemplar.Valor)}");
 
             return ejemplar;
         }
@@ -304,7 +342,7 @@ namespace _012IP_BLL
 
             _012IP_EjemplarBE ejemplar = _012IP_ObtenerExistente(codigoBarras);
 
-            if (ejemplar.Estado == ESTADO_BAJA)
+            if (ejemplar.Estado == _012IP_EstadoEjemplar.Baja)
                 throw new Exception(_012IP_Texto("InvBLLBajaInmutable"));
 
             if (!_012IP_ValidarUbicacion(pasillo, seccion, estanteria))
@@ -339,9 +377,11 @@ namespace _012IP_BLL
 
             ejemplar.DVH = dvh;
 
+            _012IP_RegistrarMovimiento(ejemplar.CodigoBarras, _012IP_TipoMovimientoEjemplar.Ubicacion, ejemplar.Estado, ejemplar.Estado,
+                anterior + " -> " + pasillo + "/" + seccion + "/" + estanteria);
+
             _012IP_RegistrarBitacora(
-                $"Ubicar ejemplar - Código {ejemplar.CodigoBarras} - {anterior} -> {pasillo}/{seccion}/{estanteria}",
-                3);
+                $"Ubicar ejemplar - Código {ejemplar.CodigoBarras} - {anterior} -> {pasillo}/{seccion}/{estanteria}");
 
             return ejemplar;
         }
@@ -350,13 +390,11 @@ namespace _012IP_BLL
         //  PN2.3 - Estado fisico y baja (ciclo de vida del ejemplar)
         // ------------------------------------------------------------------
 
-        public _012IP_EjemplarBE _012IP_CambiarEstado(string codigoBarras, string nuevoEstado, string motivo)
+        public _012IP_EjemplarBE _012IP_CambiarEstado(string codigoBarras, _012IP_EstadoEjemplar nuevoEstado, string motivo)
         {
-            nuevoEstado = (nuevoEstado ?? "").Trim();
             motivo = (motivo ?? "").Trim();
 
-            string[] estadosValidos = { ESTADO_BUENO, ESTADO_DETERIORADO, ESTADO_RESTAURACION, ESTADO_BAJA };
-            if (Array.IndexOf(estadosValidos, nuevoEstado) < 0)
+            if (!Enum.IsDefined(typeof(_012IP_EstadoEjemplar), nuevoEstado))
                 throw new Exception(_012IP_Texto("InvBLLEstadoInvalido"));
 
             if (motivo.Length == 0 || motivo.Length > MAX_MOTIVO)
@@ -365,7 +403,7 @@ namespace _012IP_BLL
             _012IP_EjemplarBE ejemplar = _012IP_ObtenerExistente(codigoBarras);
 
             // La baja es irreversible: no admite ninguna modificacion posterior.
-            if (ejemplar.Estado == ESTADO_BAJA)
+            if (ejemplar.Estado == _012IP_EstadoEjemplar.Baja)
                 throw new Exception(_012IP_Texto("InvBLLBajaInmutable"));
 
             if (!_012IP_TransicionPermitida(ejemplar.Estado, nuevoEstado))
@@ -374,15 +412,15 @@ namespace _012IP_BLL
                     _012IP_NombreEstado(ejemplar.Estado),
                     _012IP_NombreEstado(nuevoEstado)));
 
-            string estadoAnterior = ejemplar.Estado;
+            _012IP_EstadoEjemplar estadoAnterior = ejemplar.Estado;
             DateTime ahora = _012IP_Ahora();
 
             DateTime? fechaEnvio = ejemplar.FechaEnvioRestauracion;
             DateTime? fechaBaja = ejemplar.FechaBaja;
 
-            if (nuevoEstado == ESTADO_RESTAURACION) fechaEnvio = ahora;   // queda no disponible y se registra el envio
-            if (nuevoEstado == ESTADO_BUENO) fechaEnvio = null;           // vuelve de restauracion
-            if (nuevoEstado == ESTADO_BAJA) fechaBaja = ahora;
+            if (nuevoEstado == _012IP_EstadoEjemplar.EnRestauracion) fechaEnvio = ahora;   // queda no disponible y se registra el envio
+            if (nuevoEstado == _012IP_EstadoEjemplar.Bueno) fechaEnvio = null;             // vuelve de restauracion
+            if (nuevoEstado == _012IP_EstadoEjemplar.Baja) fechaBaja = ahora;
 
             ejemplar.Estado = nuevoEstado;
             string dvh = _012IP_CalcularDVH(ejemplar);
@@ -406,18 +444,20 @@ namespace _012IP_BLL
             ejemplar.FechaEnvioRestauracion = fechaEnvio;
             ejemplar.FechaBaja = fechaBaja;
 
+            _012IP_RegistrarMovimiento(ejemplar.CodigoBarras,
+                nuevoEstado == _012IP_EstadoEjemplar.Baja ? _012IP_TipoMovimientoEjemplar.Baja : _012IP_TipoMovimientoEjemplar.CambioEstado,
+                estadoAnterior, nuevoEstado, motivo ?? "");
+
             string motivoEvento = _012IP_Recortar(motivo, 60);
-            if (nuevoEstado == ESTADO_BAJA)
+            if (nuevoEstado == _012IP_EstadoEjemplar.Baja)
             {
                 _012IP_RegistrarBitacora(
-                    $"Baja de ejemplar - Código {ejemplar.CodigoBarras} - Estado previo {_012IP_EstadoBitacora(estadoAnterior)} - Motivo: {motivoEvento}",
-                    1);
+                    $"Baja de ejemplar - Código {ejemplar.CodigoBarras} - Estado previo {_012IP_EstadoBitacora(estadoAnterior)} - Motivo: {motivoEvento}");
             }
             else
             {
                 _012IP_RegistrarBitacora(
-                    $"Cambio de estado - Código {ejemplar.CodigoBarras} - {_012IP_EstadoBitacora(estadoAnterior)} -> {_012IP_EstadoBitacora(nuevoEstado)} - Motivo: {motivoEvento}",
-                    2);
+                    $"Cambio de estado - Código {ejemplar.CodigoBarras} - {_012IP_EstadoBitacora(estadoAnterior)} -> {_012IP_EstadoBitacora(nuevoEstado)} - Motivo: {motivoEvento}");
             }
 
             return ejemplar;
@@ -425,7 +465,7 @@ namespace _012IP_BLL
 
         public _012IP_EjemplarBE _012IP_DarDeBaja(string codigoBarras, string motivo)
         {
-            return _012IP_CambiarEstado(codigoBarras, ESTADO_BAJA, motivo);
+            return _012IP_CambiarEstado(codigoBarras, _012IP_EstadoEjemplar.Baja, motivo);
         }
 
         // ------------------------------------------------------------------
@@ -472,8 +512,7 @@ namespace _012IP_BLL
             }
 
             _012IP_RegistrarBitacora(
-                $"Serializar ejemplares a XML - {ejemplares.Count} registros - {_012IP_Recortar(Path.GetFileName(ruta), 60)}",
-                3);
+                $"Serializar ejemplares a XML - {ejemplares.Count} registros - {_012IP_Recortar(Path.GetFileName(ruta), 60)}");
         }
 
         /// <summary>DES-SERIALIZAR: lee un XML y devuelve los ejemplares para mostrarlos en la grilla. No escribe en la base.</summary>
@@ -492,13 +531,12 @@ namespace _012IP_BLL
                 throw new Exception(_012IP_Texto("InvBLLXmlErrorDesserializar"), ex);
             }
 
-            string[] estadosValidos = { ESTADO_BUENO, ESTADO_DETERIORADO, ESTADO_RESTAURACION, ESTADO_BAJA };
             var codigos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (_012IP_EjemplarBE e in lista)
             {
-                bool valido = _012IP_ValidarFormato(e.CodigoBarras, e.NumeroInventario, e.Titulo, e.Autor, e.Origen)
-                              && Array.IndexOf(estadosValidos, e.Estado) >= 0
+                bool valido = _012IP_ValidarFormato(e.CodigoBarras, e.NumeroInventario, e.Titulo, e.Autor, e.Origen, e.Valor)
+                              && Enum.IsDefined(typeof(_012IP_EstadoEjemplar), e.Estado)
                               && codigos.Add(e.CodigoBarras.Trim());
 
                 if (!valido)
@@ -506,8 +544,7 @@ namespace _012IP_BLL
             }
 
             _012IP_RegistrarBitacora(
-                $"Des-serializar ejemplares desde XML - {lista.Count} registros - {_012IP_Recortar(Path.GetFileName(ruta), 60)}",
-                3);
+                $"Des-serializar ejemplares desde XML - {lista.Count} registros - {_012IP_Recortar(Path.GetFileName(ruta), 60)}");
 
             return lista;
         }

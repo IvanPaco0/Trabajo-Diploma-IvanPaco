@@ -9,7 +9,7 @@ namespace _012IP_DAL
     public class _012IP_EjemplarDAL : _012IP_AbstractDAL<_012IP_EjemplarBE>
     {
         private const string COLUMNAS =
-            "IdEjemplar, CodigoBarras, NumeroInventario, Titulo, Autor, Origen, Estado, Pasillo, Seccion, Estanteria, " +
+            "IdEjemplar, CodigoBarras, NumeroInventario, Titulo, Autor, IdOrigen, IdEstado, Pasillo, Seccion, Estanteria, Valor, " +
             "FechaIngreso, FechaEnvioRestauracion, FechaBaja, DVH";
 
         public _012IP_EjemplarDAL() : base() { }
@@ -23,11 +23,12 @@ namespace _012IP_DAL
                 NumeroInventario = (string)reader["NumeroInventario"],
                 Titulo = (string)reader["Titulo"],
                 Autor = (string)reader["Autor"],
-                Origen = (string)reader["Origen"],
-                Estado = (string)reader["Estado"],
+                Origen = (_012IP_OrigenEjemplar)(int)reader["IdOrigen"],
+                Estado = (_012IP_EstadoEjemplar)(int)reader["IdEstado"],
                 Pasillo = (string)reader["Pasillo"],
                 Seccion = (string)reader["Seccion"],
                 Estanteria = (string)reader["Estanteria"],
+                Valor = (decimal)reader["Valor"],
                 FechaIngreso = (DateTime)reader["FechaIngreso"],
                 FechaEnvioRestauracion = reader["FechaEnvioRestauracion"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["FechaEnvioRestauracion"],
                 FechaBaja = reader["FechaBaja"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["FechaBaja"],
@@ -78,21 +79,22 @@ namespace _012IP_DAL
             try
             {
                 _sqlcommand.CommandText = @"
-                    INSERT INTO Ejemplar (CodigoBarras, NumeroInventario, Titulo, Autor, Origen, Estado,
-                                          Pasillo, Seccion, Estanteria, FechaIngreso, DVH)
+                    INSERT INTO Ejemplar (CodigoBarras, NumeroInventario, Titulo, Autor, IdOrigen, IdEstado,
+                                          Pasillo, Seccion, Estanteria, Valor, FechaIngreso, DVH)
                     OUTPUT INSERTED.IdEjemplar
                     VALUES (@codigo, @inventario, @titulo, @autor, @origen, @estado,
-                            @pasillo, @seccion, @estanteria, @fechaIngreso, @dvh);";
+                            @pasillo, @seccion, @estanteria, @valor, @fechaIngreso, @dvh);";
 
                 _sqlcommand.Parameters.AddWithValue("@codigo", ejemplar.CodigoBarras);
                 _sqlcommand.Parameters.AddWithValue("@inventario", ejemplar.NumeroInventario);
                 _sqlcommand.Parameters.AddWithValue("@titulo", ejemplar.Titulo);
                 _sqlcommand.Parameters.AddWithValue("@autor", ejemplar.Autor);
-                _sqlcommand.Parameters.AddWithValue("@origen", ejemplar.Origen);
-                _sqlcommand.Parameters.AddWithValue("@estado", ejemplar.Estado);
+                _sqlcommand.Parameters.AddWithValue("@origen", (int)ejemplar.Origen);
+                _sqlcommand.Parameters.AddWithValue("@estado", (int)ejemplar.Estado);
                 _sqlcommand.Parameters.AddWithValue("@pasillo", ejemplar.Pasillo);
                 _sqlcommand.Parameters.AddWithValue("@seccion", ejemplar.Seccion);
                 _sqlcommand.Parameters.AddWithValue("@estanteria", ejemplar.Estanteria);
+                _sqlcommand.Parameters.AddWithValue("@valor", ejemplar.Valor);
                 _sqlcommand.Parameters.AddWithValue("@fechaIngreso", ejemplar.FechaIngreso);
                 _sqlcommand.Parameters.AddWithValue("@dvh", dvh);
 
@@ -136,32 +138,30 @@ namespace _012IP_DAL
             }
         }
 
-        /// <param name="filtro">"" / "Todos" = sin filtro; "Pendientes" = sin ubicar; o un estado (Bueno, Deteriorado, EnRestauracion, Baja)</param>
-        public List<_012IP_EjemplarBE> _012IP_Listar(string filtro, string texto)
+        /// <param name="estado">null = todos los estados</param>
+        /// <param name="soloPendientes">solo los que no tienen ubicacion (y no estan de baja)</param>
+        public List<_012IP_EjemplarBE> _012IP_Listar(_012IP_EstadoEjemplar? estado, bool soloPendientes, string texto)
         {
             var ejemplares = new List<_012IP_EjemplarBE>();
             try
             {
-                filtro = (filtro ?? "").Trim();
                 texto = (texto ?? "").Trim();
-
-                bool soloPendientes = filtro == "Pendientes";
-                string estado = (filtro == "" || filtro == "Todos" || soloPendientes) ? "" : filtro;
 
                 string textoLike = texto.Replace("[", "[[]").Replace("%", "[%]").Replace("_", "[_]");
 
                 _sqlcommand.CommandText = @"
                     SELECT " + COLUMNAS + @"
                     FROM Ejemplar
-                    WHERE (@estado = '' OR Estado = @estado)
-                      AND (@pendientes = 0 OR (Estado <> 'Baja' AND (Pasillo = '' OR Seccion = '' OR Estanteria = '')))
+                    WHERE (@estado = 0 OR IdEstado = @estado)
+                      AND (@pendientes = 0 OR (IdEstado <> @baja AND (Pasillo = '' OR Seccion = '' OR Estanteria = '')))
                       AND (@texto = '' OR CodigoBarras LIKE '%' + @texto + '%'
                                        OR NumeroInventario LIKE '%' + @texto + '%'
                                        OR Titulo LIKE '%' + @texto + '%'
                                        OR Autor LIKE '%' + @texto + '%')
                     ORDER BY Titulo, CodigoBarras;";
 
-                _sqlcommand.Parameters.AddWithValue("@estado", estado);
+                _sqlcommand.Parameters.AddWithValue("@estado", estado.HasValue ? (int)estado.Value : 0);
+                _sqlcommand.Parameters.AddWithValue("@baja", (int)_012IP_EstadoEjemplar.Baja);
                 _sqlcommand.Parameters.AddWithValue("@pendientes", soloPendientes ? 1 : 0);
                 _sqlcommand.Parameters.AddWithValue("@texto", textoLike);
 
@@ -172,6 +172,33 @@ namespace _012IP_DAL
                         ejemplares.Add(_012IP_Mapear(reader));
                 }
                 return ejemplares;
+            }
+            catch { throw; }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
+        public void _012IP_RegistrarMovimiento(string codigoBarras, _012IP_TipoMovimientoEjemplar tipo, _012IP_EstadoEjemplar? estadoAnterior, _012IP_EstadoEjemplar? estadoNuevo, string detalle, string usuario)
+        {
+            try
+            {
+                _sqlcommand.CommandText = @"
+                    INSERT INTO EjemplarMovimiento (IdEjemplar, Fecha, IdTipoMovimiento, IdEstadoAnterior, IdEstadoNuevo, Detalle, Usuario)
+                    SELECT IdEjemplar, GETDATE(), @tipo, @anterior, @nuevo, @detalle, @usuario
+                    FROM Ejemplar WHERE CodigoBarras = @codigo;";
+
+                _sqlcommand.Parameters.AddWithValue("@codigo", codigoBarras);
+                _sqlcommand.Parameters.AddWithValue("@tipo", (int)tipo);
+                _sqlcommand.Parameters.AddWithValue("@anterior", estadoAnterior.HasValue ? (object)(int)estadoAnterior.Value : DBNull.Value);
+                _sqlcommand.Parameters.AddWithValue("@nuevo", estadoNuevo.HasValue ? (object)(int)estadoNuevo.Value : DBNull.Value);
+                _sqlcommand.Parameters.AddWithValue("@detalle", detalle.Length > 200 ? detalle.Substring(0, 200) : detalle);
+                _sqlcommand.Parameters.AddWithValue("@usuario", usuario.Length > 50 ? usuario.Substring(0, 50) : usuario);
+
+                _sqlserver.Open();
+                _sqlcommand.ExecuteNonQuery();
             }
             catch { throw; }
             finally
@@ -207,20 +234,20 @@ namespace _012IP_DAL
             }
         }
 
-        public bool _012IP_ActualizarEstado(string codigoBarras, string nuevoEstado, DateTime? fechaEnvioRestauracion, DateTime? fechaBaja, string dvh)
+        public bool _012IP_ActualizarEstado(string codigoBarras, _012IP_EstadoEjemplar nuevoEstado, DateTime? fechaEnvioRestauracion, DateTime? fechaBaja, string dvh)
         {
             try
             {
                 _sqlcommand.CommandText = @"
                     UPDATE Ejemplar
-                    SET Estado = @estado,
+                    SET IdEstado = @estado,
                         FechaEnvioRestauracion = @envio,
                         FechaBaja = @baja,
                         DVH = @dvh
                     WHERE CodigoBarras = @codigo;";
 
                 _sqlcommand.Parameters.AddWithValue("@codigo", codigoBarras);
-                _sqlcommand.Parameters.AddWithValue("@estado", nuevoEstado);
+                _sqlcommand.Parameters.AddWithValue("@estado", (int)nuevoEstado);
                 _sqlcommand.Parameters.AddWithValue("@envio", fechaEnvioRestauracion.HasValue ? (object)fechaEnvioRestauracion.Value : DBNull.Value);
                 _sqlcommand.Parameters.AddWithValue("@baja", fechaBaja.HasValue ? (object)fechaBaja.Value : DBNull.Value);
                 _sqlcommand.Parameters.AddWithValue("@dvh", dvh);
@@ -243,13 +270,18 @@ namespace _012IP_DAL
             {
                 _sqlcommand.CommandText = @"
                     SELECT
-                        SUM(CASE WHEN Estado <> 'Baja' THEN 1 ELSE 0 END) AS Total,
-                        SUM(CASE WHEN Estado = 'Bueno' AND Pasillo <> '' AND Seccion <> '' AND Estanteria <> '' THEN 1 ELSE 0 END) AS Disponibles,
-                        SUM(CASE WHEN Estado = 'Deteriorado' THEN 1 ELSE 0 END) AS Deteriorados,
-                        SUM(CASE WHEN Estado = 'EnRestauracion' THEN 1 ELSE 0 END) AS EnRestauracion,
-                        SUM(CASE WHEN Estado = 'Baja' THEN 1 ELSE 0 END) AS Bajas,
-                        SUM(CASE WHEN Estado <> 'Baja' AND (Pasillo = '' OR Seccion = '' OR Estanteria = '') THEN 1 ELSE 0 END) AS PendientesUbicar
+                        SUM(CASE WHEN IdEstado <> @baja THEN 1 ELSE 0 END) AS Total,
+                        SUM(CASE WHEN IdEstado = @bueno AND Pasillo <> '' AND Seccion <> '' AND Estanteria <> '' THEN 1 ELSE 0 END) AS Disponibles,
+                        SUM(CASE WHEN IdEstado = @deteriorado THEN 1 ELSE 0 END) AS Deteriorados,
+                        SUM(CASE WHEN IdEstado = @restauracion THEN 1 ELSE 0 END) AS EnRestauracion,
+                        SUM(CASE WHEN IdEstado = @baja THEN 1 ELSE 0 END) AS Bajas,
+                        SUM(CASE WHEN IdEstado <> @baja AND (Pasillo = '' OR Seccion = '' OR Estanteria = '') THEN 1 ELSE 0 END) AS PendientesUbicar,
+                        SUM(CASE WHEN IdEstado <> @baja THEN Valor ELSE 0 END) AS ValorPatrimonio
                     FROM Ejemplar;";
+                _sqlcommand.Parameters.AddWithValue("@bueno", (int)_012IP_EstadoEjemplar.Bueno);
+                _sqlcommand.Parameters.AddWithValue("@deteriorado", (int)_012IP_EstadoEjemplar.Deteriorado);
+                _sqlcommand.Parameters.AddWithValue("@restauracion", (int)_012IP_EstadoEjemplar.EnRestauracion);
+                _sqlcommand.Parameters.AddWithValue("@baja", (int)_012IP_EstadoEjemplar.Baja);
 
                 var stock = new _012IP_StockBE();
                 _sqlserver.Open();
@@ -263,6 +295,7 @@ namespace _012IP_DAL
                         stock.EnRestauracion = reader["EnRestauracion"] == DBNull.Value ? 0 : Convert.ToInt32(reader["EnRestauracion"]);
                         stock.Bajas = reader["Bajas"] == DBNull.Value ? 0 : Convert.ToInt32(reader["Bajas"]);
                         stock.PendientesUbicar = reader["PendientesUbicar"] == DBNull.Value ? 0 : Convert.ToInt32(reader["PendientesUbicar"]);
+                        stock.ValorPatrimonio = reader["ValorPatrimonio"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["ValorPatrimonio"]);
                     }
                 }
                 return stock;
@@ -283,8 +316,9 @@ namespace _012IP_DAL
                 _sqlcommand.CommandText = @"
                     SELECT DISTINCT Seccion
                     FROM Ejemplar
-                    WHERE Seccion <> '' AND Estado <> 'Baja'
+                    WHERE Seccion <> '' AND IdEstado <> @baja
                     ORDER BY Seccion;";
+                _sqlcommand.Parameters.AddWithValue("@baja", (int)_012IP_EstadoEjemplar.Baja);
 
                 _sqlserver.Open();
                 using (var reader = _sqlcommand.ExecuteReader())
@@ -312,10 +346,12 @@ namespace _012IP_DAL
                     SELECT " + COLUMNAS + @"
                     FROM Ejemplar
                     WHERE Seccion = @seccion
-                      AND Estado IN ('Bueno', 'Deteriorado')
+                      AND IdEstado IN (@bueno, @deteriorado)
                       AND Pasillo <> '' AND Estanteria <> ''
                     ORDER BY Pasillo, Estanteria, Titulo;";
                 _sqlcommand.Parameters.AddWithValue("@seccion", seccion);
+                _sqlcommand.Parameters.AddWithValue("@bueno", (int)_012IP_EstadoEjemplar.Bueno);
+                _sqlcommand.Parameters.AddWithValue("@deteriorado", (int)_012IP_EstadoEjemplar.Deteriorado);
 
                 _sqlserver.Open();
                 using (var reader = _sqlcommand.ExecuteReader())
@@ -331,6 +367,55 @@ namespace _012IP_DAL
                 _sqlcommand.Parameters.Clear();
                 _sqlserver.Close();
             }
+        }
+
+        // ------------------------------------------------------------------
+        //  Tablas de valores: EstadoEjemplar, OrigenEjemplar y transiciones de estado
+        // ------------------------------------------------------------------
+
+        private List<int> _012IP_LeerIds(string consulta, Action? parametros = null)
+        {
+            var ids = new List<int>();
+            try
+            {
+                _sqlcommand.CommandText = consulta;
+                parametros?.Invoke();
+
+                _sqlserver.Open();
+                using (var reader = _sqlcommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                        ids.Add(reader.GetInt32(0));
+                }
+                return ids;
+            }
+            catch { throw; }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
+        public List<_012IP_EstadoEjemplar> _012IP_ListarEstados()
+        {
+            return _012IP_LeerIds("SELECT IdEstado FROM EstadoEjemplar ORDER BY IdEstado;")
+                .ConvertAll(id => (_012IP_EstadoEjemplar)id);
+        }
+
+        public List<_012IP_OrigenEjemplar> _012IP_ListarOrigenes()
+        {
+            return _012IP_LeerIds("SELECT IdOrigen FROM OrigenEjemplar ORDER BY IdOrigen;")
+                .ConvertAll(id => (_012IP_OrigenEjemplar)id);
+        }
+
+        /// <summary>Estados a los que puede pasar un ejemplar desde el estado indicado (tabla EstadoEjemplarTransicion).</summary>
+        public List<_012IP_EstadoEjemplar> _012IP_ListarEstadosSiguientes(_012IP_EstadoEjemplar estadoActual)
+        {
+            return _012IP_LeerIds(
+                    "SELECT IdEstadoDestino FROM EstadoEjemplarTransicion WHERE IdEstadoOrigen = @origen ORDER BY IdEstadoDestino;",
+                    () => _sqlcommand.Parameters.AddWithValue("@origen", (int)estadoActual))
+                .ConvertAll(id => (_012IP_EstadoEjemplar)id);
         }
 
         public List<_012IP_EjemplarBE> _012IP_ListarTodosDVH()

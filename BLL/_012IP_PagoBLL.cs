@@ -12,40 +12,60 @@ namespace _012IP_BLL
     public class _012IP_PagoBLL
     {
         private readonly _012IP_PagoDAL pagoDAL;
+        private readonly _012IP_MedioDePagoDAL medioDePagoDAL;
         private readonly BitacoraBLL bitacoraBLL;
-
-        private static readonly string[] MediosDePagoValidos =
-            { "Efectivo", "Tarjeta de débito", "Tarjeta de crédito", "Transferencia" };
 
         public _012IP_PagoBLL()
         {
             pagoDAL = new _012IP_PagoDAL();
+            medioDePagoDAL = new _012IP_MedioDePagoDAL();
             bitacoraBLL = new BitacoraBLL();
         }
 
-        public bool _012IP_ValidarDatosPago(int idSocio, int? idCuota, decimal monto, string medioDePago)
+        /// <summary>Medios de pago habilitados (tabla MedioDePago).</summary>
+        public List<_012IP_MedioDePagoBE> _012IP_ListarMediosDePago()
+        {
+            try
+            {
+                return medioDePagoDAL._012IP_Listar();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(LanguageManager.Instance.GetTraduction("PagoBLLText2"), ex);
+            }
+        }
+
+        public bool _012IP_ValidarDatosPago(int idSocio, decimal monto, _012IP_MedioDePagoBE? medioDePago)
         {
             if (idSocio <= 0)
-                return false;
-
-            if (idCuota.HasValue && idCuota.Value <= 0)
                 return false;
 
             if (monto <= 0)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(medioDePago) || Array.IndexOf(MediosDePagoValidos, medioDePago.Trim()) < 0)
+            if (medioDePago == null || !_012IP_ListarMediosDePago().Any(m => m.IdMedioDePago == medioDePago.IdMedioDePago))
                 return false;
 
             return true;
         }
 
-        public static bool _012IP_EsTarjeta(string medioDePago)
+        public _012IP_TarjetaBE _012IP_ValidarTarjeta(string numero, string vencimiento, string cvv)
         {
-            return (medioDePago ?? "").Trim().StartsWith("Tarjeta", StringComparison.OrdinalIgnoreCase);
+            _012IP_TarjetaBE r = _012IP_ValidarDatosTarjeta(numero, vencimiento, cvv);
+            try
+            {
+                bitacoraBLL.RegistrarEvento(new Bitacora
+                {
+                    Login = SessionManager.Instance.UsuarioActual().Username,
+                    Evento = r.Valida ? "Validar tarjeta - " + r.Marca + " terminada en " + r.UltimosDigitos
+                                      : "Tarjeta rechazada - " + r.Motivo,
+                });
+            }
+            catch { }
+            return r;
         }
 
-        public _012IP_TarjetaBE _012IP_ValidarTarjeta(string numero, string vencimiento, string cvv)
+        private _012IP_TarjetaBE _012IP_ValidarDatosTarjeta(string numero, string vencimiento, string cvv)
         {
             var r = new _012IP_TarjetaBE();
             string digitos = new string((numero ?? "").Where(char.IsDigit).ToArray());
@@ -139,9 +159,7 @@ namespace _012IP_BLL
                 Bitacora bitacora = new Bitacora
                 {
                     Login = SessionManager.Instance.UsuarioActual().Username,
-                    Modulo = "Reportes",
                     Evento = $"Emitir informe de recaudación {desde:dd/MM/yyyy} - {hasta:dd/MM/yyyy}",
-                    Criticidad = 4
                 };
                 bitacoraBLL.RegistrarEvento(bitacora);
                 return informe;
@@ -152,30 +170,28 @@ namespace _012IP_BLL
             }
         }
 
-        public _012IP_PagoBE _012IP_RegistrarPago(int idSocio, int? idCuota, int? idMembresia, decimal monto, string medioDePago,
+        public _012IP_PagoBE _012IP_RegistrarPago(int idSocio, int? idMembresia, decimal monto, _012IP_MedioDePagoBE medioDePago,
             string? marcaTarjeta = null, string? ultimosDigitos = null)
         {
-            medioDePago = (medioDePago ?? "").Trim();
-
-            if (!_012IP_ValidarDatosPago(idSocio, idCuota, monto, medioDePago))
+            if (!_012IP_ValidarDatosPago(idSocio, monto, medioDePago))
                 throw new Exception(LanguageManager.Instance.GetTraduction("PagoBLLText1"));
 
-            if (_012IP_EsTarjeta(medioDePago) && (string.IsNullOrWhiteSpace(marcaTarjeta) || string.IsNullOrWhiteSpace(ultimosDigitos)))
+            if (medioDePago.EsTarjeta && (string.IsNullOrWhiteSpace(marcaTarjeta) || string.IsNullOrWhiteSpace(ultimosDigitos)))
                 throw new Exception(LanguageManager.Instance.GetTraduction("TarjetaRequerida"));
 
             var pago = new _012IP_PagoBE
             {
                 IdSocio = idSocio,
-                IdCuota = idCuota,
                 IdMembresia = idMembresia,
                 Monto = monto,
-                MedioDePago = medioDePago,
+                IdMedioDePago = medioDePago.IdMedioDePago,
+                MedioDePago = medioDePago.Nombre,
                 FechaPago = DateTime.Now,
-                MarcaTarjeta = _012IP_EsTarjeta(medioDePago) ? marcaTarjeta : null,
-                UltimosDigitos = _012IP_EsTarjeta(medioDePago) ? ultimosDigitos : null
+                MarcaTarjeta = medioDePago.EsTarjeta ? marcaTarjeta : null,
+                UltimosDigitos = medioDePago.EsTarjeta ? ultimosDigitos : null
             };
 
-            string cadenaDVH = pago.IdSocio + (pago.IdCuota?.ToString() ?? "") + (pago.IdMembresia?.ToString() ?? "") +
+            string cadenaDVH = pago.IdSocio + (pago.IdMembresia?.ToString() ?? "") +
                                 pago.Monto + pago.MedioDePago + pago.FechaPago.ToString("yyyy-MM-dd HH:mm:ss");
             string dvh = DigitoVerificador.CalcularDVH(cadenaDVH);
 
@@ -194,43 +210,15 @@ namespace _012IP_BLL
 
             pago.DVH = dvh;
 
-            if (pago.IdCuota.HasValue)
-            {
-                try
-                {
-                    pagoDAL._012IP_ActualizarEstadoPago(pago.IdCuota.Value, pago.FechaPago);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(LanguageManager.Instance.GetTraduction("PagoBLLText3"), ex);
-                }
-            }
 
             Bitacora bitacora = new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = "Pagos",
                 Evento = $"Registrar pago - Socio {pago.IdSocio} - {_012IP_Moneda(pago.Monto)} - {pago.MedioDePago}",
-                Criticidad = 2
             };
             bitacoraBLL.RegistrarEvento(bitacora);
 
             return pago;
-        }
-
-        public void _012IP_MarcarCuotasComoPagadas(List<int> idsCuota, DateTime fechaPago)
-        {
-            if (idsCuota == null) return;
-
-            try
-            {
-                foreach (int idCuota in idsCuota)
-                    pagoDAL._012IP_ActualizarEstadoPago(idCuota, fechaPago);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(LanguageManager.Instance.GetTraduction("PagoBLLText3"), ex);
-            }
         }
 
         private string _012IP_Moneda(decimal monto) => "$" + monto.ToString("N0");

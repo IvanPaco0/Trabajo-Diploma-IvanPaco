@@ -133,9 +133,7 @@ namespace GUI
 
                         Bitacora bitacora = new Bitacora();
                         bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                        bitacora.Modulo = "Usuarios";
                         bitacora.Evento = "Login";
-                        bitacora.Criticidad = 1;
                         bitacoraBLL.RegistrarEvento(bitacora);
 
                         
@@ -145,6 +143,8 @@ namespace GUI
                         break;
                     case LoginResultado.Bloqueado:
                         throw new Exception("Usuario Bloqueado, contacte al administrador.");
+                    case LoginResultado.Inactivo:
+                        throw new Exception(LanguageManager.Instance.GetTraduction("LoginInactivo"));
                     case LoginResultado.Error:
                         throw new Exception("Error al intentar iniciar sesión, vuelva a intentar.");
                     default:
@@ -153,8 +153,7 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                //cambiar idioma
-                MessageBox.Show(ex.ToString(), "Error! (DEBUG)", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

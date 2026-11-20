@@ -17,15 +17,14 @@ namespace _012IP_DAL
             try
             {
                 _sqlcommand.CommandText = @"
-                    INSERT INTO Pago (IdSocio, IdCuota, IdMembresia, Monto, MedioDePago, FechaPago, DVH, MarcaTarjeta, UltimosDigitos)
+                    INSERT INTO Pago (IdSocio, IdMembresia, Monto, IdMedioDePago, FechaPago, DVH, MarcaTarjeta, UltimosDigitos)
                     OUTPUT INSERTED.IdPago
-                    VALUES (@idSocio, @idCuota, @idMembresia, @monto, @medioDePago, @fechaPago, @dvh, @marca, @ultimos);";
+                    VALUES (@idSocio, @idMembresia, @monto, @medioDePago, @fechaPago, @dvh, @marca, @ultimos);";
 
                 _sqlcommand.Parameters.AddWithValue("@idSocio", pago.IdSocio);
-                _sqlcommand.Parameters.AddWithValue("@idCuota", (object)pago.IdCuota ?? DBNull.Value);
                 _sqlcommand.Parameters.AddWithValue("@idMembresia", (object)pago.IdMembresia ?? DBNull.Value);
                 _sqlcommand.Parameters.AddWithValue("@monto", pago.Monto);
-                _sqlcommand.Parameters.AddWithValue("@medioDePago", pago.MedioDePago);
+                _sqlcommand.Parameters.AddWithValue("@medioDePago", pago.IdMedioDePago);
                 _sqlcommand.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
                 _sqlcommand.Parameters.AddWithValue("@dvh", dvh);
                 _sqlcommand.Parameters.AddWithValue("@marca", (object)pago.MarcaTarjeta ?? DBNull.Value);
@@ -48,41 +47,17 @@ namespace _012IP_DAL
             }
         }
 
-        
-        public bool _012IP_ActualizarEstadoPago(int idCuota, DateTime fechaPago)
-        {
-            try
-            {
-                _sqlcommand.CommandText = @"
-                    UPDATE Cuota
-                    SET Estado = 'Pagada',
-                        FechaPago = @fechaPago
-                    WHERE IdCuota = @idCuota;";
 
-                _sqlcommand.Parameters.AddWithValue("@idCuota", idCuota);
-                _sqlcommand.Parameters.AddWithValue("@fechaPago", fechaPago);
-
-                _sqlserver.Open();
-                int filas = _sqlcommand.ExecuteNonQuery();
-                return filas > 0;
-            }
-            catch { throw; }
-            finally
-            {
-                _sqlcommand.Parameters.Clear();
-                _sqlserver.Close();
-            }
-        }
-    
         public List<_012IP_PagoBE> _012IP_ListarPagos(DateTime desde, DateTime hasta)
         {
             var lista = new List<_012IP_PagoBE>();
             try
             {
                 _sqlcommand.CommandText = @"
-                    SELECT p.IdPago, p.IdSocio, p.IdCuota, p.IdMembresia, p.Monto, p.MedioDePago, p.FechaPago,
+                    SELECT p.IdPago, p.IdSocio, p.IdMembresia, p.Monto, p.IdMedioDePago, mp.Nombre AS MedioDePago, p.FechaPago,
                            ISNULL(m.Nombre, '') AS NombreMembresia
                     FROM Pago p
+                    INNER JOIN MedioDePago mp ON mp.IdMedioDePago = p.IdMedioDePago
                     LEFT JOIN Membresia m ON m.IdMembresia = p.IdMembresia
                     WHERE p.FechaPago >= @desde AND p.FechaPago < @hasta
                     ORDER BY p.FechaPago;";
@@ -98,9 +73,9 @@ namespace _012IP_DAL
                         {
                             IdPago = (int)reader["IdPago"],
                             IdSocio = (int)reader["IdSocio"],
-                            IdCuota = reader["IdCuota"] == DBNull.Value ? (int?)null : (int)reader["IdCuota"],
                             IdMembresia = reader["IdMembresia"] == DBNull.Value ? (int?)null : (int)reader["IdMembresia"],
                             Monto = (decimal)reader["Monto"],
+                            IdMedioDePago = (int)reader["IdMedioDePago"],
                             MedioDePago = (string)reader["MedioDePago"],
                             FechaPago = (DateTime)reader["FechaPago"],
                             NombreMembresia = (string)reader["NombreMembresia"]

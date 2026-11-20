@@ -40,6 +40,8 @@ namespace BLL
                 {
                     if (usuarioBE.Bloqueado) return LoginResultado.Bloqueado;
 
+                    if (!usuarioBE.Activo) return LoginResultado.Inactivo;
+
                     if (usuarioBE.Password != Encriptador.GetHash256(contraseña))
                     {
                         usuarioDAL.SumarIntentoFallido(usuarioBE);
@@ -52,14 +54,21 @@ namespace BLL
                                 bitacoraBLL.RegistrarEvento(new Bitacora
                                 {
                                     Login = usuarioBE.Username,
-                                    Modulo = "Usuarios",
                                     Evento = "Bloquear usuario - 3 intentos fallidos",
-                                    Criticidad = 1
                                 });
                             }
                             catch { }
                             return LoginResultado.Bloqueado;
                         }
+                        try
+                        {
+                            bitacoraBLL.RegistrarEvento(new Bitacora
+                            {
+                                Login = usuarioBE.Username,
+                                Evento = "Login fallido - contraseña incorrecta",
+                            });
+                        }
+                        catch { }
                         return LoginResultado.ContraseñaIncorrecta;
                     }
                     else
@@ -96,9 +105,7 @@ namespace BLL
 
                 SessionManager.Instance.Desloguear();
 
-                bitacora.Modulo = "Usuarios";
                 bitacora.Evento = "Logout";
-                bitacora.Criticidad = 1;
                 bitacoraBLL.RegistrarEvento(bitacora);
             }
             catch (Exception ex)
@@ -129,9 +136,7 @@ namespace BLL
                     digitoVerificadorBLL.RecalcularDVV_Usuario();
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                    bitacora.Modulo = "Usuarios";
                     bitacora.Evento = "Crear usuario";
-                    bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
                 else
@@ -174,9 +179,7 @@ namespace BLL
 
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                    bitacora.Modulo = "Usuarios";
                     bitacora.Evento = "Baja lógica de usuario";
-                    bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
                 else
@@ -186,9 +189,7 @@ namespace BLL
                     digitoVerificadorBLL.RecalcularDVV_Usuario();
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                    bitacora.Modulo = "Usuarios";
                     bitacora.Evento = "Reactivar usuario";
-                    bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
             }
@@ -214,9 +215,7 @@ namespace BLL
                 digitoVerificadorBLL.RecalcularDVV_Usuario();
                 Bitacora bitacora = new Bitacora();
                 bitacora.Login = usuario;
-                bitacora.Modulo = "Usuarios";
                 bitacora.Evento = "Cambiar clave";
-                bitacora.Criticidad = 1;
                 bitacoraBLL.RegistrarEvento(bitacora);
 
                 return LoginResultado.Valido;
@@ -244,9 +243,7 @@ namespace BLL
                     digitoVerificadorBLL.RecalcularDVV_Usuario();
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                    bitacora.Modulo = "Usuarios";
                     bitacora.Evento = "Modificar usuario";
-                    bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
             }
@@ -267,9 +264,7 @@ namespace BLL
                     digitoVerificadorBLL.RecalcularDVV_Usuario();
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                    bitacora.Modulo = "Usuarios";
                     bitacora.Evento = "Desbloquear usuario";
-                    bitacora.Criticidad = 1;
                     bitacoraBLL.RegistrarEvento(bitacora);
                 }
                 else

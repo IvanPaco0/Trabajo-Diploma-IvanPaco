@@ -1,8 +1,9 @@
-using _012IP_BE;
+﻿using _012IP_BE;
 using _012IP_BLL;
 using Servicios;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace _012IP_GUI
@@ -12,7 +13,6 @@ namespace _012IP_GUI
         private _012IP_PagoBLL pagoBLL;
 
         private readonly int idSocio;
-        private readonly int? idCuota;
         private readonly int? idMembresia;
         private readonly string nombreSocio;
         private readonly string dniSocio;
@@ -23,7 +23,7 @@ namespace _012IP_GUI
         public _012IP_PagoBE PagoRegistrado { get; private set; }
 
         public bool SoloCapturarMedioDePago { get; set; }
-        public string MedioDePagoElegido { get; private set; }
+        public _012IP_MedioDePagoBE MedioDePagoElegido { get; private set; }
         public string MarcaTarjeta { get; private set; }
         public string UltimosDigitos { get; private set; }
 
@@ -39,13 +39,12 @@ namespace _012IP_GUI
 
         
         public _012IP_frmRegistrarPago(int idSocio, string nombreSocio, string dniSocio,
-            decimal importe, int? idCuota = null, int? idMembresia = null, DateTime? periodo = null) : this()
+            decimal importe, int? idMembresia = null, DateTime? periodo = null) : this()
         {
             this.idSocio = idSocio;
             this.nombreSocio = nombreSocio;
             this.dniSocio = dniSocio;
             this.importe = importe;
-            this.idCuota = idCuota;
             this.idMembresia = idMembresia;
             this.periodo = periodo;
         }
@@ -57,6 +56,7 @@ namespace _012IP_GUI
             try
             {
                 pagoBLL = new _012IP_PagoBLL();
+                cbMedioPago.Items.AddRange(pagoBLL._012IP_ListarMediosDePago().ToArray<object>());
             }
             catch (Exception ex)
             {
@@ -89,10 +89,10 @@ namespace _012IP_GUI
         {
             try
             {
-                string medioDePago = cbMedioPago.SelectedItem as string ?? cbMedioPago.Text;
+                _012IP_MedioDePagoBE medioDePago = cbMedioPago.SelectedItem as _012IP_MedioDePagoBE;
 
                
-                if (!pagoBLL._012IP_ValidarDatosPago(idSocio, idCuota, importe, medioDePago))
+                if (!pagoBLL._012IP_ValidarDatosPago(idSocio, importe, medioDePago))
                 {
                     lblMsj.ForeColor = Color.FromArgb(255, 156, 156);
                     lblMsj.Text = _012IP_Texto("RegPagoDatosInvalidos");
@@ -101,7 +101,7 @@ namespace _012IP_GUI
 
                 MarcaTarjeta = null;
                 UltimosDigitos = null;
-                if (_012IP_PagoBLL._012IP_EsTarjeta(medioDePago))
+                if (medioDePago.EsTarjeta)
                 {
                     _012IP_TarjetaBE tarjeta = pagoBLL._012IP_ValidarTarjeta(txtNumeroTarjeta.Text, txtVencimientoTarjeta.Text, txtCVV.Text);
                     txtCVV.Clear();
@@ -126,7 +126,7 @@ namespace _012IP_GUI
                     return;
                 }
 
-                _012IP_PagoBE pago = pagoBLL._012IP_RegistrarPago(idSocio, idCuota, idMembresia, importe, medioDePago, MarcaTarjeta, UltimosDigitos);
+                _012IP_PagoBE pago = pagoBLL._012IP_RegistrarPago(idSocio, idMembresia, importe, medioDePago, MarcaTarjeta, UltimosDigitos);
 
                 PagoRegistrado = pago;
 
@@ -147,8 +147,7 @@ namespace _012IP_GUI
 
         private void _012IP_cbMedioPago_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string medio = cbMedioPago.SelectedItem as string ?? cbMedioPago.Text;
-            bool esTarjeta = _012IP_PagoBLL._012IP_EsTarjeta(medio);
+            bool esTarjeta = cbMedioPago.SelectedItem is _012IP_MedioDePagoBE medio && medio.EsTarjeta;
             if (grpTarjeta.Visible == esTarjeta) return;
 
             int delta = esTarjeta ? AltoTarjeta : -AltoTarjeta;

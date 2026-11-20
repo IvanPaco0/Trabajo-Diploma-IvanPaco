@@ -15,7 +15,6 @@ namespace _012IP_BE
         public string Estado { get; set; } = "Activa";   // Activa | Vencida
         public int DiasRestantes => (FechaVencimiento.Date - DateTime.Today).Days;
         public bool EstaVigente => DiasRestantes >= 0;
-        public List<_012IP_CuotaBE> Cuotas { get; set; } = new List<_012IP_CuotaBE>();
 
         public _012IP_SuscripcionBE() { }
     }

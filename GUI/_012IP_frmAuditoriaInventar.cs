@@ -67,6 +67,7 @@ namespace _012IP_GUI
             btnBajaPerdida.Text = _012IP_Texto("AudBtnBaja");
             btnReubicar.Text = _012IP_Texto("AudBtnReubicar");
             btnCerrarAuditoria.Text = _012IP_Texto("AudBtnCerrar");
+            btnDeteriorado.Text = _012IP_Texto("AudBtnDeteriorado");
             btnSalir.Text = _012IP_Texto("btnSalir");
 
             _012IP_BindEsperados();
@@ -149,9 +150,12 @@ namespace _012IP_GUI
             btnCerrarAuditoria.Enabled = conciliado;
 
             _012IP_DiferenciaAuditoriaBE d = _012IP_DiferenciaSeleccionada();
-            bool resoluble = d != null && d.Resultado == _012IP_AuditoriaBLL.RES_FALTANTE && d.Resolucion == "";
+            bool resoluble = d != null && d.EsFaltantePendiente;
             btnBajaPerdida.Enabled = resoluble;
             btnReubicar.Enabled = resoluble;
+
+            _012IP_EjemplarBE esperado = _012IP_EsperadoSeleccionado();
+            btnDeteriorado.Enabled = listado && esperado != null && esperado.Estado == _012IP_EstadoEjemplar.Bueno;
         }
 
         private void _012IP_ActualizarResumen()
@@ -175,13 +179,16 @@ namespace _012IP_GUI
                 CodigoBarras = x.CodigoBarras,
                 NumeroInventario = x.NumeroInventario,
                 Titulo = x.Titulo,
-                Ubicacion = _012IP_EjemplarBLL._012IP_TextoUbicacion(x)
+                Ubicacion = _012IP_EjemplarBLL._012IP_TextoUbicacion(x),
+                Estado = _012IP_EjemplarBLL._012IP_NombreEstado(x.Estado)
             }).ToList();
 
             if (dgvEsperados.Columns.Contains("CodigoBarras")) dgvEsperados.Columns["CodigoBarras"].HeaderText = _012IP_Texto("InvCodigoBarras");
             if (dgvEsperados.Columns.Contains("NumeroInventario")) dgvEsperados.Columns["NumeroInventario"].HeaderText = _012IP_Texto("InvNumeroInventario");
             if (dgvEsperados.Columns.Contains("Titulo")) dgvEsperados.Columns["Titulo"].HeaderText = _012IP_Texto("InvTituloLibro");
             if (dgvEsperados.Columns.Contains("Ubicacion")) dgvEsperados.Columns["Ubicacion"].HeaderText = _012IP_Texto("InvColUbicacion");
+            if (dgvEsperados.Columns.Contains("Estado")) dgvEsperados.Columns["Estado"].HeaderText = _012IP_Texto("InvColEstado");
+            dgvEsperados.ClearSelection();
         }
 
         private void _012IP_BindDiferencias()
@@ -241,6 +248,46 @@ namespace _012IP_GUI
             return conciliacion.Diferencias.FirstOrDefault(d => d.CodigoBarras == codigo);
         }
 
+        private _012IP_EjemplarBE _012IP_EsperadoSeleccionado()
+        {
+            if (esperados == null || dgvEsperados.CurrentRow == null || dgvEsperados.SelectedRows.Count == 0) return null;
+            string codigo = Convert.ToString(dgvEsperados.CurrentRow.Cells["CodigoBarras"].Value);
+            return esperados.FirstOrDefault(x => x.CodigoBarras == codigo);
+        }
+
+        private void _012IP_dgvEsperados_SelectionChanged(object sender, EventArgs e)
+        {
+            _012IP_ActualizarBotones();
+        }
+
+        private void _012IP_btnDeteriorado_Click(object sender, EventArgs e)
+        {
+            _012IP_EjemplarBE ej = _012IP_EsperadoSeleccionado();
+            if (ej == null)
+            {
+                _012IP_Error(_012IP_Texto("InvSeleccioneEjemplar"));
+                return;
+            }
+
+            var decision = MessageBox.Show(
+                string.Format(_012IP_Texto("AudConfirmaDeteriorado"), ej.CodigoBarras, ej.Titulo),
+                _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (decision != DialogResult.Yes) return;
+
+            try
+            {
+                _012IP_EjemplarBE actualizado = auditoriaBLL._012IP_RegistrarDeterioro(ej.CodigoBarras);
+                ej.Estado = actualizado.Estado;
+                _012IP_BindEsperados();
+                _012IP_ActualizarBotones();
+                _012IP_Ok(string.Format(_012IP_Texto("AudDeterioradoOk"), ej.CodigoBarras));
+            }
+            catch (Exception ex)
+            {
+                _012IP_Error(ex.Message);
+            }
+        }
+
         private void _012IP_dgvDiferencias_SelectionChanged(object sender, EventArgs e)
         {
             if (actualizandoGrilla) return;
@@ -297,7 +344,7 @@ namespace _012IP_GUI
                 txtEncontrados.ReadOnly = true;
                 _012IP_BindDiferencias();
                 _012IP_ActualizarResumen();
-                _012IP_Ok(_012IP_Texto("AudConciliado"));
+                _012IP_Ok(_012IP_Texto(conciliacion.Diferencias.Count == 0 ? "AudSinDiferencias" : "AudConciliado"));
             }
             catch (Exception ex)
             {
@@ -308,7 +355,7 @@ namespace _012IP_GUI
         private void _012IP_btnBajaPerdida_Click(object sender, EventArgs e)
         {
             _012IP_DiferenciaAuditoriaBE d = _012IP_DiferenciaSeleccionada();
-            if (d == null || d.Resultado != _012IP_AuditoriaBLL.RES_FALTANTE || d.Resolucion != "")
+            if (d == null || !d.EsFaltantePendiente)
             {
                 _012IP_Error(_012IP_Texto("AudSeleccioneDiferencia"));
                 return;
@@ -334,7 +381,7 @@ namespace _012IP_GUI
         private void _012IP_btnReubicar_Click(object sender, EventArgs e)
         {
             _012IP_DiferenciaAuditoriaBE d = _012IP_DiferenciaSeleccionada();
-            if (d == null || d.Resultado != _012IP_AuditoriaBLL.RES_FALTANTE || d.Resolucion != "")
+            if (d == null || !d.EsFaltantePendiente)
             {
                 _012IP_Error(_012IP_Texto("AudSeleccioneDiferencia"));
                 return;

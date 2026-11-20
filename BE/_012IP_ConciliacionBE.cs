@@ -13,9 +13,9 @@ namespace _012IP_BE
         public int TotalEscaneados { get; set; }
         public List<_012IP_DiferenciaAuditoriaBE> Diferencias { get; set; } = new List<_012IP_DiferenciaAuditoriaBE>();
 
-        public int Faltantes => Diferencias.Count(d => d.Resultado == "Faltante");
-        public int Sobrantes => Diferencias.Count(d => d.Resultado != "Faltante");
-        public int FaltantesSinResolver => Diferencias.Count(d => d.Resultado == "Faltante" && d.Resolucion == "");
+        public int Faltantes => Diferencias.Count(d => d.Resultado == _012IP_ResultadoDiferencia.Faltante);
+        public int Sobrantes => Diferencias.Count(d => d.Resultado != _012IP_ResultadoDiferencia.Faltante);
+        public int FaltantesSinResolver => Diferencias.Count(d => d.EsFaltantePendiente);
 
         public _012IP_ConciliacionBE() { }
     }

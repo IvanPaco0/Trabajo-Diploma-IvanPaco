@@ -12,16 +12,16 @@ namespace _012IP_BLL
     public class _012IP_SuscripcionBLL
     {
         private readonly _012IP_SuscripcionDAL suscripcionDAL;
-        private readonly _012IP_CuotaBLL cuotaBLL;
         private readonly BitacoraBLL bitacoraBLL;
         private readonly _012IP_PagoBLL pagoBLL;
+        private readonly _012IP_ParametroBLL parametroBLL;
 
         public _012IP_SuscripcionBLL()
         {
             suscripcionDAL = new _012IP_SuscripcionDAL();
-            cuotaBLL = new _012IP_CuotaBLL();
             bitacoraBLL = new BitacoraBLL();
             pagoBLL = new _012IP_PagoBLL();
+            parametroBLL = new _012IP_ParametroBLL();
         }
 
       
@@ -32,10 +32,7 @@ namespace _012IP_BLL
 
             try
             {
-                _012IP_SuscripcionBE suscripcion = suscripcionDAL._012IP_ObtenerSuscripcion(dni.Trim());
-                if (suscripcion != null)
-                    suscripcion.Cuotas = cuotaBLL._012IP_ObtenerCuotas(suscripcion.IdSuscripcion);
-                return suscripcion;
+                return suscripcionDAL._012IP_ObtenerSuscripcion(dni.Trim());
             }
             catch (Exception ex)
             {
@@ -60,15 +57,15 @@ namespace _012IP_BLL
         }
 
        
-        public const int DiasAvisoVencimiento = 7;
-        public const int MaximoMesesPorPago = 12;
+        /// <summary>Dias antes del vencimiento en que una membresia se considera "por vencer" (tabla Parametro).</summary>
+        public int _012IP_DiasAvisoVencimiento() => parametroBLL._012IP_DiasAvisoVencimiento();
 
         public void _012IP_CalcularPeriodoRenovacion(_012IP_SuscripcionBE actual, int cantidadMeses, out DateTime fechaInicio, out DateTime fechaVencimiento)
         {
             DateTime hoy = DateTime.Today;
 
             if (actual != null && actual.FechaVencimiento.Date >= hoy)
-                fechaInicio = actual.FechaVencimiento.Date;
+                fechaInicio = actual.FechaVencimiento.Date.AddDays(1);
             else
                 fechaInicio = hoy;
 
@@ -82,13 +79,13 @@ namespace _012IP_BLL
         }
 
         public _012IP_PagoBE _012IP_RenovarSuscripcion(_012IP_SocioBE socio, _012IP_MembresiaBE membresia, int cantidadMeses,
-            DateTime fechaInicio, DateTime fechaVencimiento, string medioDePago, string? marcaTarjeta = null, string? ultimosDigitos = null)
+            DateTime fechaInicio, DateTime fechaVencimiento, _012IP_MedioDePagoBE medioDePago, string? marcaTarjeta = null, string? ultimosDigitos = null)
         {
             if (socio == null || string.IsNullOrWhiteSpace(socio.DNI))
                 throw new Exception(LanguageManager.Instance.GetTraduction("DNIRequerido"));
             if (membresia == null || membresia.IdMembresia <= 0)
                 throw new Exception(LanguageManager.Instance.GetTraduction("SuscBLLText2"));
-            if (cantidadMeses < 1 || cantidadMeses > MaximoMesesPorPago || fechaVencimiento.Date <= fechaInicio.Date)
+            if (cantidadMeses < 1 || cantidadMeses > parametroBLL._012IP_MaximoMesesPorPago() || fechaVencimiento.Date <= fechaInicio.Date)
                 throw new Exception(LanguageManager.Instance.GetTraduction("SuscBLLText3"));
 
             string dni = socio.DNI.Trim();
@@ -99,7 +96,7 @@ namespace _012IP_BLL
                 using (var transaccion = new TransactionScope(TransactionScopeOption.Required,
                     new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    pago = pagoBLL._012IP_RegistrarPago(socio.IdSocio, null, membresia.IdMembresia, importe, medioDePago, marcaTarjeta, ultimosDigitos);
+                    pago = pagoBLL._012IP_RegistrarPago(socio.IdSocio, membresia.IdMembresia, importe, medioDePago, marcaTarjeta, ultimosDigitos);
 
                     string dvh = DigitoVerificador.CalcularDVH(
                         dni + membresia.IdMembresia + fechaInicio.ToString("yyyy-MM-dd") + fechaVencimiento.ToString("yyyy-MM-dd") + "Activa");
@@ -107,9 +104,7 @@ namespace _012IP_BLL
 
                     Bitacora bitacora = new Bitacora();
                     bitacora.Login = SessionManager.Instance.UsuarioActual().Username;
-                    bitacora.Modulo = "Membresias";
                     bitacora.Evento = $"Renovar membresía - DNI {dni} - {membresia.Nombre} - {cantidadMeses} mes(es) - vence {fechaVencimiento:dd/MM/yyyy}";
-                    bitacora.Criticidad = 2;
                     bitacoraBLL.RegistrarEvento(bitacora);
 
                     transaccion.Complete();

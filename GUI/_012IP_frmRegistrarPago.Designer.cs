@@ -200,11 +200,6 @@ namespace _012IP_GUI
             this.cbMedioPago.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbMedioPago.ForeColor = System.Drawing.Color.Black;
             this.cbMedioPago.FormattingEnabled = true;
-            this.cbMedioPago.Items.AddRange(new object[] {
-            "Efectivo",
-            "Tarjeta de débito",
-            "Tarjeta de crédito",
-            "Transferencia"});
             this.cbMedioPago.Location = new System.Drawing.Point(15, 205);
             this.cbMedioPago.Name = "cbMedioPago";
             this.cbMedioPago.Size = new System.Drawing.Size(420, 24);

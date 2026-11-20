@@ -66,14 +66,13 @@ namespace _012IP_GUI
 
                 cmbEstado.DisplayMember = "Value";
                 cmbEstado.ValueMember = "Key";
-                cmbEstado.DataSource = new List<KeyValuePair<string, string>>
+                var estados = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>(_012IP_SocioBLL.ESTADO_TODOS, _012IP_Texto("RepSocEstTodos")),
-                    new KeyValuePair<string, string>(_012IP_SocioBLL.ESTADO_VIGENTE, _012IP_Texto("RepSocEstVigente")),
-                    new KeyValuePair<string, string>(_012IP_SocioBLL.ESTADO_POR_VENCER, _012IP_Texto("RepSocEstPorVencer")),
-                    new KeyValuePair<string, string>(_012IP_SocioBLL.ESTADO_VENCIDA, _012IP_Texto("RepSocEstVencida")),
-                    new KeyValuePair<string, string>(_012IP_SocioBLL.ESTADO_SIN_MEMBRESIA, _012IP_Texto("RepSocEstSinMembresia"))
+                    new KeyValuePair<string, string>(FILTRO_TODOS, _012IP_Texto("RepSocEstTodos"))
                 };
+                estados.AddRange(Enum.GetValues(typeof(_012IP_EstadoMembresia)).Cast<_012IP_EstadoMembresia>()
+                    .Select(s => new KeyValuePair<string, string>(s.ToString(), _012IP_Texto("RepSocEst" + s))));
+                cmbEstado.DataSource = estados;
                 if (!string.IsNullOrEmpty(estadoPrevio)) cmbEstado.SelectedValue = estadoPrevio;
 
                 var membresias = new List<KeyValuePair<int, string>> { new KeyValuePair<int, string>(0, _012IP_Texto("RepSocTodas")) };
@@ -111,13 +110,16 @@ namespace _012IP_GUI
             if (!cargando) _012IP_Generar();
         }
 
+        private const string FILTRO_TODOS = "Todos";
+
         private void _012IP_Generar()
         {
             if (socioBLL == null) return;
             try
             {
                 lblMsj.Text = string.Empty;
-                string estado = Convert.ToString(cmbEstado.SelectedValue) ?? _012IP_SocioBLL.ESTADO_TODOS;
+                _012IP_EstadoMembresia? estado = Enum.TryParse(Convert.ToString(cmbEstado.SelectedValue), out _012IP_EstadoMembresia elegido)
+                    ? elegido : (_012IP_EstadoMembresia?)null;
                 int idMembresia = cmbMembresia.SelectedValue is int id ? id : 0;
 
                 filas = socioBLL._012IP_GenerarReporteSocios(txtBuscar.Text, estado, idMembresia > 0 ? (int?)idMembresia : null);
@@ -155,24 +157,24 @@ namespace _012IP_GUI
         {
             switch (f.Estado)
             {
-                case _012IP_SocioBLL.ESTADO_VENCIDA:
+                case _012IP_EstadoMembresia.Vencida:
                     return string.Format(_012IP_Texto("InfMemVencida"), -(f.DiasRestantes ?? 0));
-                case _012IP_SocioBLL.ESTADO_POR_VENCER:
+                case _012IP_EstadoMembresia.PorVencer:
                     return string.Format(_012IP_Texto("InfMemPorVencer"), f.DiasRestantes ?? 0);
-                case _012IP_SocioBLL.ESTADO_SIN_MEMBRESIA:
+                case _012IP_EstadoMembresia.SinMembresia:
                     return _012IP_Texto("RepSocEstSinMembresia");
                 default:
                     return _012IP_Texto("RepSocEstVigente");
             }
         }
 
-        private Color _012IP_ColorEstado(string estado)
+        private Color _012IP_ColorEstado(_012IP_EstadoMembresia estado)
         {
             switch (estado)
             {
-                case _012IP_SocioBLL.ESTADO_VENCIDA: return Color.DarkRed;
-                case _012IP_SocioBLL.ESTADO_POR_VENCER: return Color.DarkGoldenrod;
-                case _012IP_SocioBLL.ESTADO_SIN_MEMBRESIA: return Color.DimGray;
+                case _012IP_EstadoMembresia.Vencida: return Color.DarkRed;
+                case _012IP_EstadoMembresia.PorVencer: return Color.DarkGoldenrod;
+                case _012IP_EstadoMembresia.SinMembresia: return Color.DimGray;
                 default: return Color.DarkGreen;
             }
         }

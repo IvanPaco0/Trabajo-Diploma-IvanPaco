@@ -19,6 +19,7 @@ namespace BLL
         {
             try
             {
+                CatalogoEventos.Completar(unEvento);
                 unEvento.Fecha = DateTime.Now;
                 unEvento.Login = Recortar(unEvento.Login, 50);
                 unEvento.Modulo = Recortar(unEvento.Modulo, 50);
@@ -48,7 +49,7 @@ namespace BLL
                 if (desde > hasta)
                     throw new Exception(LanguageManager.Instance.GetTraduction("BitBlltext2"));
 
-                if (modulo == "Todos") modulo = null;
+                if (modulo == CatalogoEventos.Todos) modulo = null;
 
                 return DAL.FiltrarEventos(nombre, apellido, login, modulo, evento, desde, hasta, criticidad);
             }

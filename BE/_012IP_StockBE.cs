@@ -12,6 +12,7 @@ namespace _012IP_BE
         public int EnRestauracion { get; set; }
         public int Bajas { get; set; }
         public int PendientesUbicar { get; set; }
+        public decimal ValorPatrimonio { get; set; }
 
         public _012IP_StockBE() { }
     }

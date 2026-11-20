@@ -45,6 +45,34 @@ namespace _012IP_DAL
             }
         }
 
+        public void _012IP_RegistrarDiferencias(int idAuditoria, List<_012IP_DiferenciaAuditoriaBE> diferencias)
+        {
+            try
+            {
+                _sqlcommand.CommandText = @"
+                    INSERT INTO AuditoriaDiferencia (IdAuditoria, IdEjemplar, CodigoBarras, IdResultado, IdResolucion)
+                    SELECT @idAuditoria, (SELECT IdEjemplar FROM Ejemplar WHERE CodigoBarras = @codigo), @codigo, @resultado, @resolucion;";
+
+                _sqlserver.Open();
+                foreach (_012IP_DiferenciaAuditoriaBE diferencia in diferencias)
+                {
+                    _sqlcommand.Parameters.Clear();
+                    _sqlcommand.Parameters.AddWithValue("@idAuditoria", idAuditoria);
+                    _sqlcommand.Parameters.AddWithValue("@codigo", diferencia.CodigoBarras.Length > 20 ? diferencia.CodigoBarras.Substring(0, 20) : diferencia.CodigoBarras);
+                    _sqlcommand.Parameters.AddWithValue("@resultado", (int)diferencia.Resultado);
+                    _sqlcommand.Parameters.AddWithValue("@resolucion",
+                        diferencia.Resolucion == _012IP_ResolucionDiferencia.Pendiente ? DBNull.Value : (object)(int)diferencia.Resolucion);
+                    _sqlcommand.ExecuteNonQuery();
+                }
+            }
+            catch { throw; }
+            finally
+            {
+                _sqlcommand.Parameters.Clear();
+                _sqlserver.Close();
+            }
+        }
+
         /// <summary>Lectura completa ordenada por PK, usada por el recalculo / auditoria de digitos verificadores.</summary>
         public List<_012IP_AuditoriaBE> _012IP_ListarTodasDVH()
         {

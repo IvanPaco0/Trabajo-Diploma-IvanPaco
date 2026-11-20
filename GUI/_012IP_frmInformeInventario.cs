@@ -73,6 +73,7 @@ namespace _012IP_GUI
             _012IP_Fila(grpStock, 0, T("InfInvRestauracion"), stock.EnRestauracion, 1);
             _012IP_Fila(grpStock, 1, T("InfInvBajas"), stock.Bajas, 1);
             _012IP_Fila(grpStock, 2, T("InfInvPendientes"), stock.PendientesUbicar, 1);
+            _012IP_FilaTexto(grpStock, 3, T("InfInvValor"), _012IP_EjemplarBLL._012IP_TextoMoneda(stock.ValorPatrimonio));
 
             var lblDif = new Label { Text = T("AudInfDiferencias"), AutoSize = true, Location = new Point(16, 240) };
             var grilla = new DataGridView
@@ -120,6 +121,21 @@ namespace _012IP_GUI
         private static GroupBox _012IP_Grupo(string texto, Point lugar, Size tam)
         {
             return new GroupBox { Text = texto, Location = lugar, Size = tam, ForeColor = Color.White };
+        }
+
+        private static void _012IP_FilaTexto(GroupBox grupo, int fila, string etiqueta, string valor)
+        {
+            int y = 28 + fila * 28;
+            grupo.Controls.Add(new Label { Text = etiqueta + ":", AutoSize = false, Size = new Size(140, 22), Location = new Point(14, y) });
+            grupo.Controls.Add(new Label
+            {
+                Text = valor,
+                AutoSize = false,
+                Size = new Size(250, 22),
+                Location = new Point(154, y),
+                Font = new Font("Microsoft Sans Serif", 10.5F, FontStyle.Bold),
+                ForeColor = Color.LightGreen
+            });
         }
 
         private static void _012IP_Fila(GroupBox grupo, int fila, string etiqueta, int valor, int columna = 0)

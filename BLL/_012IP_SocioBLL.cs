@@ -14,22 +14,18 @@ namespace _012IP_BLL
         private readonly _012IP_SocioDAL socioDAL;
         private readonly _012IP_SuscripcionBLL suscripcionBLL;
         private readonly BitacoraBLL bitacoraBLL;
+        private readonly _012IP_ParametroBLL parametroBLL;
 
         public _012IP_SocioBLL()
         {
             socioDAL = new _012IP_SocioDAL();
             suscripcionBLL = new _012IP_SuscripcionBLL();
             bitacoraBLL = new BitacoraBLL();
+            parametroBLL = new _012IP_ParametroBLL();
         }
 
-        public const string ESTADO_TODOS = "Todos";
-        public const string ESTADO_VIGENTE = "Vigente";
-        public const string ESTADO_POR_VENCER = "PorVencer";
-        public const string ESTADO_VENCIDA = "Vencida";
-        public const string ESTADO_SIN_MEMBRESIA = "SinMembresia";
-        private const int MaximoFilasReporte = 100000;
-
-        public List<_012IP_ReporteSocioBE> _012IP_GenerarReporteSocios(string texto, string estado, int? idMembresia)
+        /// <param name="estado">null = todos</param>
+        public List<_012IP_ReporteSocioBE> _012IP_GenerarReporteSocios(string texto, _012IP_EstadoMembresia? estado, int? idMembresia)
         {
             List<string> palabras = (texto ?? "")
                 .Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
@@ -38,13 +34,14 @@ namespace _012IP_BLL
             List<_012IP_SocioBE> socios;
             try
             {
-                socios = socioDAL._012IP_BuscarSocioPorTexto(palabras, MaximoFilasReporte);
+                socios = socioDAL._012IP_BuscarSocioPorTexto(palabras, parametroBLL._012IP_MaximoFilasReporteSocios());
             }
             catch (Exception ex)
             {
                 throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText3"), ex);
             }
 
+            int diasAviso = parametroBLL._012IP_DiasAvisoVencimiento();
             var filas = socios.Select(s => new _012IP_ReporteSocioBE
             {
                 DNI = s.DNI,
@@ -56,23 +53,23 @@ namespace _012IP_BLL
                 Membresia = s.Suscripcion?.Membresia?.Nombre ?? "-",
                 FechaVencimiento = s.Suscripcion?.FechaVencimiento,
                 DiasRestantes = s.Suscripcion?.DiasRestantes,
-                Estado = _012IP_EstadoMembresia(s.Suscripcion)
+                Estado = _012IP_CalcularEstadoMembresia(s.Suscripcion, diasAviso)
             });
 
-            if (!string.IsNullOrEmpty(estado) && estado != ESTADO_TODOS)
-                filas = filas.Where(f => f.Estado == estado);
+            if (estado.HasValue)
+                filas = filas.Where(f => f.Estado == estado.Value);
             if (idMembresia.HasValue)
                 filas = filas.Where(f => f.IdMembresia == idMembresia.Value);
 
             return filas.OrderBy(f => f.Apellido).ThenBy(f => f.Nombre).ToList();
         }
 
-        public string _012IP_EstadoMembresia(_012IP_SuscripcionBE? suscripcion)
+        private static _012IP_EstadoMembresia _012IP_CalcularEstadoMembresia(_012IP_SuscripcionBE? suscripcion, int diasAviso)
         {
-            if (suscripcion == null) return ESTADO_SIN_MEMBRESIA;
-            if (suscripcion.DiasRestantes < 0) return ESTADO_VENCIDA;
-            if (suscripcion.DiasRestantes <= _012IP_SuscripcionBLL.DiasAvisoVencimiento) return ESTADO_POR_VENCER;
-            return ESTADO_VIGENTE;
+            if (suscripcion == null) return _012IP_EstadoMembresia.SinMembresia;
+            if (suscripcion.DiasRestantes < 0) return _012IP_EstadoMembresia.Vencida;
+            if (suscripcion.DiasRestantes <= diasAviso) return _012IP_EstadoMembresia.PorVencer;
+            return _012IP_EstadoMembresia.Vigente;
         }
 
         public _012IP_ResumenReporteSociosBE _012IP_ResumirReporte(List<_012IP_ReporteSocioBE> filas)
@@ -80,10 +77,10 @@ namespace _012IP_BLL
             return new _012IP_ResumenReporteSociosBE
             {
                 Total = filas.Count,
-                Vigentes = filas.Count(f => f.Estado == ESTADO_VIGENTE),
-                PorVencer = filas.Count(f => f.Estado == ESTADO_POR_VENCER),
-                Vencidas = filas.Count(f => f.Estado == ESTADO_VENCIDA),
-                SinMembresia = filas.Count(f => f.Estado == ESTADO_SIN_MEMBRESIA)
+                Vigentes = filas.Count(f => f.Estado == _012IP_EstadoMembresia.Vigente),
+                PorVencer = filas.Count(f => f.Estado == _012IP_EstadoMembresia.PorVencer),
+                Vencidas = filas.Count(f => f.Estado == _012IP_EstadoMembresia.Vencida),
+                SinMembresia = filas.Count(f => f.Estado == _012IP_EstadoMembresia.SinMembresia)
             };
         }
 
@@ -92,13 +89,9 @@ namespace _012IP_BLL
             bitacoraBLL.RegistrarEvento(new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = "Reportes",
                 Evento = $"Exportar reporte de socios a PDF - {cantidad} socio(s) - {System.IO.Path.GetFileName(archivo)}",
-                Criticidad = 4
             });
         }
-
-        public const int MaximoResultadosBusqueda = 50;
 
         public List<_012IP_SocioBE> _012IP_BuscarSocioPorTexto(string texto, bool incluirInactivos = false)
         {
@@ -111,7 +104,8 @@ namespace _012IP_BLL
 
             try
             {
-                return socioDAL._012IP_BuscarSocioPorTexto(palabras, incluirInactivos ? MaximoFilasReporte : MaximoResultadosBusqueda, incluirInactivos);
+                int maximo = incluirInactivos ? parametroBLL._012IP_MaximoFilasReporteSocios() : parametroBLL._012IP_MaximoResultadosBusquedaSocios();
+                return socioDAL._012IP_BuscarSocioPorTexto(palabras, maximo, incluirInactivos);
             }
             catch (Exception ex)
             {
@@ -138,26 +132,6 @@ namespace _012IP_BLL
             catch (Exception ex)
             {
                 throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText3"), ex);
-            }
-        }
-
-        public List<_012IP_CuotaBE> _012IP_ValidarEstadoCuenta(string dni)
-        {
-            if (string.IsNullOrWhiteSpace(dni))
-                throw new Exception(LanguageManager.Instance.GetTraduction("DNIRequerido"));
-
-            try
-            {
-                _012IP_SuscripcionBE suscripcion = suscripcionBLL._012IP_ObtenerSuscripcion(dni);
-
-                if (suscripcion == null)
-                    return new List<_012IP_CuotaBE>();
-
-                return suscripcion.Cuotas.Where(c => c.EstaVencida).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(LanguageManager.Instance.GetTraduction("SocioBLLText5"), ex);
             }
         }
 
@@ -242,9 +216,7 @@ namespace _012IP_BLL
             Bitacora bitacora = new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = "Socios",
                 Evento = $"Registrar socio - DNI {socio.DNI} - {socio.Nombre} {socio.Apellido}",
-                Criticidad = 2
             };
             bitacoraBLL.RegistrarEvento(bitacora);
 
@@ -277,9 +249,7 @@ namespace _012IP_BLL
             bitacoraBLL.RegistrarEvento(new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = "Socios",
                 Evento = $"Modificar socio - DNI {socio.DNI} - {socio.Nombre} {socio.Apellido}",
-                Criticidad = 2
             });
             return socio;
         }
@@ -307,9 +277,7 @@ namespace _012IP_BLL
             bitacoraBLL.RegistrarEvento(new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = "Socios",
                 Evento = (activo ? "Reactivar socio" : "Baja lógica de socio") + $" - DNI {socio.DNI} - {socio.Nombre} {socio.Apellido}",
-                Criticidad = 2
             });
         }
 

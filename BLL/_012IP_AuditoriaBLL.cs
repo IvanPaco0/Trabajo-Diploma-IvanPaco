@@ -11,21 +11,12 @@ namespace _012IP_BLL
 {
     public class _012IP_AuditoriaBLL
     {
-        public const string RES_FALTANTE = "Faltante";
-        public const string RES_FUERA_DE_LUGAR = "FueraDeLugar";
-        public const string RES_DESCONOCIDO = "Desconocido";
-
-        public const string RESOL_BAJA = "Baja";
-        public const string RESOL_REUBICADO = "Reubicado";
-
-        private const string MODULO_BITACORA = "Inventario";
-        private const string MOTIVO_PERDIDA = "Pérdida detectada en auditoría";
-
         private readonly _012IP_EjemplarDAL ejemplarDAL;
         private readonly _012IP_AuditoriaDAL auditoriaDAL;
         private readonly _012IP_EjemplarBLL ejemplarBLL;
         private readonly BitacoraBLL bitacoraBLL;
         private readonly DigitoVerificadorBLL digitoVerificadorBLL;
+        private readonly _012IP_ParametroBLL parametroBLL;
 
         public _012IP_AuditoriaBLL()
         {
@@ -34,6 +25,7 @@ namespace _012IP_BLL
             ejemplarBLL = new _012IP_EjemplarBLL();
             bitacoraBLL = new BitacoraBLL();
             digitoVerificadorBLL = new DigitoVerificadorBLL();
+            parametroBLL = new _012IP_ParametroBLL();
         }
 
         // ------------------------------------------------------------------
@@ -48,22 +40,17 @@ namespace _012IP_BLL
                 a.Esperados + a.Encontrados + a.Faltantes + a.Sobrantes);
         }
 
-        public static string _012IP_TextoResultado(string resultado)
+        public static string _012IP_TextoResultado(_012IP_ResultadoDiferencia resultado)
         {
             return LanguageManager.Instance.GetTraduction("AudRes" + resultado);
         }
 
         public static string _012IP_TextoResolucion(_012IP_DiferenciaAuditoriaBE d)
         {
-            if (d.Resultado != RES_FALTANTE)
+            if (d.Resultado != _012IP_ResultadoDiferencia.Faltante)
                 return "-";
 
-            switch (d.Resolucion)
-            {
-                case RESOL_BAJA: return LanguageManager.Instance.GetTraduction("AudResolBaja");
-                case RESOL_REUBICADO: return LanguageManager.Instance.GetTraduction("AudResolReubicado");
-                default: return LanguageManager.Instance.GetTraduction("AudResolPendiente");
-            }
+            return LanguageManager.Instance.GetTraduction("AudResol" + d.Resolucion);
         }
 
         private static string _012IP_Texto(string clave)
@@ -77,14 +64,12 @@ namespace _012IP_BLL
             return ahora.AddTicks(-(ahora.Ticks % TimeSpan.TicksPerSecond));
         }
 
-        private void _012IP_RegistrarBitacora(string evento, int criticidad)
+        private void _012IP_RegistrarBitacora(string evento)
         {
             Bitacora bitacora = new Bitacora
             {
                 Login = SessionManager.Instance.UsuarioActual().Username,
-                Modulo = MODULO_BITACORA,
                 Evento = evento,
-                Criticidad = criticidad
             };
             bitacoraBLL.RegistrarEvento(bitacora);
         }
@@ -166,7 +151,7 @@ namespace _012IP_BLL
                         conciliacion.Diferencias.Add(new _012IP_DiferenciaAuditoriaBE
                         {
                             CodigoBarras = codigo,
-                            Resultado = RES_DESCONOCIDO
+                            Resultado = _012IP_ResultadoDiferencia.Desconocido
                         });
                     }
                     else
@@ -176,7 +161,7 @@ namespace _012IP_BLL
                             CodigoBarras = registrado.CodigoBarras,
                             NumeroInventario = registrado.NumeroInventario,
                             Titulo = registrado.Titulo,
-                            Resultado = RES_FUERA_DE_LUGAR,
+                            Resultado = _012IP_ResultadoDiferencia.FueraDeLugar,
                             Detalle = _012IP_EjemplarBLL._012IP_NombreEstado(registrado.Estado) + " | " + _012IP_EjemplarBLL._012IP_TextoUbicacion(registrado)
                         });
                     }
@@ -189,7 +174,7 @@ namespace _012IP_BLL
                         CodigoBarras = esperado.CodigoBarras,
                         NumeroInventario = esperado.NumeroInventario,
                         Titulo = esperado.Titulo,
-                        Resultado = RES_FALTANTE,
+                        Resultado = _012IP_ResultadoDiferencia.Faltante,
                         Detalle = _012IP_EjemplarBLL._012IP_TextoUbicacion(esperado)
                     });
                 }
@@ -208,7 +193,7 @@ namespace _012IP_BLL
 
         private static void _012IP_ValidarResoluble(_012IP_DiferenciaAuditoriaBE diferencia)
         {
-            if (diferencia == null || diferencia.Resultado != RES_FALTANTE || diferencia.Resolucion != "")
+            if (diferencia == null || !diferencia.EsFaltantePendiente)
                 throw new Exception(_012IP_Texto("AudBLLNoResoluble"));
         }
 
@@ -217,8 +202,14 @@ namespace _012IP_BLL
             _012IP_ValidarResoluble(diferencia);
 
             // La baja registra su propio evento en la bitacora (criticidad alta) y recalcula los DV.
-            ejemplarBLL._012IP_DarDeBaja(diferencia.CodigoBarras, MOTIVO_PERDIDA);
-            diferencia.Resolucion = RESOL_BAJA;
+            ejemplarBLL._012IP_DarDeBaja(diferencia.CodigoBarras, parametroBLL._012IP_MotivoBajaPorPerdida());
+            diferencia.Resolucion = _012IP_ResolucionDiferencia.Baja;
+        }
+
+        /// <summary>CUN-06 paso 3: el estado observado en el estante. Si el ejemplar esta deteriorado pasa a Deteriorado (inicio del CUN-07).</summary>
+        public _012IP_EjemplarBE _012IP_RegistrarDeterioro(string codigoBarras)
+        {
+            return ejemplarBLL._012IP_CambiarEstado(codigoBarras, _012IP_EstadoEjemplar.Deteriorado, parametroBLL._012IP_MotivoDeterioroEnAuditoria());
         }
 
         public void _012IP_ResolverFaltanteReubicar(_012IP_DiferenciaAuditoriaBE diferencia, string pasillo, string seccion, string estanteria)
@@ -226,7 +217,7 @@ namespace _012IP_BLL
             _012IP_ValidarResoluble(diferencia);
 
             ejemplarBLL._012IP_UbicarEjemplar(diferencia.CodigoBarras, pasillo, seccion, estanteria);
-            diferencia.Resolucion = RESOL_REUBICADO;
+            diferencia.Resolucion = _012IP_ResolucionDiferencia.Reubicado;
         }
 
         // ------------------------------------------------------------------
@@ -268,9 +259,17 @@ namespace _012IP_BLL
 
             auditoria.DVH = dvh;
 
+            try
+            {
+                auditoriaDAL._012IP_RegistrarDiferencias(auditoria.IdAuditoria, conciliacion.Diferencias);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(_012IP_Texto("AudBLLErrorCerrar"), ex);
+            }
+
             _012IP_RegistrarBitacora(
-                $"Auditoría de inventario cerrada - Sección {auditoria.Seccion} - Esperados {auditoria.Esperados} - Faltantes {auditoria.Faltantes} ({conciliacion.FaltantesSinResolver} sin resolver) - Sobrantes {auditoria.Sobrantes}",
-                2);
+                $"Auditoría de inventario cerrada - Sección {auditoria.Seccion} - Esperados {auditoria.Esperados} - Faltantes {auditoria.Faltantes} ({conciliacion.FaltantesSinResolver} sin resolver) - Sobrantes {auditoria.Sobrantes}");
 
             return auditoria;
         }
@@ -283,7 +282,7 @@ namespace _012IP_BLL
             _012IP_StockBE stock = ejemplarBLL._012IP_ObtenerStock();
 
             _012IP_RegistrarBitacora(
-                $"Emitir informe de inventario y patrimonio - Sección {auditoria.Seccion}", 4);
+                $"Emitir informe de inventario y patrimonio - Sección {auditoria.Seccion}");
             return stock;
         }
 
@@ -301,6 +300,7 @@ namespace _012IP_BLL
                 sb.AppendLine(_012IP_Texto("InfInvRestauracion") + ": " + stock.EnRestauracion);
                 sb.AppendLine(_012IP_Texto("InfInvBajas") + ": " + stock.Bajas);
                 sb.AppendLine(_012IP_Texto("InfInvPendientes") + ": " + stock.PendientesUbicar);
+                sb.AppendLine(_012IP_Texto("InfInvValor") + ": " + _012IP_EjemplarBLL._012IP_TextoMoneda(stock.ValorPatrimonio));
             }
             return sb.ToString();
         }

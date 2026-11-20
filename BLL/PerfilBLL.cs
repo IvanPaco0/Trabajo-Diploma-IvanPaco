@@ -14,7 +14,6 @@ namespace BLL
         private readonly PerfilDAL _dal;
         private readonly BitacoraBLL _bitacoraBLL;
         private readonly DigitoVerificadorBLL _digitoVerificadorBLL = new DigitoVerificadorBLL();
-        private const string MODULO_BITACORA = "Perfiles";
 
         
 
@@ -90,13 +89,13 @@ namespace BLL
         public void CrearPermiso(string nombre)
         {
             _dal.GuardarPermiso(new PermisoSimple { Nombre = nombre, DVH = DigitoVerificador.CalcularDVH(nombre) });
-            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Crear permiso simple: {nombre}", 1);
+            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Crear permiso simple: {nombre}");
         }
 
         public void EliminarPermiso(string nombre)
         {
             _dal.EliminarPermiso(nombre);
-            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Eliminar permiso simple: {nombre}", 1);
+            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Eliminar permiso simple: {nombre}");
             RecargarPermisosUsuarioEnSesion();
         }
 
@@ -104,14 +103,14 @@ namespace BLL
         {
             _dal.GuardarFamilia(new Familia { Nombre = nombre, EsRol = false, DVH = DigitoVerificador.CalcularDVH(nombre) });
             _digitoVerificadorBLL.RecalcularDVV_Familia();
-            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Crear familia: {nombre}", 1);
+            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Crear familia: {nombre}");
         }
 
         public void CrearPerfil(string nombre)
         {
             _dal.GuardarFamilia(new Familia { Nombre = nombre, EsRol = true, DVH = DigitoVerificador.CalcularDVH(nombre) });
             _digitoVerificadorBLL.RecalcularDVV_Perfil();
-            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Crear perfil: {nombre}", 1);
+            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Crear perfil: {nombre}");
         }
 
         public void EliminarFamiliaOPerfil(string nombre)
@@ -137,7 +136,7 @@ namespace BLL
             _dal.EliminarFamilia(familia);
             _digitoVerificadorBLL.RecalcularDVV_Familia();
             _digitoVerificadorBLL.RecalcularDVV_Perfil();
-            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Eliminar contenedor jerárquico: {nombre}", 1);
+            RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Eliminar contenedor jerárquico: {nombre}");
             RecargarPermisosUsuarioEnSesion();
         }
 
@@ -160,7 +159,7 @@ namespace BLL
             foreach (var hijo in hijos)
             {
                 string tipoNodo = esPermisoSimple ? "Permiso Simple" : "Subfamilia";
-                RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Desvincular {tipoNodo} '{hijo}' del contenedor '{nombrePadre}'", 1);
+                RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Desvincular {tipoNodo} '{hijo}' del contenedor '{nombrePadre}'");
             }
 
             RecargarPermisosUsuarioEnSesion();
@@ -189,7 +188,7 @@ namespace BLL
                                 _dal.GuardarRelaciones(contenedor);
                             }
                         }
-                        RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Mitigación de redundancia: Remoción del permiso '{permiso}' en subnodo '{contenedorDirecto}'", 2);
+                        RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Mitigación de redundancia: Remoción del permiso '{permiso}' en subnodo '{contenedorDirecto}'");
                     }
                 }
 
@@ -197,7 +196,7 @@ namespace BLL
             }
             catch (Exception ex)
             {
-                RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"ERROR en EliminarPermisoRedundante: {ex.Message}", 1);
+                RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"ERROR en EliminarPermisoRedundante: {ex.Message}");
                 throw new Exception(LanguageManager.Instance.GetTraduction("PerBLLText1") + ex.Message);
             }
         }
@@ -328,7 +327,7 @@ namespace BLL
                 }
 
                 string tipoNodo = esPermisoSimple ? "Permiso Simple" : "Subfamilia";
-                RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Asignación exitosa de {tipoNodo} '{nombreHijo}' a la raíz '{nombrePadre}'", 1);
+                RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Asignación exitosa de {tipoNodo} '{nombreHijo}' a la raíz '{nombrePadre}'");
             }
 
             _dal.GuardarRelaciones(componentePadre);
@@ -351,7 +350,7 @@ namespace BLL
                     {
                         contenedor.QuitarHijo(permisoAQuitar);
                         _dal.GuardarRelaciones(contenedor);
-                        RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Desvinculación forzada por redundancia: Permiso '{nombrePermiso}' removido de '{nombreContenedor}'", 2);
+                        RegistrarEnBitacora(SessionManager.Instance.UsuarioActual().Username, $"Desvinculación forzada por redundancia: Permiso '{nombrePermiso}' removido de '{nombreContenedor}'");
                     }
                 }
                 RecargarPermisosUsuarioEnSesion();
@@ -456,7 +455,7 @@ namespace BLL
             }
         }
 
-        private void RegistrarEnBitacora(string usuario, string evento, int criticidad)
+        private void RegistrarEnBitacora(string usuario, string evento)
         {
             try
             {
@@ -464,9 +463,7 @@ namespace BLL
                 {
                     Login = !string.IsNullOrEmpty(usuario) ? usuario : "Sistema",
                     Fecha = DateTime.Now,
-                    Modulo = MODULO_BITACORA,
                     Evento = evento,
-                    Criticidad = criticidad
                 };
                 _bitacoraBLL.RegistrarEvento(registro);
             }

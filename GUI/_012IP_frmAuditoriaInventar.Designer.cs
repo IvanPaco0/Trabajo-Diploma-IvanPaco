@@ -39,6 +39,7 @@ namespace _012IP_GUI
             this.btnBajaPerdida = new System.Windows.Forms.Button();
             this.btnReubicar = new System.Windows.Forms.Button();
             this.btnCerrarAuditoria = new System.Windows.Forms.Button();
+            this.btnDeteriorado = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
             this.lblMsj = new System.Windows.Forms.Label();
             this.BarraTitulo.SuspendLayout();
@@ -184,6 +185,7 @@ namespace _012IP_GUI
             // 
             this.dgvEsperados.Location = new System.Drawing.Point(15, 25);
             this.dgvEsperados.Name = "dgvEsperados";
+            this.dgvEsperados.SelectionChanged += new System.EventHandler(this._012IP_dgvEsperados_SelectionChanged);
             this.dgvEsperados.Size = new System.Drawing.Size(490, 265);
             this.dgvEsperados.TabIndex = 0;
             // 
@@ -290,6 +292,22 @@ namespace _012IP_GUI
             this.btnCerrarAuditoria.UseVisualStyleBackColor = false;
             this.btnCerrarAuditoria.Click += new System.EventHandler(this._012IP_btnCerrarAuditoria_Click);
             // 
+            // btnDeteriorado
+            // 
+            this.btnDeteriorado.BackColor = System.Drawing.Color.Maroon;
+            this.btnDeteriorado.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDeteriorado.Enabled = false;
+            this.btnDeteriorado.FlatAppearance.BorderSize = 0;
+            this.btnDeteriorado.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeteriorado.ForeColor = System.Drawing.Color.White;
+            this.btnDeteriorado.Location = new System.Drawing.Point(576, 606);
+            this.btnDeteriorado.Name = "btnDeteriorado";
+            this.btnDeteriorado.Size = new System.Drawing.Size(200, 30);
+            this.btnDeteriorado.TabIndex = 10;
+            this.btnDeteriorado.Text = "Marcar deteriorado";
+            this.btnDeteriorado.UseVisualStyleBackColor = false;
+            this.btnDeteriorado.Click += new System.EventHandler(this._012IP_btnDeteriorado_Click);
+            // 
             // btnSalir
             // 
             this.btnSalir.BackColor = System.Drawing.Color.Maroon;
@@ -327,6 +345,7 @@ namespace _012IP_GUI
             this.Controls.Add(this.btnBajaPerdida);
             this.Controls.Add(this.btnReubicar);
             this.Controls.Add(this.btnCerrarAuditoria);
+            this.Controls.Add(this.btnDeteriorado);
             this.Controls.Add(this.btnSalir);
             this.Controls.Add(this.lblMsj);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -374,6 +393,7 @@ namespace _012IP_GUI
         private System.Windows.Forms.Button btnBajaPerdida;
         private System.Windows.Forms.Button btnReubicar;
         private System.Windows.Forms.Button btnCerrarAuditoria;
+        private System.Windows.Forms.Button btnDeteriorado;
         private System.Windows.Forms.Button btnSalir;
         private System.Windows.Forms.Label lblMsj;
     }

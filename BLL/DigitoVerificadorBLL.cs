@@ -186,11 +186,12 @@ namespace BLL
             { "NumeroInventario", lista.Select(x => x.NumeroInventario).ToList() },
             { "Titulo", lista.Select(x => x.Titulo).ToList() },
             { "Autor", lista.Select(x => x.Autor).ToList() },
-            { "Origen", lista.Select(x => x.Origen).ToList() },
-            { "Estado", lista.Select(x => x.Estado).ToList() },
+            { "Origen", lista.Select(x => x.Origen.ToString()).ToList() },
+            { "Estado", lista.Select(x => x.Estado.ToString()).ToList() },
             { "Pasillo", lista.Select(x => x.Pasillo).ToList() },
             { "Seccion", lista.Select(x => x.Seccion).ToList() },
-            { "Estanteria", lista.Select(x => x.Estanteria).ToList() }
+            { "Estanteria", lista.Select(x => x.Estanteria).ToList() },
+            { "Valor", lista.Select(x => _012IP_EjemplarBLL._012IP_TextoValor(x.Valor)).ToList() }
         };
         }
 
@@ -508,20 +509,20 @@ namespace BLL
                 RecalcularDVV_Ejemplar();
                 RecalcularDVV_AuditoriaInventario();
 
-                RegistrarEvento("Recalculo de DVV y DVH realizado correctamente", 1);
+                RegistrarEvento("Recalculo de DVV y DVH realizado correctamente");
                 RecalcularDVH_Bitacora();
                 RecalcularDVV_Bitacora();
             }
             catch (Exception ex)
             {
-                RegistrarEvento("Error al recalcular DVV y DVH", 1);
+                RegistrarEvento("Error al recalcular DVV y DVH");
                 throw new Exception(LanguageManager.Instance.GetTraduction("TextDV13") + ex.Message);
             }
 
 
 
         }
-        private void RegistrarEvento(string descripcion, int criticidad)
+        private void RegistrarEvento(string descripcion)
         {
             try
             {
@@ -529,11 +530,10 @@ namespace BLL
                 Bitacora evento = new Bitacora
                 {
                     Login = login,
-                    Modulo = "DigitoVerificador",
                     Fecha = DateTime.Now,
                     Evento = descripcion,
-                    Criticidad = criticidad
                 };
+                CatalogoEventos.Completar(evento);
                 string cadenaDVH = evento.Login + evento.Fecha.ToString("yyyy-MM-dd HH:mm:ss") + evento.Modulo + evento.Evento + evento.Criticidad.ToString();
                 _bitacoraDal.RegistrarEvento(evento, DigitoVerificador.CalcularDVH(cadenaDVH));
             }

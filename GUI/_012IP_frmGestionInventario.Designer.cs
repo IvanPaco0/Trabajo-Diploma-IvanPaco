@@ -36,6 +36,8 @@ namespace _012IP_GUI
             this.txtAutor = new System.Windows.Forms.TextBox();
             this.lblOrigen = new System.Windows.Forms.Label();
             this.cmbOrigen = new System.Windows.Forms.ComboBox();
+            this.lblValor = new System.Windows.Forms.Label();
+            this.nudValor = new System.Windows.Forms.NumericUpDown();
             this.btnRegistrar = new System.Windows.Forms.Button();
             this.grpUbicacion = new System.Windows.Forms.GroupBox();
             this.lblPasillo = new System.Windows.Forms.Label();
@@ -73,6 +75,7 @@ namespace _012IP_GUI
             this.grpUbicacion.SuspendLayout();
             this.grpEstado.SuspendLayout();
             this.grpXml.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudValor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEjemplares)).BeginInit();
             this.SuspendLayout();
             // 
@@ -161,6 +164,8 @@ namespace _012IP_GUI
             this.grpIngreso.Controls.Add(this.txtNumeroInv);
             this.grpIngreso.Controls.Add(this.lblTituloLibro);
             this.grpIngreso.Controls.Add(this.txtTituloLibro);
+            this.grpIngreso.Controls.Add(this.lblValor);
+            this.grpIngreso.Controls.Add(this.nudValor);
             this.grpIngreso.Controls.Add(this.lblAutor);
             this.grpIngreso.Controls.Add(this.txtAutor);
             this.grpIngreso.Controls.Add(this.lblOrigen);
@@ -221,8 +226,29 @@ namespace _012IP_GUI
             this.txtTituloLibro.Location = new System.Drawing.Point(15, 98);
             this.txtTituloLibro.MaxLength = 150;
             this.txtTituloLibro.Name = "txtTituloLibro";
-            this.txtTituloLibro.Size = new System.Drawing.Size(385, 22);
+            this.txtTituloLibro.Size = new System.Drawing.Size(260, 22);
             this.txtTituloLibro.TabIndex = 5;
+            // 
+            // lblValor
+            // 
+            this.lblValor.AutoSize = true;
+            this.lblValor.Location = new System.Drawing.Point(290, 78);
+            this.lblValor.Name = "lblValor";
+            this.lblValor.Size = new System.Drawing.Size(60, 16);
+            this.lblValor.TabIndex = 11;
+            this.lblValor.Text = "Valor ($)";
+            // 
+            // nudValor
+            // 
+            this.nudValor.BackColor = System.Drawing.Color.White;
+            this.nudValor.DecimalPlaces = 2;
+            this.nudValor.ForeColor = System.Drawing.Color.Black;
+            this.nudValor.Location = new System.Drawing.Point(290, 98);
+            this.nudValor.Maximum = new decimal(new int[] { 999999999, 0, 0, 0 });
+            this.nudValor.Name = "nudValor";
+            this.nudValor.Size = new System.Drawing.Size(110, 22);
+            this.nudValor.TabIndex = 12;
+            this.nudValor.ThousandsSeparator = true;
             // 
             // lblAutor
             // 
@@ -683,6 +709,7 @@ namespace _012IP_GUI
             this.grpIngreso.PerformLayout();
             this.BarraTitulo.ResumeLayout(false);
             this.BarraTitulo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudValor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEjemplares)).EndInit();
             this.ResumeLayout(false);
 
@@ -706,6 +733,8 @@ namespace _012IP_GUI
         private System.Windows.Forms.TextBox txtAutor;
         private System.Windows.Forms.Label lblOrigen;
         private System.Windows.Forms.ComboBox cmbOrigen;
+        private System.Windows.Forms.Label lblValor;
+        private System.Windows.Forms.NumericUpDown nudValor;
         private System.Windows.Forms.Button btnRegistrar;
         private System.Windows.Forms.GroupBox grpUbicacion;
         private System.Windows.Forms.Label lblPasillo;

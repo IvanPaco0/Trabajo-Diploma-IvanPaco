@@ -32,9 +32,6 @@ namespace _012IP_GUI
             this.btnModificarSocio = new System.Windows.Forms.Button();
             this.grpEstadoCuenta = new System.Windows.Forms.GroupBox();
             this.lblEstadoCuenta = new System.Windows.Forms.Label();
-            this.pnlDeuda = new System.Windows.Forms.Panel();
-            this.dgvCuotasImpagas = new System.Windows.Forms.DataGridView();
-            this.btnRegularizarDeuda = new System.Windows.Forms.Button();
             this.grpRenovacion = new System.Windows.Forms.GroupBox();
             this.lblTipoMembresia = new System.Windows.Forms.Label();
             this.cbMembresias = new System.Windows.Forms.ComboBox();
@@ -53,8 +50,6 @@ namespace _012IP_GUI
             this.grpBusqueda.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSocios)).BeginInit();
             this.grpEstadoCuenta.SuspendLayout();
-            this.pnlDeuda.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCuotasImpagas)).BeginInit();
             this.grpRenovacion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMeses)).BeginInit();
             this.SuspendLayout();
@@ -196,7 +191,6 @@ namespace _012IP_GUI
             // grpEstadoCuenta
             // 
             this.grpEstadoCuenta.Controls.Add(this.lblEstadoCuenta);
-            this.grpEstadoCuenta.Controls.Add(this.pnlDeuda);
             this.grpEstadoCuenta.Location = new System.Drawing.Point(12, 287);
             this.grpEstadoCuenta.Name = "grpEstadoCuenta";
             this.grpEstadoCuenta.Size = new System.Drawing.Size(500, 270);
@@ -212,38 +206,6 @@ namespace _012IP_GUI
             this.lblEstadoCuenta.Name = "lblEstadoCuenta";
             this.lblEstadoCuenta.Size = new System.Drawing.Size(470, 28);
             this.lblEstadoCuenta.TabIndex = 0;
-            // 
-            // pnlDeuda
-            // 
-            this.pnlDeuda.Controls.Add(this.dgvCuotasImpagas);
-            this.pnlDeuda.Controls.Add(this.btnRegularizarDeuda);
-            this.pnlDeuda.Location = new System.Drawing.Point(15, 60);
-            this.pnlDeuda.Name = "pnlDeuda";
-            this.pnlDeuda.Size = new System.Drawing.Size(470, 195);
-            this.pnlDeuda.TabIndex = 1;
-            this.pnlDeuda.Visible = false;
-            // 
-            // dgvCuotasImpagas
-            // 
-            this.dgvCuotasImpagas.Location = new System.Drawing.Point(0, 0);
-            this.dgvCuotasImpagas.Name = "dgvCuotasImpagas";
-            this.dgvCuotasImpagas.Size = new System.Drawing.Size(470, 125);
-            this.dgvCuotasImpagas.TabIndex = 0;
-            // 
-            // btnRegularizarDeuda
-            // 
-            this.btnRegularizarDeuda.BackColor = System.Drawing.Color.Maroon;
-            this.btnRegularizarDeuda.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRegularizarDeuda.FlatAppearance.BorderSize = 0;
-            this.btnRegularizarDeuda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRegularizarDeuda.ForeColor = System.Drawing.Color.White;
-            this.btnRegularizarDeuda.Location = new System.Drawing.Point(0, 140);
-            this.btnRegularizarDeuda.Name = "btnRegularizarDeuda";
-            this.btnRegularizarDeuda.Size = new System.Drawing.Size(170, 30);
-            this.btnRegularizarDeuda.TabIndex = 1;
-            this.btnRegularizarDeuda.Text = "Regularizar deuda";
-            this.btnRegularizarDeuda.UseVisualStyleBackColor = false;
-            this.btnRegularizarDeuda.Click += new System.EventHandler(this._012IP_btnRegularizarDeuda_Click);
             // 
             // grpRenovacion
             // 
@@ -424,8 +386,6 @@ namespace _012IP_GUI
             this.grpBusqueda.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSocios)).EndInit();
             this.grpEstadoCuenta.ResumeLayout(false);
-            this.pnlDeuda.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCuotasImpagas)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMeses)).EndInit();
             this.grpRenovacion.ResumeLayout(false);
             this.grpRenovacion.PerformLayout();
@@ -447,9 +407,6 @@ namespace _012IP_GUI
         private System.Windows.Forms.Button btnModificarSocio;
         private System.Windows.Forms.GroupBox grpEstadoCuenta;
         private System.Windows.Forms.Label lblEstadoCuenta;
-        private System.Windows.Forms.Panel pnlDeuda;
-        private System.Windows.Forms.DataGridView dgvCuotasImpagas;
-        private System.Windows.Forms.Button btnRegularizarDeuda;
         private System.Windows.Forms.GroupBox grpRenovacion;
         private System.Windows.Forms.Label lblTipoMembresia;
         private System.Windows.Forms.ComboBox cbMembresias;

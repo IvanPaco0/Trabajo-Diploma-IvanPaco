@@ -1,4 +1,4 @@
-using _012IP_BE;
+﻿using _012IP_BE;
 using _012IP_BLL;
 using Servicios;
 using System;
@@ -18,14 +18,13 @@ namespace _012IP_GUI
         private _012IP_SocioBLL socioBLL;
         private _012IP_MembresiaBLL membresiaBLL;
         private _012IP_SuscripcionBLL suscripcionBLL;
+        private int diasAvisoVencimiento;
         private _012IP_PagoBLL pagoBLL;
 
         private List<_012IP_SocioBE> sociosEncontrados = new List<_012IP_SocioBE>();
         private List<_012IP_MembresiaBE> membresias;
-        private List<_012IP_CuotaBE> cuotasVencidas = new List<_012IP_CuotaBE>();
         private _012IP_SocioBE socioSeleccionado;
 
-        private bool deudaRegularizada;
         private bool actualizandoGrilla;
         private bool cargandoCombo;
         private DateTime periodoInicio;
@@ -52,6 +51,7 @@ namespace _012IP_GUI
                 membresiaBLL = new _012IP_MembresiaBLL();
                 suscripcionBLL = new _012IP_SuscripcionBLL();
                 pagoBLL = new _012IP_PagoBLL();
+                diasAvisoVencimiento = suscripcionBLL._012IP_DiasAvisoVencimiento();
             }
             catch (Exception ex)
             {
@@ -60,7 +60,6 @@ namespace _012IP_GUI
 
             LanguageManager.Instance.AgregarObservador(this);
             _012IP_ConfigurarGrilla(dgvSocios);
-            _012IP_ConfigurarGrilla(dgvCuotasImpagas);
             _012IP_LimpiarEstado();
             Actualizar(LanguageManager.Instance);
             if (socioBLL != null) _012IP_BuscarSocios();
@@ -191,8 +190,6 @@ namespace _012IP_GUI
                 socioSeleccionado = sociosEncontrados.FirstOrDefault(s => s.DNI == dni);
                 if (socioSeleccionado == null) return;
 
-                deudaRegularizada = false;
-                cuotasVencidas = new List<_012IP_CuotaBE>();
                 _012IP_MostrarEstadoCuenta();
 
                 
@@ -213,7 +210,6 @@ namespace _012IP_GUI
 
         private void _012IP_MostrarEstadoCuenta()
         {
-            pnlDeuda.Visible = false;
             _012IP_SuscripcionBE suscripcion = socioSeleccionado?.Suscripcion;
 
             if (suscripcion == null)
@@ -229,7 +225,7 @@ namespace _012IP_GUI
                 lblEstadoCuenta.ForeColor = Color.FromArgb(255, 156, 156);
                 lblEstadoCuenta.Text = string.Format(_012IP_Texto("RenMemVencida"), vence);
             }
-            else if (suscripcion.DiasRestantes <= _012IP_SuscripcionBLL.DiasAvisoVencimiento)
+            else if (suscripcion.DiasRestantes <= diasAvisoVencimiento)
             {
                 lblEstadoCuenta.ForeColor = Color.Khaki;
                 lblEstadoCuenta.Text = string.Format(_012IP_Texto("RenMemPorVencer"), vence, suscripcion.DiasRestantes);
@@ -238,38 +234,6 @@ namespace _012IP_GUI
             {
                 lblEstadoCuenta.ForeColor = Color.LightGreen;
                 lblEstadoCuenta.Text = string.Format(_012IP_Texto("RenMemVigente"), vence, suscripcion.DiasRestantes);
-            }
-        }
-
-        private void _012IP_btnRegularizarDeuda_Click(object sender, EventArgs e)
-        {
-            if (socioSeleccionado == null || cuotasVencidas.Count == 0) return;
-
-            try
-            {
-                decimal total = cuotasVencidas.Sum(c => c.Importe);
-                DialogResult confirma = MessageBox.Show(
-                    string.Format(_012IP_Texto("RenMemConfirmaDeuda"), _012IP_Moneda(total)),
-                    _012IP_Texto("MsjConfirmacion"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirma != DialogResult.Yes) return;
-
-                _012IP_PagoBE pago = _012IP_InvocarRegistrarPago(socioSeleccionado, total, null, null, null);
-                if (pago == null)
-                {
-                    lblMsj.Text = _012IP_Texto("RenMemPagoNoConfirmado");
-                    return;
-                }
-
-                pagoBLL._012IP_MarcarCuotasComoPagadas(cuotasVencidas.Select(c => c.IdCuota).ToList(), pago.FechaPago);
-
-                deudaRegularizada = true;
-                pnlDeuda.Visible = false;
-                lblEstadoCuenta.ForeColor = Color.LightGreen;
-                lblEstadoCuenta.Text = _012IP_Texto("RenMemDeudaRegularizada");
-            }
-            catch (Exception ex)
-            {
-                _012IP_MostrarError(ex);
             }
         }
 
@@ -316,7 +280,7 @@ namespace _012IP_GUI
 
 
                 string marcaTarjeta, ultimosDigitos;
-                string medioDePago = _012IP_SolicitarMedioDePago(socioSeleccionado, membresia, total, periodoInicio, out marcaTarjeta, out ultimosDigitos);
+                _012IP_MedioDePagoBE medioDePago = _012IP_SolicitarMedioDePago(socioSeleccionado, membresia, total, periodoInicio, out marcaTarjeta, out ultimosDigitos);
                 if (medioDePago == null)
                 {
                     lblMsj.Text = _012IP_Texto("RenMemPagoNoConfirmado");
@@ -345,27 +309,16 @@ namespace _012IP_GUI
         }
 
 
-        private _012IP_PagoBE _012IP_InvocarRegistrarPago(_012IP_SocioBE socio, decimal monto, int? idCuota, int? idMembresia, DateTime? periodo)
-        {
-            using (var frmPago = new _012IP_frmRegistrarPago(
-                socio.IdSocio, socio.Nombre + " " + socio.Apellido, socio.DNI,
-                monto, idCuota, idMembresia, periodo))
-            {
-                DialogResult resultado = frmPago.ShowDialog(this);
-                return resultado == DialogResult.OK ? frmPago.PagoRegistrado : null;
-            }
-        }
 
 
-
-        private string _012IP_SolicitarMedioDePago(_012IP_SocioBE socio, _012IP_MembresiaBE membresia, decimal total, DateTime periodo,
+        private _012IP_MedioDePagoBE _012IP_SolicitarMedioDePago(_012IP_SocioBE socio, _012IP_MembresiaBE membresia, decimal total, DateTime periodo,
             out string marcaTarjeta, out string ultimosDigitos)
         {
             marcaTarjeta = null;
             ultimosDigitos = null;
             using (var frmPago = new _012IP_frmRegistrarPago(
                 socio.IdSocio, socio.Nombre + " " + socio.Apellido, socio.DNI,
-                total, null, membresia.IdMembresia, periodo))
+                total, membresia.IdMembresia, periodo))
             {
                 frmPago.SoloCapturarMedioDePago = true;
                 DialogResult resultado = frmPago.ShowDialog(this);
@@ -471,10 +424,7 @@ namespace _012IP_GUI
         private void _012IP_LimpiarEstado()
         {
             socioSeleccionado = null;
-            cuotasVencidas = new List<_012IP_CuotaBE>();
-            deudaRegularizada = false;
             lblEstadoCuenta.Text = string.Empty;
-            pnlDeuda.Visible = false;
             lblCostoValor.Text = string.Empty;
             lblTotalValor.Text = string.Empty;
             lblPeriodoValor.Text = string.Empty;
@@ -520,9 +470,6 @@ namespace _012IP_GUI
             _012IP_Encabezado(dgvSocios, "Membresia", "RenMemMembresia");
             _012IP_Encabezado(dgvSocios, "Vence", "RenMemVence");
 
-            _012IP_Encabezado(dgvCuotasImpagas, "Periodo", "RenMemColPeriodo");
-            _012IP_Encabezado(dgvCuotasImpagas, "Importe", "RenMemColImporte");
-            _012IP_Encabezado(dgvCuotasImpagas, "Vencimiento", "RenMemVence");
         }
 
         private void _012IP_Encabezado(DataGridView grilla, string columna, string clave)
@@ -561,7 +508,6 @@ namespace _012IP_GUI
             btnRegistrarSocio.Text = _012IP_Texto("RenMemBtnRegistrarSocio");
             btnModificarSocio.Text = _012IP_Texto("RenMemBtnModificarSocio");
             grpEstadoCuenta.Text = _012IP_Texto("RenMemGrpEstado");
-            btnRegularizarDeuda.Text = _012IP_Texto("RenMemBtnRegularizar");
             grpRenovacion.Text = _012IP_Texto("RenMemGrpRenovacion");
             lblTipoMembresia.Text = _012IP_Texto("RenMemTipo");
             lblCosto.Text = _012IP_Texto("RenMemCosto");

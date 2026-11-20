@@ -76,12 +76,6 @@ namespace GUI
             mostrarSubmenu(panelAyudaSubmenu);
         }
 
-        private void MostrarProximamente()
-        {
-            MessageBox.Show(LanguageManager.Instance.GetTraduction("MenuProximamente"),
-                LanguageManager.Instance.GetTraduction("Informacion"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void btnReporteRFN1_Click(object sender, EventArgs e)
         {
             if (!SessionManager.Instance.UsuarioActual().TienePermiso("Renovar Membresia"))
@@ -94,8 +88,6 @@ namespace GUI
             _012IP_frmInformeMembresias frm = new _012IP_frmInformeMembresias();
             frm.Show();
         }
-
-        private void btnReporteRFN2_Click(object sender, EventArgs e) => MostrarProximamente();
 
         private void btnReporteSocios_Click(object sender, EventArgs e)
         {
@@ -110,14 +102,39 @@ namespace GUI
             frm.Show();
         }
 
-        private void btnAyudaMembresias_Click(object sender, EventArgs e) => MostrarProximamente();
-
-        private void btnAyudaInventario_Click(object sender, EventArgs e) => MostrarProximamente();
-
-        private void btnAcercaDe_Click(object sender, EventArgs e)
+        private void btnManualUsuario_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(LanguageManager.Instance.GetTraduction("MenuAcercaDeTexto"),
-                LanguageManager.Instance.GetTraduction("MenuAcercaDe"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string carpeta = System.IO.Path.Combine(Application.StartupPath, "Ayuda");
+            string origen = System.IO.Path.Combine(carpeta,
+                "Ayuda_en_linea_" + LanguageManager.Instance.CodigoIdiomaActual + ".pdf");
+            if (!System.IO.File.Exists(origen))
+                origen = System.IO.Path.Combine(carpeta, "Ayuda_en_linea_es.pdf");
+
+            if (!System.IO.File.Exists(origen))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetTraduction("ManualNoEncontrado"),
+                    LanguageManager.Instance.GetTraduction("MenuManualUsuario"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog dlg = new SaveFileDialog())
+            {
+                dlg.FileName = System.IO.Path.GetFileName(origen);
+                dlg.Filter = "PDF (*.pdf)|*.pdf";
+                dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (dlg.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    System.IO.File.Copy(origen, dlg.FileName, true);
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, LanguageManager.Instance.GetTraduction("MenuManualUsuario"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
 
         private void Menu_Load(object sender, EventArgs e)
@@ -150,10 +167,8 @@ namespace GUI
 
             Mostrar(btnReporteRFN1, tiene("Renovar Membresia"));
             Mostrar(btnReporteSocios, tiene("Renovar Membresia"));
-            Mostrar(btnReporteRFN2, tiene("Gestionar Inventario") || tiene("Auditar Inventario"));
 
-            Mostrar(btnAyudaMembresias, tiene("Renovar Membresia"));
-            Mostrar(btnAyudaInventario, tiene("Gestionar Inventario") || tiene("Auditar Inventario"));
+            Mostrar(btnManualUsuario, true);
 
             AjustarGrupo(btnAdmin, panelAdminSubmenu);
             AjustarGrupo(btnMaestro, panelMaestroSubmenu);
@@ -429,12 +444,9 @@ namespace GUI
             btnReportes.Text = t("MenuGrupoReportes");
             btnReporteRFN1.Text = t("MenuReporteRFN1");
             btnReporteSocios.Text = t("MenuReporteSocios");
-            btnReporteRFN2.Text = t("MenuReporteRFN2");
 
             btnAyuda.Text = t("MenuGrupoAyuda");
-            btnAyudaMembresias.Text = t("MenuMembresias");
-            btnAyudaInventario.Text = t("InvMenuGrupo");
-            btnAcercaDe.Text = t("MenuAcercaDe");
+            btnManualUsuario.Text = t("MenuManualUsuario");
         }
     }
 }

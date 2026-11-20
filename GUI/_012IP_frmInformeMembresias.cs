@@ -13,6 +13,7 @@ namespace _012IP_GUI
     {
         private _012IP_PagoBLL pagoBLL;
         private _012IP_SuscripcionBLL suscripcionBLL;
+        private int diasAvisoVencimiento;
 
         int posX, posY;
         bool arrastrando = false;
@@ -28,6 +29,7 @@ namespace _012IP_GUI
             {
                 pagoBLL = new _012IP_PagoBLL();
                 suscripcionBLL = new _012IP_SuscripcionBLL();
+                diasAvisoVencimiento = suscripcionBLL._012IP_DiasAvisoVencimiento();
             }
             catch (Exception ex)
             {
@@ -63,7 +65,7 @@ namespace _012IP_GUI
             {
                 lblMsj.Text = string.Empty;
                 _012IP_InformeMembresiaBE informe = pagoBLL._012IP_ObtenerRecaudacion(dtpDesde.Value, dtpHasta.Value);
-                List<_012IP_VencimientoSocioBE> vencimientos = suscripcionBLL._012IP_ListarVencimientos(_012IP_SuscripcionBLL.DiasAvisoVencimiento);
+                List<_012IP_VencimientoSocioBE> vencimientos = suscripcionBLL._012IP_ListarVencimientos(diasAvisoVencimiento);
 
                 lblTotal.Text = string.Format(_012IP_Texto("InfMemTotal"), _012IP_Moneda(informe.TotalRecaudado), informe.CantidadPagos);
 
@@ -168,7 +170,7 @@ namespace _012IP_GUI
             btnGenerar.Text = _012IP_Texto("InfMemGenerar");
             lblPorMedio.Text = _012IP_Texto("InfMemPorMedio");
             lblPorMembresia.Text = _012IP_Texto("InfMemPorMembresia");
-            lblVencimientos.Text = string.Format(_012IP_Texto("InfMemVencimientos"), _012IP_SuscripcionBLL.DiasAvisoVencimiento);
+            lblVencimientos.Text = string.Format(_012IP_Texto("InfMemVencimientos"), diasAvisoVencimiento);
             btnSalir.Text = _012IP_Texto("btnSalir");
             _012IP_AplicarEncabezados();
         }

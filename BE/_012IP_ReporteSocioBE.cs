@@ -13,7 +13,7 @@ namespace _012IP_BE
         public string Membresia { get; set; } = string.Empty;
         public DateTime? FechaVencimiento { get; set; }
         public int? DiasRestantes { get; set; }
-        public string Estado { get; set; } = string.Empty;
+        public _012IP_EstadoMembresia Estado { get; set; }
     }
 
     public class _012IP_ResumenReporteSociosBE
